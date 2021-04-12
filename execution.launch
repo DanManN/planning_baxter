@@ -7,7 +7,6 @@
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
-  <arg name="world_name" default="$(find baxter_gazebo)/worlds/baxter.world"/>
 
   <!-- These arguments load the electric grippers, for example left_electric_gripper:=true -->
   <arg name="left_electric_gripper" default="true"/>
@@ -24,7 +23,7 @@
 
   <!-- We resume the logic in empty_world.launch, changing the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(arg world_name)"/>
+    <arg name="world_name" value="$(find baxter_gazebo)/worlds/baxter.world"/>
     <arg name="debug" value="$(arg debug)" />
     <arg name="gui" value="$(arg gui)" />
     <arg name="paused" value="$(arg paused)"/>
@@ -39,7 +38,7 @@
   <node pkg="tf2_ros" type="static_transform_publisher" name="base_to_world" args="0 0 0 0 0 0 1 world base" />
 
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
-  <!--<node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
 	args="-param robot_description -urdf -z 0.93 -model baxter
 	      -J baxter::right_s0 -0.272659
 	      -J baxter::right_s1 1.04701
@@ -54,7 +53,7 @@
 	      -J baxter::left_e1 0.491094
 	      -J baxter::left_w0 -0.178079
 	      -J baxter::left_w1 -0.0610333
-	      -J baxter::left_w2 -0.0124707" />-->
+	      -J baxter::left_w2 -0.0124707" />
 
   <!-- ros_control baxter launch file -->
   <include file="$(find baxter_sim_hardware)/launch/baxter_sdk_control.launch">
