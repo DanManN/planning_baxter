@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-export COPPELIASIM_ROOT_DIR=/usr/share/coppeliasim
-
-source ./devel/setup.zsh
