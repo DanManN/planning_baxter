@@ -1,12 +1,14 @@
+src/CMakeLists.txt
 src/baxter/
 src/baxter_common/
 src/baxter_examples/
 src/baxter_interface/
 src/baxter_simulator/
 src/baxter_tools/
-src/CMakeLists.txt
-src/sim_ros_interface
-src/timed_roslaunch
+src/sim_ros_interface/
+src/moveit_resources/
+src/timed_roslaunch/
+
 # Created by https://www.toptal.com/developers/gitignore/api/ros,python,c++,vim
 # Edit at https://www.toptal.com/developers/gitignore?templates=ros,python,c++,vim
 

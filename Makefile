@@ -1,4 +1,4 @@
-all: ./src/baxter ./src/baxter_common ./src/baxter_tools ./src/baxter_examples ./src/baxter_interface ./src/baxter_simulator ./src/sim_ros_interface ./src/timed_roslaunch #./src/moveit_robots
+all: ./src/baxter ./src/baxter_common ./src/baxter_tools ./src/baxter_examples ./src/baxter_interface ./src/baxter_simulator ./src/sim_ros_interface ./src/moveit_resources ./src/timed_roslaunch #./src/moveit_robots
 
 ./src/baxter:
 	git clone https://github.com/RethinkRobotics/baxter.git $@
@@ -21,6 +21,9 @@ all: ./src/baxter ./src/baxter_common ./src/baxter_tools ./src/baxter_examples .
 ./src/sim_ros_interface:
 	git clone --branch coppeliasim-v4.1.0 --recursive https://github.com/CoppeliaRobotics/simExtROSInterface.git $@
 
+./src/moveit_resources:
+	git clone https://github.com/ros-planning/moveit_resources.git $@
+
 ./src/timed_roslaunch:
 	git clone https://github.com/MoriKen254/timed_roslaunch.git $@
 
@@ -29,3 +32,11 @@ all: ./src/baxter ./src/baxter_common ./src/baxter_tools ./src/baxter_examples .
 
 deps:
 	./install_deps.sh
+
+clean-src:
+	rm -rf ./src/baxter ./src/baxter_common ./src/baxter_tools ./src/baxter_examples ./src/baxter_interface ./src/baxter_simulator ./src/sim_ros_interface ./src/moveit_resources ./src/timed_roslaunch
+
+clean:
+	rm -rf build devel
+
+clean-all: clean clean-src

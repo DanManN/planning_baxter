@@ -1,0 +1,36 @@
+controller_list:
+  - name: fake_motoman_robotiq_hand_controller
+    type: $(arg execution_type)
+    joints:
+      - finger_joint
+  - name: fake_motoman_suction_cup_controller
+    type: $(arg execution_type)
+    joints:
+      []
+  - name: fake_motoman_left_arm_controller
+    type: $(arg execution_type)
+    joints:
+      - torso_joint_b1
+      - arm_left_joint_1_s
+      - arm_left_joint_2_l
+      - arm_left_joint_3_e
+      - arm_left_joint_4_u
+      - arm_left_joint_5_r
+      - arm_left_joint_6_b
+      - arm_left_joint_7_t
+  - name: fake_motoman_right_arm_controller
+    type: $(arg execution_type)
+    joints:
+      - torso_joint_b1
+      - arm_right_joint_1_s
+      - arm_right_joint_2_l
+      - arm_right_joint_3_e
+      - arm_right_joint_4_u
+      - arm_right_joint_5_r
+      - arm_right_joint_6_b
+      - arm_right_joint_7_t
+initial:  # Define initial robot poses.
+  - group: motoman_robotiq_hand
+    pose: motoman_robotiq_hand_home_config
+  - group: motoman_suction_cup
+    pose: motoman_suction_cup_home_config

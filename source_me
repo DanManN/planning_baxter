@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
-# export COPPELIASIM_ROOT_DIR=/usr/share/coppeliasim
+case "$(lsb_release -si)" in
+"Arch")
+	export COPPELIASIM_ROOT_DIR=/usr/share/coppeliasim
+	;;
+"Ubuntu")
+	export COPPELIASIM_ROOT_DIR=$(pwd)/CoppeliaSim_Edu_V4_1_0_Ubuntu20_04
+	;;
+esac
 
-source ./devel/setup.zsh
+source ./devel/setup.sh
