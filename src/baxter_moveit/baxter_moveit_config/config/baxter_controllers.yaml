@@ -23,7 +23,7 @@ controller_list:
       - left_w0
       - left_w1
       - left_w2
-  - name: /robot/left_gripper_controller
+  - name: /robot/end_effector/left_gripper
     action_ns: gripper_action
     type: GripperCommand
     default: true
@@ -31,7 +31,7 @@ controller_list:
     joints:
       - l_gripper_l_finger_joint
       - l_gripper_r_finger_joint
-  - name: /robot/right_gripper_controller
+  - name: /robot/end_effector/right_gripper
     action_ns: gripper_action
     type: GripperCommand
     default: true
