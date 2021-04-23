@@ -97,7 +97,7 @@ void pick(moveit::planning_interface::MoveGroupInterface &move_group)
 	tf2::Quaternion orientation;
 	orientation.setRPY(-M_PI / 2, -M_PI / 2, -M_PI / 2);
 	grasps[0].grasp_pose.pose.orientation = tf2::toMsg(orientation);
-	grasps[0].grasp_pose.pose.position.x = 0.98;
+	grasps[0].grasp_pose.pose.position.x = 0.97;
 	grasps[0].grasp_pose.pose.position.y = 0.5;
 	grasps[0].grasp_pose.pose.position.z = 0.15;
 
@@ -131,10 +131,10 @@ void pick(moveit::planning_interface::MoveGroupInterface &move_group)
 	// END_SUB_TUTORIAL
 
 	// BEGIN_SUB_TUTORIAL pick3
-	// Set support surface as table1.
-	move_group.setSupportSurfaceName("table1");
+	// Set support surface as cafe_table.link.
+	move_group.setSupportSurfaceName("cafe_table.link");
 	// Call pick to pick up the object using the grasps given
-	move_group.pick("object", grasps);
+	move_group.pick("wood_block_10_2_1cm.link", grasps);
 	// END_SUB_TUTORIAL
 }
 
@@ -157,7 +157,7 @@ void place(moveit::planning_interface::MoveGroupInterface &group)
 
 	/* While placing it is the exact location of the center of the object. */
 	place_location[0].place_pose.pose.position.x = 0.5;
-	place_location[0].place_pose.pose.position.y = 0.98;
+	place_location[0].place_pose.pose.position.y = 0.97;
 	place_location[0].place_pose.pose.position.z = 0.1;
 
 	// Setting pre-place approach
@@ -183,16 +183,16 @@ void place(moveit::planning_interface::MoveGroupInterface &group)
 	/* Similar to the pick case */
 	openGripper(place_location[0].post_place_posture);
 
-	// Set support surface as table2.
-	group.setSupportSurfaceName("table2");
+	// Set support surface as cafe_table_clone.link.
+	group.setSupportSurfaceName("cafe_table_clone.link");
 	// Call place to place the object using the place locations given.
-	group.place("object", place_location);
+	group.place("wood_block_10_2_1cm.link", place_location);
 	// END_SUB_TUTORIAL
 }
 
 void addCollisionObjects(moveit::planning_interface::PlanningSceneInterface &planning_scene_interface)
 {
-	// BEGIN_SUB_TUTORIAL table1
+	// BEGIN_SUB_TUTORIAL cafe_table.link
 	//
 	// Creating Environment
 	// ^^^^^^^^^^^^^^^^^^^^
@@ -201,7 +201,7 @@ void addCollisionObjects(moveit::planning_interface::PlanningSceneInterface &pla
 	collision_objects.resize(3);
 
 	// Add the first table where the cube will originally be kept.
-	collision_objects[0].id = "table1";
+	collision_objects[0].id = "cafe_table.link";
 	collision_objects[0].header.frame_id = "base";
 
 	/* Define the primitive and its dimensions. */
@@ -221,9 +221,9 @@ void addCollisionObjects(moveit::planning_interface::PlanningSceneInterface &pla
 
 	collision_objects[0].operation = collision_objects[0].ADD;
 
-	// BEGIN_SUB_TUTORIAL table2
+	// BEGIN_SUB_TUTORIAL cafe_table_clone.link
 	// Add the second table where we will be placing the cube.
-	collision_objects[1].id = "table2";
+	collision_objects[1].id = "cafe_table_clone.link";
 	collision_objects[1].header.frame_id = "base";
 
 	/* Define the primitive and its dimensions. */
@@ -246,7 +246,7 @@ void addCollisionObjects(moveit::planning_interface::PlanningSceneInterface &pla
 	// BEGIN_SUB_TUTORIAL object
 	// Define the object that we will be manipulating
 	collision_objects[2].header.frame_id = "base";
-	collision_objects[2].id = "object";
+	collision_objects[2].id = "wood_block_10_2_1cm.link";
 
 	/* Define the primitive and its dimensions. */
 	collision_objects[2].primitives.resize(1);
@@ -299,8 +299,8 @@ int main(int argc, char **argv)
 }
 
 // BEGIN_TUTORIAL
-// CALL_SUB_TUTORIAL table1
-// CALL_SUB_TUTORIAL table2
+// CALL_SUB_TUTORIAL cafe_table.link
+// CALL_SUB_TUTORIAL cafe_table_clone.link
 // CALL_SUB_TUTORIAL object
 //
 // Pick Pipeline

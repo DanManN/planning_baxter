@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
   <arg name="config" default="true"/>
+  <arg name="planner" default="ompl" />
   <arg name="use_gui" default="false"/>
   <arg name="rviz_config" default="$(find baxter_moveit_config)/launch/moveit.rviz" />
 
@@ -47,6 +48,7 @@
     <arg name="camera_link_pose" default="$(arg camera_link_pose)"/>
     <arg name="allow_trajectory_execution" value="true"/>
     <arg name="fake_execution" value="true"/>
+    <arg name="planner" value="$(arg planner)" />
   </include>
 
   <include file="$(find baxter_moveit_config)/launch/moveit_rviz.launch">
