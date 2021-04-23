@@ -5,7 +5,7 @@
   <arg name="rviz_config" default="$(find baxter_moveit_config)/launch/moveit.rviz" />
 
   <!-- By default we do not overwrite the URDF. Change the following to true to change the default behavior -->
-  <arg name="load_robot_description" default="true"/>
+  <arg name="load_robot_description" default="false"/>
   <!-- Left and right electric gripper params. Set to true to check for collisions for their links -->
   <arg name="right_electric_gripper" default="true"/>
   <arg name="left_electric_gripper" default="true"/>
@@ -24,7 +24,7 @@
   <!--<node pkg="tf3_ros" type="static_transform_publisher" name="virtual_joint_broadcaster_1" args="0 0 0 0 0 0 world torso" />-->
 
   <!-- Publish a static transform between the world and the base of the robot -->
-  <!--<node pkg="tf2_ros" type="static_transform_publisher" name="base_to_world" args="0 0 0 0 0 0 1 world base" />-->
+  <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="base_to_world" args="0 0 0 0 0 0 1 world base" /> -->
 
   <!-- We do not have a robot connected, so publish fake joint states -->
   <!--<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">

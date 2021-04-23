@@ -14,5 +14,5 @@
   <run_depend>baxter_ikfast_right_arm_plugin</run_depend>
   <run_depend>baxter_moveit_config</run_depend>
 
-  <export><metapackage/></export>
+  <!--<export><metapackage/></export>-->
 </package>

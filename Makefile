@@ -22,7 +22,7 @@ all: ./src/baxter ./src/baxter_common ./src/baxter_tools ./src/baxter_examples .
 	git clone https://github.com/ros-planning/moveit_resources.git $@
 
 ./src/moveit_grasps:
-	git clone https://github.com/ros-planning/moveit_grasps.git $@
+	git clone -b melodic-devel https://github.com/ros-planning/moveit_grasps.git $@
 
 # ./src/timed_roslaunch:
 #         git clone https://github.com/MoriKen254/timed_roslaunch.git $@

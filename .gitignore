@@ -5,9 +5,10 @@ src/baxter_examples/
 src/baxter_interface/
 src/baxter_simulator/
 src/baxter_tools/
-src/sim_ros_interface/
 src/moveit_resources/
+src/moveit_grasps/
 src/timed_roslaunch/
+src/sim_ros_interface/
 
 # Created by https://www.toptal.com/developers/gitignore/api/ros,python,c++,vim
 # Edit at https://www.toptal.com/developers/gitignore?templates=ros,python,c++,vim
