@@ -83,13 +83,16 @@ void pick(moveit::planning_interface::MoveGroupInterface &group)
 	g.pre_grasp_posture.joint_names.push_back("l_gripper_l_finger_joint");
 	g.pre_grasp_posture.points.resize(1);
 	g.pre_grasp_posture.points[0].positions.resize(1);
-	g.pre_grasp_posture.points[0].positions[0] = 0.02;
+	// g.pre_grasp_posture.points[0].positions[0] = 0.02;
+	g.pre_grasp_posture.points[0].positions[0] = 100.00;
 
 	//This can be used to send additional joint command e.g gripper positions to make sure it is closed after grasp
 	g.grasp_posture.joint_names.push_back("l_gripper_l_finger_joint");
 	g.grasp_posture.points.resize(1);
 	g.grasp_posture.points[0].positions.resize(1);
-	g.grasp_posture.points[0].positions[0] = 0.006;
+	// g.grasp_posture.points[0].positions[0] = 0.02;
+	g.grasp_posture.points[0].positions[0] = 0.005;
+	// g.grasp_posture.points[0].positions[0] = 100.00;
 
 	//Pushing this grasp into a vector of possible grasps. In this case we just use one
 	grasps.push_back(g);
@@ -139,7 +142,8 @@ void place(moveit::planning_interface::MoveGroupInterface &group)
 	g.post_place_posture.joint_names.push_back("l_gripper_l_finger_joint");
 	g.post_place_posture.points.resize(1);
 	g.post_place_posture.points[0].positions.resize(1);
-	g.post_place_posture.points[0].positions[0] = 0.02;
+	// g.post_place_posture.points[0].positions[0] = 0.02;
+	g.post_place_posture.points[0].positions[0] = 100.00;
 
 	loc.push_back(g);
 	// group.setSupportSurfaceName("cafe_table.link");
@@ -155,15 +159,15 @@ int main(int argc, char **argv)
 	ros::AsyncSpinner spinner(1);
 	spinner.start();
 
-	// ros::NodeHandle nh;
-	// ros::Publisher pub_co = nh.advertise<moveit_msgs::CollisionObject>("collision_object", 10);
-	// ros::Publisher pub_aco = nh.advertise<moveit_msgs::AttachedCollisionObject>("attached_collision_object", 10);
+	ros::NodeHandle nh;
+	ros::Publisher pub_co = nh.advertise<moveit_msgs::CollisionObject>("collision_object", 10);
+	ros::Publisher pub_aco = nh.advertise<moveit_msgs::AttachedCollisionObject>("attached_collision_object", 10);
 
 	ros::WallDuration(1.0).sleep();
 	//Using the move_group of the left arm
 	moveit::planning_interface::MoveGroupInterface group("left_arm");
 
-	/*
+	// *
 	// Constraints to used at the moment
 	// moveit_msgs::Constraints constr;
 	// constr.orientation_constraints.resize(1);
@@ -245,7 +249,7 @@ int main(int argc, char **argv)
 	co.primitive_poses[0].position.x = 1.0;
 	co.primitive_poses[0].position.y = 0.5;
 	co.primitive_poses[0].position.z = 0.1;
-	pub_co.publish(co); */
+	pub_co.publish(co); //*/
 
 	// wait a bit for ros things to initialize
 	ros::WallDuration(1.0).sleep();

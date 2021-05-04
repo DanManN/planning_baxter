@@ -3,7 +3,7 @@ moveit_setup_assistant_config:
     package: baxter_description
     relative_path: urdf/baxter.urdf.xacro
   SRDF:
-    relative_path: config/baxter.srdf
+    relative_path: config/baxter.srdf.xacro
   CONFIG:
     author_name: Rethink Robotics Inc.
     author_email: rsdk.support@rethinkrobotics.com

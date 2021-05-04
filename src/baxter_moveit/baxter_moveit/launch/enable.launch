@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+  <node type="enable_robot.py" pkg="baxter_tools" name="enable_robot" respawn="false" output="screen" args="-e" />
+  <node type="joint_trajectory_action_server.py" pkg="baxter_interface" name="joint_trajectory_action_server" respawn="true" output="screen" args="-m position" />
+  <node type="gripper_action_server.py" pkg="baxter_interface" name="gripper_action_server" respawn="true" output="screen" args="-s 4761" />
+
+</launch>
