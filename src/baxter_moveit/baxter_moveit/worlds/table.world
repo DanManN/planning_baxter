@@ -202,10 +202,10 @@
         </link>
       </model>
       <model name='wood_block_10_2_1cm'>
-        <pose>1.00006 0.499523 1.03411 1.5708 1.5619 -1.54165</pose>
+        <pose>1.0 0.5 1.035 0.0 1.5708 0.0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose>0.995062 0.499377 1.03411 1.5708 1.5619 -1.54165</pose>
+          <pose>1.0 0.5 1.035 0.0 1.5708 0.0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>1e-06 -2.7e-05 -1.3e-05 3.7e-05 1.6e-05 9e-06</acceleration>
           <wrench>0 -0 -0 0 -0 0</wrench>
