@@ -36,7 +36,7 @@
   <param name="rethink/software_version" value="1.2.0" />
 
   <!-- Publish a static transform between the world and the base of the robot -->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="base_to_world" args="0 0 0 0 0 0 1 world base" />
+  <!--<node pkg="tf2_ros" type="static_transform_publisher" name="base_to_world" args="0 0 0 0 0 0 1 world base" />-->
 
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot 
     adjust baxter height? //-z 0.93

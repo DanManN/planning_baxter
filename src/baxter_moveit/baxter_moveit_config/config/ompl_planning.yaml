@@ -1,4 +1,10 @@
 planner_configs:
+  PersistentLazyPRMstar: # use this with a representative environment to create a roadmap
+    type: geometric::LazyPRMstar
+    multi_query_planning_enabled: true
+    store_planner_data: true
+    load_planner_data: false
+    planner_data_path: /tmp/roadmap.graph
   SBLkConfigDefault:
     type: geometric::SBL
     range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup()
@@ -125,6 +131,7 @@ planner_configs:
 left_arm:
   default_planner_config: BiESTkConfigDefault
   planner_configs:
+    - PersistentLazyPRMstar
     - SBLkConfigDefault
     - ESTkConfigDefault
     - LBKPIECEkConfigDefault
@@ -154,6 +161,7 @@ left_arm:
 right_arm:
   default_planner_config: BiESTkConfigDefault
   planner_configs:
+    - PersistentLazyPRMstar
     - SBLkConfigDefault
     - ESTkConfigDefault
     - LBKPIECEkConfigDefault
@@ -183,6 +191,7 @@ right_arm:
 both_arms:
   default_planner_config: BiESTkConfigDefault
   planner_configs:
+    - PersistentLazyPRMstar
     - SBLkConfigDefault
     - ESTkConfigDefault
     - LBKPIECEkConfigDefault
@@ -212,6 +221,7 @@ both_arms:
 left_hand:
   default_planner_config: BiESTkConfigDefault
   planner_configs:
+    - PersistentLazyPRMstar
     - SBLkConfigDefault
     - ESTkConfigDefault
     - LBKPIECEkConfigDefault
@@ -239,6 +249,7 @@ left_hand:
 right_hand:
   default_planner_config: BiESTkConfigDefault
   planner_configs:
+    - PersistentLazyPRMstar
     - SBLkConfigDefault
     - ESTkConfigDefault
     - LBKPIECEkConfigDefault

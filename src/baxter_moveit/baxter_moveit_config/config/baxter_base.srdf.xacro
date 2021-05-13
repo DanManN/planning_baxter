@@ -27,12 +27,16 @@
         <joint name="l_gripper_l_finger_joint" />
         <joint name="l_gripper_r_finger_joint" />
         <!-- <passive_joint name="l_gripper_r_finger_joint" /> -->
+        <link name="l_gripper_l_finger_tip" />
+        <link name="l_gripper_r_finger_tip" />
     </group>
     <group name="right_hand">
         <chain base_link="right_hand" tip_link="$(arg right_tip_name)" />
         <joint name="r_gripper_l_finger_joint" />
         <joint name="r_gripper_r_finger_joint" />
         <!-- <passive_joint name="r_gripper_r_finger_joint" /> -->
+        <link name="r_gripper_l_finger_tip" />
+        <link name="r_gripper_r_finger_tip" />
     </group>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="left_hand_eef" parent_link="$(arg left_tip_name)" group="left_hand" parent_group="left_arm" />
