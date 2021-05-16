@@ -45,6 +45,8 @@ class Planner:
 
     def plan_ee_pose(self, ee_pose=[0, 0, 0, 0, 0, 0], group_name="left_arm"):
         move_group = moveit_commander.MoveGroupCommander(group_name)
+        move_group.set_num_planning_attempts(50)
+        move_group.set_planner_id("LazyPRMstarkConfigDefault")
         # move_group.set_support_surface_name(support)
 
         move_group.set_pose_target(ee_pose)
@@ -64,7 +66,7 @@ class Planner:
         return plan
 
     def plan_line_traj(
-        self, direction=[0, 0, 1], magnitude=1, eef_step=0.01, jump_threshold=0.0, group_name="left_arm"
+        self, direction=[0, 0, 1], magnitude=1, eef_step=0.005, jump_threshold=0.0, group_name="left_arm"
     ):
         move_group = moveit_commander.MoveGroupCommander(group_name)
         # move_group.set_support_surface_name(support)
@@ -85,7 +87,7 @@ class Planner:
 
         return plan, fraction
 
-    def execute(self, raw_plan, v_scale=0.2, a_scale=0.2, group_name="left_arm"):
+    def execute(self, raw_plan, v_scale=0.25, a_scale=1.0, group_name="left_arm"):
         move_group = moveit_commander.MoveGroupCommander(group_name)
         plan = move_group.retime_trajectory(
             self.robot.get_current_state(),

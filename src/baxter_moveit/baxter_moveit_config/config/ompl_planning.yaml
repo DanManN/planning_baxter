@@ -157,7 +157,7 @@ left_arm:
     - SPARStwokConfigDefault
     # - TrajOptDefault
   projection_evaluator: joints(left_s0,left_s1)
-  longest_valid_segment_fraction: 0.05
+  longest_valid_segment_fraction: 0.0078125
 right_arm:
   default_planner_config: BiESTkConfigDefault
   planner_configs:
@@ -187,7 +187,7 @@ right_arm:
     - SPARStwokConfigDefault
     # - TrajOptDefault
   projection_evaluator: joints(right_s0,right_s1)
-  longest_valid_segment_fraction: 0.05
+  longest_valid_segment_fraction: 0.0078125
 both_arms:
   default_planner_config: BiESTkConfigDefault
   planner_configs:
@@ -217,7 +217,7 @@ both_arms:
     - SPARStwokConfigDefault
     # - TrajOptDefault
   projection_evaluator: joints(right_s0,right_s1)
-  longest_valid_segment_fraction: 0.05
+  longest_valid_segment_fraction: 0.0078125
 left_hand:
   default_planner_config: BiESTkConfigDefault
   planner_configs:

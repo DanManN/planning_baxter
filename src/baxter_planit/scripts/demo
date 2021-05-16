@@ -6,6 +6,8 @@ import rospy
 from math import pi
 from baxter_planit import BaxterPlanner
 
+app_dist = 0.05
+
 
 def graspTest():
     is_sim = sys.argv[1] != 'false' if len(sys.argv) > 1 else True
@@ -17,28 +19,31 @@ def graspTest():
         print("Test!")
     planner.do_end_effector('open')
     print("Gripper Opened")
-    plan = planner.plan_ee_pose([1.02, 0.5, 0.25 + int(not is_sim) * 0.93, -pi / 2, -pi / 2, -pi / 2])
+    plan = planner.plan_ee_pose([1.02, 0.5, 0.15 + app_dist + int(not is_sim) * 0.93, -pi / 2, -pi / 2, -pi / 2])
     planner.execute(plan)
     print("Prepicked")
-    plan, fraction = planner.plan_line_traj([0, 0, -1], 0.1)
-    planner.execute(plan)
+    plan, fraction = planner.plan_line_traj([0, 0, -1], app_dist)
+    planner.execute(plan, v_scale=0.125)
     print("Pick", fraction)
     success = planner.attach('wood_block_10_2_1cm.link')
     print("Object attached:", success)
     planner.do_end_effector('close')
     print("Gripper Closed")
     plan, fraction = planner.plan_line_traj([0, 0, 1], 0.1)
-    planner.execute(plan)
+    planner.execute(plan, v_scale=0.125)
     print("Postpick", fraction)
-    plan = planner.plan_ee_pose([0.5, 1.02, 0.15 + int(not is_sim) * 0.93, -pi / 2, -pi / 2, -pi / 2])
+    plan = planner.plan_ee_pose([0.5, 1.02, 0.15 + app_dist + int(not is_sim) * 0.93, -pi / 2, -pi / 2, -pi / 2])
     planner.execute(plan)
-    print("Place")
+    print("Preplace")
+    plan, fraction = planner.plan_line_traj([0, 0, -1], app_dist)
+    planner.execute(plan, v_scale=0.125)
+    print("Place", fraction)
     planner.do_end_effector('open')
     print("Gripper Opened")
     success = planner.detach('wood_block_10_2_1cm.link')
     print("Object detached:", success)
-    plan, fraction = planner.plan_line_traj([0, 0, 1], 0.1)
-    planner.execute(plan)
+    plan, fraction = planner.plan_line_traj([0, 0, 1], app_dist)
+    planner.execute(plan, v_scale=0.125)
     print("Postplace", fraction)
 
 
