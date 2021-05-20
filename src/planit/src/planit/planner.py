@@ -46,7 +46,10 @@ class Planner:
     def plan_ee_pose(self, ee_pose=[0, 0, 0, 0, 0, 0], group_name="left_arm"):
         move_group = moveit_commander.MoveGroupCommander(group_name)
         move_group.set_num_planning_attempts(50)
-        move_group.set_planner_id("LazyPRMstarkConfigDefault")
+        move_group.set_planning_time(1.0)
+        move_group.set_planner_id("SPARSkConfigDefault")
+        # move_group.set_planner_id("LazyPRMstarkConfigDefault")
+        # move_group.set_planner_id("PersistentLazyPRMstar")
         # move_group.set_support_surface_name(support)
 
         move_group.set_pose_target(ee_pose)
