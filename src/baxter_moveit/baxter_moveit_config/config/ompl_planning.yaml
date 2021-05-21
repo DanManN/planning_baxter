@@ -1,9 +1,15 @@
 planner_configs:
-  PersistentLazyPRMstar: # use this with a representative environment to create a roadmap
+  PersistentLazyPRMstarStore: # use this with a representative environment to create a roadmap
     type: geometric::LazyPRMstar
     multi_query_planning_enabled: true
     store_planner_data: true
     load_planner_data: false
+    planner_data_path: /tmp/roadmap.graph
+  PersistentLazyPRMstarLoad: # use this to load a previously created roadmap
+    type: geometric::LazyPRMstar
+    multi_query_planning_enabled: true
+    store_planner_data: false
+    load_planner_data: true
     planner_data_path: /tmp/roadmap.graph
   SBLkConfigDefault:
     type: geometric::SBL
@@ -131,7 +137,8 @@ planner_configs:
 left_arm:
   default_planner_config: BiESTkConfigDefault
   planner_configs:
-    - PersistentLazyPRMstar
+    - PersistentLazyPRMstarStore
+    - PersistentLazyPRMstarLoad
     - SBLkConfigDefault
     - ESTkConfigDefault
     - LBKPIECEkConfigDefault
@@ -161,7 +168,8 @@ left_arm:
 right_arm:
   default_planner_config: BiESTkConfigDefault
   planner_configs:
-    - PersistentLazyPRMstar
+    - PersistentLazyPRMstarStore
+    - PersistentLazyPRMstarLoad
     - SBLkConfigDefault
     - ESTkConfigDefault
     - LBKPIECEkConfigDefault
@@ -191,7 +199,8 @@ right_arm:
 both_arms:
   default_planner_config: BiESTkConfigDefault
   planner_configs:
-    - PersistentLazyPRMstar
+    - PersistentLazyPRMstarStore
+    - PersistentLazyPRMstarLoad
     - SBLkConfigDefault
     - ESTkConfigDefault
     - LBKPIECEkConfigDefault
@@ -221,7 +230,8 @@ both_arms:
 left_hand:
   default_planner_config: BiESTkConfigDefault
   planner_configs:
-    - PersistentLazyPRMstar
+    - PersistentLazyPRMstarStore
+    - PersistentLazyPRMstarLoad
     - SBLkConfigDefault
     - ESTkConfigDefault
     - LBKPIECEkConfigDefault
@@ -249,7 +259,8 @@ left_hand:
 right_hand:
   default_planner_config: BiESTkConfigDefault
   planner_configs:
-    - PersistentLazyPRMstar
+    - PersistentLazyPRMstarStore
+    - PersistentLazyPRMstarLoad
     - SBLkConfigDefault
     - ESTkConfigDefault
     - LBKPIECEkConfigDefault
