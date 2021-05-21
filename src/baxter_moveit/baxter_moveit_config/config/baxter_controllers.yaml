@@ -23,19 +23,19 @@ controller_list:
       - left_w0
       - left_w1
       - left_w2
-  - name: /robot/end_effector/left_gripper
-    action_ns: gripper_action
-    type: GripperCommand
-    default: true
-    parallel: true
-    joints:
-      - l_gripper_l_finger_joint
-      - l_gripper_r_finger_joint
-  - name: /robot/end_effector/right_gripper
-    action_ns: gripper_action
-    type: GripperCommand
-    default: true
-    parallel: true
-    joints:
-      - r_gripper_l_finger_joint
-      - r_gripper_r_finger_joint
+  # - name: /robot/end_effector/left_gripper
+  #   action_ns: gripper_action
+  #   type: GripperCommand
+  #   default: true
+  #   parallel: true
+  #   joints:
+  #     - l_gripper_l_finger_joint
+  #     - l_gripper_r_finger_joint
+  # - name: /robot/end_effector/right_gripper
+  #   action_ns: gripper_action
+  #   type: GripperCommand
+  #   default: true
+  #   parallel: true
+  #   joints:
+  #     - r_gripper_l_finger_joint
+  #     - r_gripper_r_finger_joint

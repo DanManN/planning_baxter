@@ -6,7 +6,7 @@ import rospy
 from math import pi
 from baxter_planit import BaxterPlanner
 
-app_dist = 0.10
+app_dist = 0.1
 
 
 def graspTest():
@@ -17,15 +17,20 @@ def graspTest():
         time.sleep(1)
         planner.testScene()
         print("Test!")
+    time.sleep(1)
     planner.do_end_effector('open')
     print("Gripper Opened")
-    error, plan, planning_time, error_code = planner.plan_ee_pose(
-        [1.02, 0.5, 0.12 + app_dist + int(not is_sim) * 0.93, -pi / 2, pi / 2, -pi / 2]
+    success, plan, planning_time, error_code = planner.plan_ee_pose(
+        [1.01, 0.5, 1.05 + app_dist, -pi / 2, pi / 2, -pi / 2]
     )
-    print(error, planning_time, error_code)
+    print(success, planning_time, error_code)
+    if not success:
+        return
     planner.execute(plan)
     print("Prepicked")
     plan, fraction = planner.plan_line_traj([0, 0, -1], app_dist)
+    if fraction < 0.8:
+        return
     planner.execute(plan, v_scale=0.125)
     print("Pick", fraction)
     success = planner.attach('wood_block_10_2_1cm.link')
@@ -33,15 +38,19 @@ def graspTest():
     planner.do_end_effector('close')
     print("Gripper Closed")
     plan, fraction = planner.plan_line_traj([0, 0, 1], 0.1)
+    if fraction < 0.8:
+        return
     planner.execute(plan, v_scale=0.125)
     print("Postpick", fraction)
-    error, plan, planning_time, error_code = planner.plan_ee_pose(
-        [0.5, 1.02, 0.12 + app_dist + int(not is_sim) * 0.93, -pi / 2, pi / 2, -pi / 2]
-    )
-    print(error, planning_time, error_code)
+    success, plan, planning_time, error_code = planner.plan_ee_pose([0.5, 1.01, 1.05 + app_dist, -pi / 2, pi / 2, 0])
+    print(success, planning_time, error_code)
+    if not success:
+        return
     planner.execute(plan)
     print("Preplace")
     plan, fraction = planner.plan_line_traj([0, 0, -1], app_dist)
+    if fraction < 0.8:
+        return
     planner.execute(plan, v_scale=0.125)
     print("Place", fraction)
     planner.do_end_effector('open')
@@ -49,6 +58,8 @@ def graspTest():
     success = planner.detach('wood_block_10_2_1cm.link')
     print("Object detached:", success)
     plan, fraction = planner.plan_line_traj([0, 0, 1], app_dist)
+    if fraction < 0.8:
+        return
     planner.execute(plan, v_scale=0.125)
     print("Postplace", fraction)
 

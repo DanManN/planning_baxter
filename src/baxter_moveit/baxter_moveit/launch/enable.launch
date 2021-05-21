@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <launch>
 
-  <arg name="scale_pos" default="4761" />
+  <!--<arg name="scale_pos" default="4761" />-->
   <!--<arg name="scale_pos" default="3000" />-->
+  <arg name="controller" default="position_w_id" /> <!-- one of position_w_id,position,velocity -->
 
   <node type="enable_robot.py" pkg="baxter_tools" name="enable_robot" respawn="false" output="screen" args="-e" />
-  <node type="joint_trajectory_action_server.py" pkg="baxter_interface" name="joint_trajectory_action_server" respawn="true" output="screen" args="" />
-  <node type="gripper_action_server.py" pkg="baxter_interface" name="gripper_action_server" respawn="true" output="screen" args="-s $(arg scale_pos)" />
+  <node type="joint_trajectory_action_server.py" pkg="baxter_interface" name="joint_trajectory_action_server" respawn="true" output="screen" args="-m $(arg controller)" />
+  <!--<node type="gripper_action_server.py" pkg="baxter_interface" name="gripper_action_server" respawn="true" output="screen" args="-s $(arg scale_pos)" />-->
 
 </launch>

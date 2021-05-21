@@ -21,12 +21,12 @@ class Planner:
         self.scene = moveit_commander.PlanningSceneInterface()
 
     def testScene(self):
-        self.scene.add_box('cafe_table.link', list_to_pose_stamped([1.0, 0.5, -0.2, 0, 0, 0], 'world'), (0.2, 0.4, 0.4))
+        self.scene.add_box('cafe_table.link', list_to_pose_stamped([1.0, 0.5, 0.78, 0, 0, 0], 'world'), (0.2, 0.4, 0.4))
         self.scene.add_box(
-            'cafe_table_clone.link', list_to_pose_stamped([0.5, 1.0, -0.2, 0, 0, 0], 'world'), (0.4, 0.2, 0.4)
+            'cafe_table_clone.link', list_to_pose_stamped([0.5, 1.0, 0.78, 0, 0, 0], 'world'), (0.4, 0.2, 0.4)
         )
         self.scene.add_box(
-            'wood_block_10_2_1cm.link', list_to_pose_stamped([1.0, 0.5, 0.1, 0, 0, 0], 'world'), (0.02, 0.02, 0.2)
+            'wood_block_10_2_1cm.link', list_to_pose_stamped([1.0, 0.5, 1.03, 0, 0, 0], 'world'), (0.01, 0.02, 0.1)
         )
 
     def do_end_effector(self, command, group_name="left_hand"):
