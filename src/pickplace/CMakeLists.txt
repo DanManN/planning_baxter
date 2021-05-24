@@ -56,14 +56,17 @@ include_directories(${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${EIGEN3_INCLUDE
 ## Install ##
 #############
 
+add_executable(spinner src/spinner.cpp)
 add_executable(pick_place src/pick_place.cpp)
 add_executable(test_pick_place src/test_pick_place.cpp)
 add_executable(moto_pick_place src/moto_pick_place.cpp)
 add_executable(move_group_interface_tutorial src/move_group_interface_tutorial.cpp)
+target_link_libraries(spinner ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(pick_place ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(test_pick_place ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(moto_pick_place ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(move_group_interface_tutorial ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS spinner DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 install(TARGETS pick_place DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 install(TARGETS test_pick_place DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 install(TARGETS moto_pick_place DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
