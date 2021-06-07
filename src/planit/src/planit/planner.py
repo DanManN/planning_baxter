@@ -9,6 +9,7 @@ import baxter_core_msgs.msg
 
 import moveit_commander
 from moveit_commander.conversions import *
+from .perception import StreamedSceneInterface
 
 
 class Planner:
@@ -18,7 +19,8 @@ class Planner:
 
         self.is_sim = is_sim
         self.robot = moveit_commander.RobotCommander()
-        self.scene = moveit_commander.PlanningSceneInterface()
+        # self.scene = moveit_commander.PlanningSceneInterface()
+        self.scene = StreamedSceneInterface()
 
     def testScene(self):
         self.scene.add_box('cafe_table.link', list_to_pose_stamped([1.0, 0.5, 0.78, 0, 0, 0], 'world'), (0.2, 0.4, 0.4))
@@ -49,7 +51,7 @@ class Planner:
         move_group.set_planning_time(1.0)
         # move_group.set_planner_id("SPARSkConfigDefault")
         # move_group.set_planner_id("LazyPRMstarkConfigDefault")
-        move_group.set_planner_id("PersistentLazyPRMstarLoad")
+        # move_group.set_planner_id("PersistentLazyPRMstarLoad")
         # move_group.set_support_surface_name(support)
 
         move_group.set_pose_target(ee_pose)

@@ -6,6 +6,9 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   moveit_commander
   moveit_msgs
+  shape_msgs
+  geometry_msgs
+  message_generation
 )
 
 catkin_python_setup()
@@ -19,6 +22,26 @@ catkin_python_setup()
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
+
+add_message_files(
+  DIRECTORY msg
+  FILES
+  PercievedObject.msg
+)
+
+add_service_files(
+  DIRECTORY srv
+  FILES
+  PercieveObject.srv
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  shape_msgs
+  geometry_msgs
+)
+
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES planit
@@ -39,6 +62,6 @@ include_directories(
 #############
 
 install(PROGRAMS
-   scripts/test
+   scripts/gazebo2moveit.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

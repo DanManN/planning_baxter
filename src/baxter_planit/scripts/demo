@@ -4,6 +4,7 @@ import sys
 import time
 import rospy
 from math import pi
+from planit.msg import PercievedObject
 from baxter_planit import BaxterPlanner
 
 app_dist = 0.1
@@ -17,6 +18,8 @@ def graspTest():
         time.sleep(1)
         planner.testScene()
         print("Test!")
+    else:
+        perception_sub = rospy.Subscriber('/perception', PercievedObject, planner.scene.updateScene)
     time.sleep(1)
     planner.do_end_effector('open')
     print("Gripper Opened")
@@ -33,7 +36,7 @@ def graspTest():
         return
     planner.execute(plan, v_scale=0.125)
     print("Pick", fraction)
-    success = planner.attach('wood_block_10_2_1cm.link')
+    success = planner.attach('wood_block_10_2_1cm__link0')
     print("Object attached:", success)
     planner.do_end_effector('close')
     print("Gripper Closed")
@@ -55,7 +58,7 @@ def graspTest():
     print("Place", fraction)
     planner.do_end_effector('open')
     print("Gripper Opened")
-    success = planner.detach('wood_block_10_2_1cm.link')
+    success = planner.detach('wood_block_10_2_1cm__link0')
     print("Object detached:", success)
     plan, fraction = planner.plan_line_traj([0, 0, 1], app_dist)
     if fraction < 0.8:

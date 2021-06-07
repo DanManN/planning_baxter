@@ -1,4 +1,4 @@
-all: ./src/baxter ./src/baxter_common ./src/baxter_tools ./src/baxter_examples ./src/baxter_interface ./src/baxter_simulator ./src/moveit_resources # ./src/moveit_grasps # ./src/timed_roslaunch ./src/sim_ros_interface ./src/moveit_robots
+all: ./src/baxter ./src/baxter_common ./src/baxter_tools ./src/baxter_examples ./src/baxter_interface ./src/baxter_simulator ./src/moveit_resources ./src/pysdf # ./src/moveit_grasps # ./src/timed_roslaunch ./src/sim_ros_interface ./src/moveit_robots
 
 ./src/baxter:
 	git clone https://github.com/RethinkRobotics/baxter.git $@
@@ -21,6 +21,9 @@ all: ./src/baxter ./src/baxter_common ./src/baxter_tools ./src/baxter_examples .
 ./src/moveit_resources:
 	git clone https://github.com/ros-planning/moveit_resources.git $@
 
+./src/pysdf:
+	git clone https://github.com/DanManN/pysdf.git $@
+
 # ./src/moveit_grasps:
 #         git clone -b melodic-devel https://github.com/ros-planning/moveit_grasps.git $@
 
@@ -37,7 +40,7 @@ deps:
 	./install_deps.sh
 
 clean-src:
-	rm -rf ./src/baxter ./src/baxter_common ./src/baxter_tools ./src/baxter_examples ./src/baxter_interface ./src/baxter_simulator ./src/moveit_resources
+	rm -rf ./src/baxter ./src/baxter_common ./src/baxter_tools ./src/baxter_examples ./src/baxter_interface ./src/baxter_simulator ./src/moveit_resources ./src/pysdf
 
 clean:
 	rm -rf build devel

@@ -30,11 +30,13 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from moveit_commander import conversions
+from moveit_commander import PlanningSceneInterface
 from moveit_msgs.msg import PlanningScene, CollisionObject, AttachedCollisionObject
+from planit.msg import PercievedObject
 from geometry_msgs.msg import Pose, Point
 from shape_msgs.msg import SolidPrimitive, Plane, Mesh, MeshTriangle
 from moveit_commander.exception import MoveItCommanderException
+from moveit_commander.conversions import *
 
 try:
     from pyassimp import pyassimp
@@ -47,25 +49,63 @@ except:
         print("Failed to import pyassimp, see https://github.com/ros-planning/moveit/issues/86 for more info")
 
 
-class PlanningSceneInterface(object):
-    """
-    Python interface for a C++ PlanningSceneInterface.
-    Uses both C++ wrapped methods and scene manipulation topics
-    to manipulate the PlanningScene managed by the PlanningSceneMonitor.
-    See wrap_python_planning_scene_interface.cpp for the wrapped methods.
-    """
+class StreamedSceneInterface(PlanningSceneInterface):
     def __init__(self, ns="", synchronous=False, service_timeout=5.0):
         super().__init__(ns, synchronous, service_timeout)
 
-    def add_mesh(self, name, pose, filename, size=(1, 1, 1)):
+    def updateScene(self, msg):
+        # ignore attached objects for now
+        if msg.name in super().get_attached_objects():
+            return True
+
+        if msg.type == PercievedObject.MESH:
+            # print("MESH")
+            # mesh doesn't appear to be loading correctly
+            co = self.__mesh_from_msg(msg.header, msg.name, msg.pose, msg.mesh, (0.01, 0.01, 0.01))
+        elif msg.type == PercievedObject.SOLID_PRIMITIVE:
+            # print("SOLID")
+            co = CollisionObject()
+            co.id = msg.name
+            co.header = msg.header
+            solid = SolidPrimitive()
+            if msg.solid.type == SolidPrimitive.BOX:
+                solid.type = SolidPrimitive.BOX
+            elif msg.solid.type == SolidPrimitive.SPHERE:
+                solid.type = SolidPrimitive.SPHERE
+            elif msg.solid.type == SolidPrimitive.CYLINDER:
+                solid.type = SolidPrimitive.CYLINDER
+            else:
+                return False
+            solid.dimensions = list(msg.solid.dimensions).copy()
+            co.primitives = [solid]
+            co.primitive_poses = [msg.pose]
+        else:
+            return False
+
+        if msg.name in super().get_known_object_names():
+            co.operation = CollisionObject.MOVE
+        else:
+            co.operation = CollisionObject.APPEND
+        self.add_object(co)
+        return True
+
+    def add_mesh(self, name, pose, mesh, size=(1, 1, 1)):
         """ Add a mesh to the planning scene """
-        co = self.__make_mesh(name, pose, filename, size)
+        if type(mesh) is not Mesh:
+            super().add_mesh(name, pose, mesh, size)
+            return
+
+        co = self.__mesh_from_msg(name, pose, mesh, size)
         self.__submit(co, attach=False)
 
-    def attach_mesh(self, link, name, pose=None, filename="", size=(1, 1, 1), touch_links=[]):
+    def attach_mesh(self, link, name, pose=None, mesh=None, size=(1, 1, 1), touch_links=[]):
+        if mesh is not None and type(mesh) is not Mesh:
+            super().attach_mesh(link, name, pose, mesh, size, touch_links)
+            return
+
         aco = AttachedCollisionObject()
-        if (pose is not None) and filename:
-            aco.object = self.__make_mesh(name, pose, filename, size)
+        if (pose is not None) and (mesh is not None):
+            aco.object = self.__mesh_from_msg(name, pose, mesh, size)
         else:
             aco.object = self.__make_existing(name)
         aco.link_name = link
@@ -75,48 +115,14 @@ class PlanningSceneInterface(object):
         self.__submit(aco, attach=True)
 
     @staticmethod
-    def __make_mesh(name, pose, filename, scale=(1, 1, 1)):
+    def __mesh_from_msg(header, name, pose, mesh, scale=(1, 1, 1)):
         co = CollisionObject()
-        if pyassimp is False:
-            raise MoveItCommanderException(
-                "Pyassimp needs patch https://launchpadlibrarian.net/319496602/patchPyassim.txt"
-            )
-        scene = pyassimp.load(filename)
-        if not scene.meshes or len(scene.meshes) == 0:
-            raise MoveItCommanderException("There are no meshes in the file")
-        if len(scene.meshes[0].faces) == 0:
-            raise MoveItCommanderException("There are no faces in the mesh")
-        co.operation = CollisionObject.ADD
         co.id = name
-        co.header = pose.header
-
-        mesh = Mesh()
-        first_face = scene.meshes[0].faces[0]
-        if hasattr(first_face, "__len__"):
-            for face in scene.meshes[0].faces:
-                if len(face) == 3:
-                    triangle = MeshTriangle()
-                    triangle.vertex_indices = [face[0], face[1], face[2]]
-                    mesh.triangles.append(triangle)
-        elif hasattr(first_face, "indices"):
-            for face in scene.meshes[0].faces:
-                if len(face.indices) == 3:
-                    triangle = MeshTriangle()
-                    triangle.vertex_indices = [
-                        face.indices[0],
-                        face.indices[1],
-                        face.indices[2],
-                    ]
-                    mesh.triangles.append(triangle)
-        else:
-            raise MoveItCommanderException("Unable to build triangles from mesh due to mesh object structure")
-        for vertex in scene.meshes[0].vertices:
-            point = Point()
-            point.x = vertex[0] * scale[0]
-            point.y = vertex[1] * scale[1]
-            point.z = vertex[2] * scale[2]
-            mesh.vertices.append(point)
+        co.header = header
+        for vertex in mesh.vertices:
+            vertex.x *= scale[0]
+            vertex.y *= scale[1]
+            vertex.z *= scale[2]
         co.meshes = [mesh]
-        co.mesh_poses = [pose.pose]
-        pyassimp.release(scene)
+        co.mesh_poses = [pose]
         return co
