@@ -5,10 +5,10 @@ import copy
 import os.path
 import argparse
 
-import tf
 import rospy
 from rospkg import RosPack, ResourceNotFound
 
+from tf.transformations import *
 from geometry_msgs.msg import Point
 from gazebo_msgs.msg import ModelStates
 from shape_msgs.msg import SolidPrimitive, Mesh, MeshTriangle
@@ -103,11 +103,15 @@ def link2obj_msg(link, full_linkname, model_pose, use_collision=False, lifetime=
         obj_msg.header.stamp = rospy.get_rostime()
         obj_msg.name = pysdf.sdf2tfname(full_linkname) + str(num)
         # obj_msg.pose = pysdf.homogeneous2pose_msg(linkpart.pose)
-        relative = pose_to_list(pysdf.homogeneous2pose_msg(linkpart.pose))
-        absolute = pose_to_list(model_pose)
-        total_pose = [x + y for x, y in zip(relative[:3], absolute[:3])] + absolute[3:]
-        # print(relative, absolute, total_pose)
-        obj_msg.pose = list_to_pose(total_pose)
+        # relative = pose_to_list(pysdf.homogeneous2pose_msg(linkpart.pose))
+        # total_pose = [x + y for x, y in zip(relative[:3], absolute[:3])] + absolute[3:]
+        # absolute = pose_to_list(model_pose)
+        # obj_msg.pose = list_to_pose(total_pose)
+        relative = linkpart.pose
+        absolute = pysdf.pose_msg2homogeneous(model_pose)
+        total_pose = concatenate_matrices(absolute, relative)
+        obj_msg.pose = pysdf.homogeneous2pose_msg(total_pose)
+        print("Rel: ", relative, "Abs: ", absolute, "Tot: ", total_pose, sep='\n')
         obj_msg.mesh = Mesh()
         obj_msg.solid = SolidPrimitive()
         obj_msg.solid.dimensions = [0]
@@ -139,11 +143,11 @@ def link2obj_msg(link, full_linkname, model_pose, use_collision=False, lifetime=
                 print('ERROR! could not find resource: %s' % linkpart.geometry_data['uri'])
                 return None
 
-            scale = [float(val) for val in linkpart.geometry_data['scale'].split()]
-            # scale = (0.001, 0.001, 0.001)
+            # scale = [float(val) for val in linkpart.geometry_data['scale'].split()]
+            scale = (0.001, 0.001, 0.001)
             obj_msg.mesh = makeMesh(mesh_resource, scale)
             obj_msg.solid.type = SolidPrimitive.SPHERE
-            print(linkpart)
+            # print(linkpart)
         else:
             obj_msg.type = PercievedObject.SOLID_PRIMITIVE
             if linkpart.geometry_type == 'box':

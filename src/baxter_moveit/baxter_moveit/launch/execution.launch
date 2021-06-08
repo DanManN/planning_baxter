@@ -7,6 +7,7 @@
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
   <arg name="debug" default="false" />
+  <arg name="world" default="tasks" />
 
   <!-- These arguments load the electric grippers, for example left_electric_gripper:=true -->
   <arg name="left_electric_gripper" default="true" />
@@ -23,7 +24,7 @@
   <!-- We resume the logic in empty_world.launch, changing the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <!--<arg name="world_name" value="$(find baxter_gazebo)/worlds/baxter.world"/>-->
-    <arg name="world_name" value="$(find baxter_moveit)/worlds/table.world" />
+    <arg name="world_name" value="$(find baxter_moveit)/worlds/$(arg world).world" />
     <arg name="debug" value="$(arg debug)" />
     <arg name="gui" value="$(arg gui)" />
     <arg name="paused" value="$(arg paused)" />

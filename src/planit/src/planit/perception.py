@@ -53,20 +53,20 @@ class StreamedSceneInterface(PlanningSceneInterface):
     def __init__(self, ns="", synchronous=False, service_timeout=5.0):
         super().__init__(ns, synchronous, service_timeout)
 
-    def updateScene(self, msg):
+    def updatePerception(self, msg):
         # ignore attached objects for now
         if msg.name in super().get_attached_objects():
             return True
 
+        co = CollisionObject()
+        co.id = msg.name
+        co.header = msg.header
         if msg.type == PercievedObject.MESH:
             # print("MESH")
-            # mesh doesn't appear to be loading correctly
-            co = self.__mesh_from_msg(msg.header, msg.name, msg.pose, msg.mesh, (0.01, 0.01, 0.01))
+            co.meshes = [msg.mesh]
+            co.mesh_poses = [msg.pose]
         elif msg.type == PercievedObject.SOLID_PRIMITIVE:
             # print("SOLID")
-            co = CollisionObject()
-            co.id = msg.name
-            co.header = msg.header
             solid = SolidPrimitive()
             if msg.solid.type == SolidPrimitive.BOX:
                 solid.type = SolidPrimitive.BOX
@@ -79,6 +79,7 @@ class StreamedSceneInterface(PlanningSceneInterface):
             solid.dimensions = list(msg.solid.dimensions).copy()
             co.primitives = [solid]
             co.primitive_poses = [msg.pose]
+        # elif msg.type == PercievedObject.POSE:
         else:
             return False
 
@@ -115,14 +116,10 @@ class StreamedSceneInterface(PlanningSceneInterface):
         self.__submit(aco, attach=True)
 
     @staticmethod
-    def __mesh_from_msg(header, name, pose, mesh, scale=(1, 1, 1)):
+    def __mesh_from_msg(header, name, pose, mesh):
         co = CollisionObject()
         co.id = name
         co.header = header
-        for vertex in mesh.vertices:
-            vertex.x *= scale[0]
-            vertex.y *= scale[1]
-            vertex.z *= scale[2]
         co.meshes = [mesh]
         co.mesh_poses = [pose]
         return co

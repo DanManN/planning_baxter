@@ -19,7 +19,7 @@ def graspTest():
         planner.testScene()
         print("Test!")
     else:
-        perception_sub = rospy.Subscriber('/perception', PercievedObject, planner.scene.updateScene)
+        perception_sub = rospy.Subscriber('/perception', PercievedObject, planner.scene.updatePerception)
     time.sleep(1)
     planner.do_end_effector('open')
     print("Gripper Opened")
@@ -30,6 +30,7 @@ def graspTest():
     if not success:
         return
     planner.execute(plan)
+    return
     print("Prepicked")
     plan, fraction = planner.plan_line_traj([0, 0, -1], app_dist)
     if fraction < 0.8:
