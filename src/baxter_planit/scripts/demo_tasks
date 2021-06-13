@@ -1,0 +1,138 @@
+#!/usr/bin/env python
+
+import sys
+import time
+from math import pi
+
+import tf
+import rospy
+from planit.msg import PercievedObject
+from moveit_msgs.msg import Constraints, OrientationConstraint
+from baxter_planit import BaxterPlanner
+
+app_dist = 0.05
+app_dist_z = 0.1
+
+consts = Constraints()
+keep_vert = OrientationConstraint()
+keep_vert.header.frame_id = 'base'
+keep_vert.link_name = 'right_gripper'
+q = tf.transformations.quaternion_from_euler(pi / 2, pi / 2, pi / 2)
+keep_vert.orientation.x = q[0]
+keep_vert.orientation.y = q[1]
+keep_vert.orientation.z = q[2]
+keep_vert.orientation.w = q[3]
+# keep_vert.orientation.w = 1
+keep_vert.absolute_x_axis_tolerance = 0.1
+keep_vert.absolute_y_axis_tolerance = 0.1
+keep_vert.absolute_z_axis_tolerance = 0.1
+keep_vert.weight = 1
+consts.orientation_constraints.append(keep_vert)
+
+
+def graspTest():
+    is_sim = sys.argv[1] != 'false' if len(sys.argv) > 1 else True
+    planner = BaxterPlanner(is_sim)
+    if is_sim:
+        print("Test?")
+        time.sleep(1)
+        planner.testScene()
+        print("Test!")
+    else:
+        perception_sub = rospy.Subscriber('/perception', PercievedObject, planner.scene.updatePerception)
+    time.sleep(2)
+
+    ### pick up soda can on baxter's right ###
+    planner.do_end_effector('open', group_name='right_hand')
+    print("Gripper Opened")
+    success, plan, planning_time, error_code = planner.plan_ee_pose(
+        [0.66 - app_dist, -0.5, 1.1, pi / 2, pi / 2, pi / 2],
+        group_name='right_arm',
+    )
+    print(success, planning_time, error_code)
+    if not success:
+        return
+    planner.execute(plan, v_scale=0.125, group_name='right_arm')
+    print("Prepicked")
+    time.sleep(0.5)
+    plan, fraction = planner.plan_line_traj([1, 0, 0], app_dist, group_name='right_arm')
+    print("Pick", fraction)
+    if fraction < 0.8:
+        return
+    planner.execute(plan, v_scale=0.125, group_name='right_arm')
+    print("Picked", fraction)
+    planner.do_end_effector('close', group_name='right_hand')
+    print("Gripper Closed")
+    success = planner.attach('cylinder_tall_clone__linkcollision', grasping_group='right_hand', group_name="right_arm")
+    print("Object attached:", success)
+    plan, fraction = planner.plan_line_traj([0, 0, 1], app_dist_z, group_name='right_arm', avoid_collisions=False)
+    print("Postpick", fraction)
+    if fraction < 0.8:
+        return
+    planner.execute(plan, v_scale=0.125, group_name='right_arm')
+    print("Postpicked", fraction)
+
+    ### place soda can next to the other soda can on the left ###
+    success, plan, planning_time, error_code = planner.plan_ee_pose(
+        [0.8, 0.33, 1.1 + app_dist, -pi / 2, pi / 2, 0],
+        # consts,
+        group_name='right_arm',
+    )
+    print(success, planning_time, error_code)
+    if not success:
+        return
+    planner.execute(plan, v_scale=0.125, group_name='right_arm')
+    print("Preplaced")
+    # plan, fraction = planner.plan_line_traj([0, 0, -1], app_dist_z, group_name='right_arm', avoid_collisions=True)
+    # print("Place", fraction)
+    # if fraction < 0.5:
+    #     return
+    # planner.execute(plan, v_scale=0.125, group_name='right_arm')
+    # print("Placed", fraction)
+    planner.do_end_effector('open', group_name='right_hand')
+    print("Gripper Opened")
+    success = planner.dettach('cylinder_tall_clone__linkcollision', group_name="right_arm")
+    print("Object dettached:", success)
+    plan, fraction = planner.plan_line_traj([0, 0, 1], app_dist, group_name='right_arm', avoid_collisions=True)
+    print("PostPlace", fraction)
+    if fraction < 0.8:
+        return
+    planner.execute(plan, v_scale=0.125, group_name='right_arm')
+    print("PostPlaced", fraction)
+
+    return
+
+    ### pick up soda can on baxter's right ###
+    planner.do_end_effector('open', group_name='right_hand')
+    print("Gripper Opened")
+    success, plan, planning_time, error_code = planner.plan_ee_pose(
+        [0.66 - app_dist, -0.5, 1.1, pi / 2, pi / 2, pi / 2], group_name='right_arm'
+    )
+    print(success, planning_time, error_code)
+    if not success:
+        return
+    planner.execute(plan, v_scale=0.25, group_name='right_arm')
+    print("Prepicked")
+    time.sleep(0.5)
+    plan, fraction = planner.plan_line_traj([1, 0, 0], app_dist, group_name='right_arm')
+    print("Pick", fraction)
+    if fraction < 0.8:
+        return
+    planner.execute(plan, v_scale=0.125, group_name='right_arm')
+    print("Picked", fraction)
+    planner.do_end_effector('close', group_name='right_hand')
+    print("Gripper Closed")
+    success = planner.attach('cylinder_tall_clone__linkcollision', grasping_group='right_hand', group_name="right_arm")
+    print("Object attached:", success)
+    plan, fraction = planner.plan_line_traj([0, 0, 1], app_dist_z, group_name='right_arm', avoid_collisions=False)
+    print("Postpick", fraction)
+    if fraction < 0.8:
+        return
+    planner.execute(plan, v_scale=0.125, group_name='right_arm')
+    print("Postpicked", fraction)
+
+
+if __name__ == '__main__':
+    rospy.init_node("baxter_planit", anonymous=False)
+    graspTest()
+    rospy.spin()
