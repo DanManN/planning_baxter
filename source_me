@@ -9,3 +9,4 @@ case "$(lsb_release -si)" in
 esac
 
 source ./devel/setup.sh
+export MESH_WORKSPACE_PATH=models

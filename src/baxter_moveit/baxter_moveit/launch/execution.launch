@@ -42,37 +42,36 @@
     adjust baxter height? //-z 0.93
   -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-param robot_description -urdf -model baxter
-	      -J baxter::right_s0 -0.272
-	      -J baxter::right_s1 1.0470
-	      -J baxter::right_e0 -0.001
-	      -J baxter::right_e1 0.492
-	      -J baxter::right_w0 -0.080
-	      -J baxter::right_w1 -0.062
-	      -J baxter::right_w2 0.026
-	      -J baxter::left_s0 0.192
-	      -J baxter::left_s1 1.047
-	      -J baxter::left_e0 0.000
-	      -J baxter::left_e1 0.491
-	      -J baxter::left_w0 -0.178
-	      -J baxter::left_w1 -0.061
-	      -J baxter::left_w2 -0.012" />
-
+        -J baxter::right_s0 -0.272659
+        -J baxter::right_s1 1.04701
+        -J baxter::right_e0 -0.00123203
+        -J baxter::right_e1 0.49262
+        -J baxter::right_w0 -0.0806423
+        -J baxter::right_w1 -0.0620532
+        -J baxter::right_w2 0.0265941
+        -J baxter::left_s0 0.192483
+        -J baxter::left_s1 1.047
+        -J baxter::left_e0 0.000806359
+        -J baxter::left_e1 0.491094
+        -J baxter::left_w0 -0.178079
+        -J baxter::left_w1 -0.0610333
+        -J baxter::left_w2 -0.0124707" />
   <!--
-	      -J baxter::right_s0 -0.272659
-	      -J baxter::right_s1 1.04701
-	      -J baxter::right_e0 -0.00123203
-	      -J baxter::right_e1 0.49262
-	      -J baxter::right_w0 -0.0806423
-	      -J baxter::right_w1 -0.0620532
-	      -J baxter::right_w2 0.0265941
-	      -J baxter::left_s0 0.192483
-	      -J baxter::left_s1 1.047
-	      -J baxter::left_e0 0.000806359
-	      -J baxter::left_e1 0.491094
-	      -J baxter::left_w0 -0.178079
-	      -J baxter::left_w1 -0.0610333
-	      -J baxter::left_w2 -0.0124707"
-	      -->
+        -J baxter::right_s0 -0.272
+        -J baxter::right_s1 1.0470
+        -J baxter::right_e0 -0.001
+        -J baxter::right_e1 0.492
+        -J baxter::right_w0 -0.080
+        -J baxter::right_w1 -0.062
+        -J baxter::right_w2 0.026
+        -J baxter::left_s0 0.192
+        -J baxter::left_s1 1.047
+        -J baxter::left_e0 0.000
+        -J baxter::left_e1 0.491
+        -J baxter::left_w0 -0.178
+        -J baxter::left_w1 -0.061
+        -J baxter::left_w2 -0.012" />
+  -->
 
   <!-- ros_control baxter launch file -->
   <include file="$(find baxter_sim_hardware)/launch/baxter_sdk_control.launch">

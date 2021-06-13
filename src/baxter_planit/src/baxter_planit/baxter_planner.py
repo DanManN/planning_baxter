@@ -3,9 +3,9 @@ import copy
 from math import pi, tau, dist, fabs, cos
 
 import rospy
-import moveit_msgs.msg
+# import moveit_msgs.msg
 # import geometry_msgs.msg
-import baxter_core_msgs.msg
+from baxter_core_msgs.msg import EndEffectorCommand
 
 import moveit_commander
 from moveit_commander.conversions import *
@@ -17,9 +17,14 @@ class BaxterPlanner(Planner):
         super().__init__(is_sim, commander_args)
 
         if not is_sim:
-            self.eef_pub = rospy.Publisher(
+            self.eef_pub_left = rospy.Publisher(
                 '/robot/end_effector/left_gripper/command',
-                baxter_core_msgs.msg.EndEffectorCommand,
+                EndEffectorCommand,
+                queue_size=5,
+            )
+            self.eef_pub_right = rospy.Publisher(
+                '/robot/end_effector/right_gripper/command',
+                EndEffectorCommand,
                 queue_size=5,
             )
 
@@ -36,11 +41,16 @@ class BaxterPlanner(Planner):
             move_group.go(joint_goal, wait=True)
             move_group.stop()
         else:
-            eef_cmd = baxter_core_msgs.msg.EndEffectorCommand()
+            eef_cmd = EndEffectorCommand()
             if command == 'open':
                 eef_cmd.command = 'go'
                 eef_cmd.args = '{\"position\":100.0}'
             elif command == 'close':
                 eef_cmd.command = 'go'
                 eef_cmd.args = '{\"position\":0.0}'
-            self.eef_pub.publish(eef_cmd)
+            if group_name == 'left_hand':
+                self.eef_pub_left.publish(eef_cmd)
+            elif group_name == 'right_hand':
+                self.eef_pub_right.publish(eef_cmd)
+            else:
+                print("Invalid group name!", file=sys.stderr)

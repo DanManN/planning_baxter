@@ -43,7 +43,10 @@ gazebo_rospack = RosPack()
 def makeMesh(filename, scale=(1, 1, 1)):
     if pyassimp is False:
         raise MoveItCommanderException("Pyassimp needs patch https://launchpadlibrarian.net/319496602/patchPyassim.txt")
-    scene = pyassimp.load(filename)
+    try:
+        scene = pyassimp.load(filename)
+    except Exception:
+        print("Could not load file: ", filename, file=sys.stderr)
     if not scene.meshes or len(scene.meshes) == 0:
         raise MoveItCommanderException("There are no meshes in the file")
     if len(scene.meshes[0].faces) == 0:
@@ -101,7 +104,8 @@ def link2obj_msg(link, full_linkname, model_pose, use_collision=False, lifetime=
         obj_msg = PercievedObject()
         obj_msg.header.frame_id = 'world'  # pysdf.sdf2tfname(full_linkname)
         obj_msg.header.stamp = rospy.get_rostime()
-        obj_msg.name = pysdf.sdf2tfname(full_linkname) + str(num)
+        # obj_msg.name = pysdf.sdf2tfname(full_linkname) + str(num)
+        obj_msg.name = pysdf.sdf2tfname(full_linkname) + linkpart.name
         # obj_msg.pose = pysdf.homogeneous2pose_msg(linkpart.pose)
         # relative = pose_to_list(pysdf.homogeneous2pose_msg(linkpart.pose))
         # total_pose = [x + y for x, y in zip(relative[:3], absolute[:3])] + absolute[3:]
@@ -111,7 +115,7 @@ def link2obj_msg(link, full_linkname, model_pose, use_collision=False, lifetime=
         absolute = pysdf.pose_msg2homogeneous(model_pose)
         total_pose = concatenate_matrices(absolute, relative)
         obj_msg.pose = pysdf.homogeneous2pose_msg(total_pose)
-        print("Rel: ", relative, "Abs: ", absolute, "Tot: ", total_pose, sep='\n')
+        # print("Rel: ", relative, "Abs: ", absolute, "Tot: ", total_pose, sep='\n')
         obj_msg.mesh = Mesh()
         obj_msg.solid = SolidPrimitive()
         obj_msg.solid.dimensions = [0]
@@ -144,6 +148,7 @@ def link2obj_msg(link, full_linkname, model_pose, use_collision=False, lifetime=
                 return None
 
             # scale = [float(val) for val in linkpart.geometry_data['scale'].split()]
+            # print(obj_msg.name, scale, linkpart)
             scale = (0.001, 0.001, 0.001)
             obj_msg.mesh = makeMesh(mesh_resource, scale)
             obj_msg.solid.type = SolidPrimitive.SPHERE
@@ -159,6 +164,7 @@ def link2obj_msg(link, full_linkname, model_pose, use_collision=False, lifetime=
                 obj_msg.solid.type = SolidPrimitive.SPHERE
                 radius = float(linkpart.geometry_data['radius'])
                 obj_msg.solid.dimensions = [radius]
+                # obj_msg.pose.position.z += radius
             elif linkpart.geometry_type == 'cylinder':
                 obj_msg.solid.type = SolidPrimitive.CYLINDER
                 # obj_msg.scale.x = obj_msg.scale.y = 2.0 * float(linkpart.geometry_data['radius'])
@@ -216,10 +222,11 @@ def on_model_states_msg(model_states_msg):
                 rospy.loginfo('Unable to load model: %s' % model_name)
         model = model_cache[model_name]
         if not model:  # Not an SDF model
-            continue
-        model.for_all_links(
-            publish_link_marker, model_name=model_name, instance_name=modelinstance_name, model_pose=model_pose
-        )
+            pass
+        else:
+            model.for_all_links(
+                publish_link_marker, model_name=model_name, instance_name=modelinstance_name, model_pose=model_pose
+            )
 
 
 def main():
@@ -254,8 +261,9 @@ def main():
 
     global lastUpdateTime
     lastUpdateTime = rospy.get_rostime()
-    modelStatesSub = rospy.Subscriber('gazebo/model_states', ModelStates, on_model_states_msg)
-    # modelStatesSub = rospy.Subscriber('/planning_scene_fake', ModelStates, on_model_states_msg)
+    modelStatesSub = rospy.Subscriber('/gazebo/model_states', ModelStates, on_model_states_msg)
+    # msg = rospy.wait_for_message('/gazebo/model_states', ModelStates)
+    # on_model_states_msg(msg)
 
     rospy.loginfo('Spinning')
     rospy.spin()

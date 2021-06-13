@@ -136,6 +136,7 @@ planner_configs:
   #   type: geometric::TrajOpt
 left_arm:
   default_planner_config: BiESTkConfigDefault
+  enforce_joint_model_state_space: true
   planner_configs:
     - PersistentLazyPRMstarStore
     - PersistentLazyPRMstarLoad
@@ -164,9 +165,10 @@ left_arm:
     - SPARStwokConfigDefault
     # - TrajOptDefault
   projection_evaluator: joints(left_s0,left_s1)
-  longest_valid_segment_fraction: 0.0078125
+  longest_valid_segment_fraction: 0.00390625
 right_arm:
   default_planner_config: BiESTkConfigDefault
+  enforce_joint_model_state_space: true
   planner_configs:
     - PersistentLazyPRMstarStore
     - PersistentLazyPRMstarLoad
@@ -195,7 +197,7 @@ right_arm:
     - SPARStwokConfigDefault
     # - TrajOptDefault
   projection_evaluator: joints(right_s0,right_s1)
-  longest_valid_segment_fraction: 0.0078125
+  longest_valid_segment_fraction: 0.00390625
 both_arms:
   default_planner_config: BiESTkConfigDefault
   planner_configs:
@@ -226,7 +228,7 @@ both_arms:
     - SPARStwokConfigDefault
     # - TrajOptDefault
   projection_evaluator: joints(right_s0,right_s1)
-  longest_valid_segment_fraction: 0.0078125
+  longest_valid_segment_fraction: 0.00390625
 left_hand:
   default_planner_config: BiESTkConfigDefault
   planner_configs:

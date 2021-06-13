@@ -3,9 +3,9 @@ import copy
 from math import pi, tau, dist, fabs, cos
 
 import rospy
-import moveit_msgs.msg
+from moveit_msgs.msg import Constraints
 # import geometry_msgs.msg
-import baxter_core_msgs.msg
+# import baxter_core_msgs.msg
 
 import moveit_commander
 from moveit_commander.conversions import *
@@ -45,10 +45,12 @@ class Planner:
         # move_group.go(joint_goal, wait=True)
         # move_group.stop()
 
-    def plan_ee_pose(self, ee_pose=[0, 0, 0, 0, 0, 0], group_name="left_arm"):
+    def plan_ee_pose(self, ee_pose=[0, 0, 0, 0, 0, 0], constraints=None, group_name="left_arm"):
         move_group = moveit_commander.MoveGroupCommander(group_name)
         move_group.set_num_planning_attempts(50)
-        move_group.set_planning_time(1.0)
+        move_group.set_planning_time(15.0)
+        if constraints is not None:
+            move_group.set_path_constraints(constraints)
         # move_group.set_planner_id("SPARSkConfigDefault")
         # move_group.set_planner_id("LazyPRMstarkConfigDefault")
         # move_group.set_planner_id("PersistentLazyPRMstarLoad")
@@ -60,8 +62,12 @@ class Planner:
 
         return plan
 
-    def plan_ee_poses(self, ee_poses=[[0, 0, 0, 0, 0, 0]], group_name="left_arm"):
+    def plan_ee_poses(self, ee_poses=[[0, 0, 0, 0, 0, 0]], constraints=None, group_name="left_arm"):
         move_group = moveit_commander.MoveGroupCommander(group_name)
+        move_group.set_num_planning_attempts(50)
+        move_group.set_planning_time(5.0)
+        if constraints is not None:
+            move_group.set_path_constraints(constraints)
         # move_group.set_support_surface_name(support)
 
         move_group.set_pose_targets(ee_poses)
@@ -71,10 +77,16 @@ class Planner:
         return plan
 
     def plan_line_traj(
-        self, direction=[0, 0, 1], magnitude=1, eef_step=0.005, jump_threshold=0.0, group_name="left_arm"
+        self,
+        direction=[0, 0, 1],
+        magnitude=1,
+        eef_step=0.005,
+        jump_threshold=0.0,
+        group_name="left_arm",
+        avoid_collisions=True,
     ):
         move_group = moveit_commander.MoveGroupCommander(group_name)
-        # move_group.set_support_surface_name(support)
+        # move_group.set_support_surface_name("table__linksurface")
         scale = magnitude / dist(direction, (0, 0, 0))
 
         wpose = move_group.get_current_pose().pose
@@ -84,23 +96,20 @@ class Planner:
         waypoints = [copy.deepcopy(wpose)]
 
         plan, fraction = move_group.compute_cartesian_path(
-            waypoints,
-            eef_step,
-            jump_threshold,
-            # avoid_collisions=False
+            waypoints, eef_step, jump_threshold, avoid_collisions=avoid_collisions
         )
 
         return plan, fraction
 
     def execute(self, raw_plan, v_scale=0.25, a_scale=1.0, group_name="left_arm"):
         move_group = moveit_commander.MoveGroupCommander(group_name)
+        # move_group.set_support_surface_name("table__linksurface")
         plan = move_group.retime_trajectory(
             self.robot.get_current_state(),
             raw_plan,
             velocity_scaling_factor=v_scale,
             acceleration_scaling_factor=a_scale,
         )
-        move_group = moveit_commander.MoveGroupCommander(group_name)
         move_group.execute(plan, wait=True)
         move_group.stop()
 
@@ -136,7 +145,7 @@ class Planner:
 
         return self.wait_for_state_update(obj_name, box_is_attached=True, box_is_known=False, timeout=timeout)
 
-    def detach(self, obj_name, group_name="left_arm", timeout=4):
+    def dettach(self, obj_name, group_name="left_arm", timeout=4):
         move_group = moveit_commander.MoveGroupCommander(group_name)
         eef_link = move_group.get_end_effector_link()
 

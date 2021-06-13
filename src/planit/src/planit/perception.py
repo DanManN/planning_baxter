@@ -56,6 +56,7 @@ class StreamedSceneInterface(PlanningSceneInterface):
     def updatePerception(self, msg):
         # ignore attached objects for now
         if msg.name in super().get_attached_objects():
+            # print("attached", msg.name)
             return True
 
         co = CollisionObject()
