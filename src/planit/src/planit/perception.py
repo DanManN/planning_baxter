@@ -30,13 +30,13 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from moveit_commander import PlanningSceneInterface
-from moveit_msgs.msg import PlanningScene, CollisionObject, AttachedCollisionObject
-from planit.msg import PercievedObject
 from geometry_msgs.msg import Pose, Point
 from shape_msgs.msg import SolidPrimitive, Plane, Mesh, MeshTriangle
+
+from moveit_commander import PlanningSceneInterface
 from moveit_commander.exception import MoveItCommanderException
-from moveit_commander.conversions import *
+from moveit_msgs.msg import PlanningScene, CollisionObject, AttachedCollisionObject
+# from moveit_commander.conversions import *
 
 try:
     from pyassimp import pyassimp
@@ -47,6 +47,8 @@ except:
     except:
         pyassimp = False
         print("Failed to import pyassimp, see https://github.com/ros-planning/moveit/issues/86 for more info")
+
+from planit.msg import PercievedObject
 
 
 class StreamedSceneInterface(PlanningSceneInterface):
