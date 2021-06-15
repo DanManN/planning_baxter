@@ -10,6 +10,7 @@ import moveit_commander
 # from moveit_msgs.msg import Constraints
 from moveit_commander.conversions import *
 
+from .utils import *
 from .grasps import Grasps
 from .perception import StreamedSceneInterface
 
@@ -56,7 +57,6 @@ class Planner:
         disp_dist=0.05,
         eef_step=0.005,
         jump_threshold=0.0,
-        avoid_collisions=True,
         v_scale=0.25,
         a_scale=1.0,
         grasping_group="left_hand",
@@ -72,7 +72,7 @@ class Planner:
         # open gripper
         self.do_end_effector('open', group_name=grasping_group)
 
-        # plan to goal poses
+        # plan to pre goal poses
         poses = self.grasps.get_simple_grasps(obj_name)
         move_group.set_pose_targets(poses)
         success, raw_plan, planning_time, error_code = move_group.plan()
@@ -92,6 +92,29 @@ class Planner:
         move_group.execute(plan, wait=True)
         move_group.stop()
 
+        # slide to goal
+        cpose = pose_msg2homogeneous(move_group.get_current_pose().pose)
+        trans = translation_matrix((0, 0, disp_dist))
+        wpose = homogeneous2pose_msg(concatenate_matrices(cpose, trans))
+        waypoints = [copy.deepcopy(wpose)]
+        raw_plan, fraction = move_group.compute_cartesian_path(
+            waypoints, eef_step, jump_threshold, avoid_collisions=False
+        )
+        print("Planned approach", fraction * disp_dist, "for", obj_name, ".")
+        if fraction < 0.5:
+            return fraction
+
+        # retime and execute trajectory
+        plan = move_group.retime_trajectory(
+            self.robot.get_current_state(),
+            raw_plan,
+            velocity_scaling_factor=v_scale,
+            acceleration_scaling_factor=a_scale,
+        )
+        move_group.execute(plan, wait=True)
+        move_group.stop()
+        print("Approached", obj_name, ".")
+
         # close gripper
         self.do_end_effector('close', group_name=grasping_group)
 
@@ -107,7 +130,7 @@ class Planner:
         wpose.position.z += scale * disp_dir[2]
         waypoints = [copy.deepcopy(wpose)]
         raw_plan, fraction = move_group.compute_cartesian_path(
-            waypoints, eef_step, jump_threshold, avoid_collisions=avoid_collisions
+            waypoints, eef_step, jump_threshold, avoid_collisions=True
         )
         print("Planned displacement", fraction * disp_dist, "for", obj_name, ".")
         if fraction < 0.5:
@@ -123,6 +146,21 @@ class Planner:
         move_group.execute(plan, wait=True)
         move_group.stop()
         print("Displaced", obj_name, ".")
+
+    def place(
+        self,
+        partial_pose,
+        constraints=None,
+        disp_dir=(0, 0, 1),
+        disp_dist=0.05,
+        eef_step=0.005,
+        jump_threshold=0.0,
+        v_scale=0.25,
+        a_scale=1.0,
+        grasping_group="left_hand",
+        group_name="left_arm",
+    ):
+        pass
 
     def plan_ee_pose(self, ee_pose=[0, 0, 0, 0, 0, 0], constraints=None, group_name="left_arm"):
         move_group = moveit_commander.MoveGroupCommander(group_name)

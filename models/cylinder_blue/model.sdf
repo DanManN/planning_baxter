@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <sdf version='1.7'>
-  <model name='cylinder_tall'>
+  <model name='cylinder_blue'>
     <link name='link'>
       <inertial>
         <mass>0.653728</mass>
@@ -26,11 +26,10 @@
           </cylinder>
         </geometry>
         <material>
-          <script>
-            <name>Gazebo/Grey</name>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-          </script>
-          <shader type='pixel'/>
+          <ambient>0.1 0.1 0.9 1</ambient>
+          <diffuse>0.1 0.1 0.9 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+          <emissive>0 0 0 1</emissive>
         </material>
         <pose>0 0 0 0 -0 0</pose>
         <transparency>0</transparency>
@@ -49,15 +48,15 @@
         <surface>
           <friction>
             <ode>
-              <mu>1</mu>
-              <mu2>1</mu2>
+              <mu>500</mu>
+              <mu2>500</mu2>
               <fdir1>0 0 0</fdir1>
               <slip1>0</slip1>
               <slip2>0</slip2>
             </ode>
             <torsional>
-              <coefficient>1</coefficient>
-              <patch_radius>0</patch_radius>
+              <coefficient>500</coefficient>
+              <patch_radius>0.1</patch_radius>
               <surface_radius>0</surface_radius>
               <use_patch_radius>1</use_patch_radius>
               <ode>
