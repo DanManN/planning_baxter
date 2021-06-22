@@ -36,7 +36,10 @@ def graspTest():
         return
     planner.execute(plan, v_scale=0.125)
     print("Pick", fraction)
-    success = planner.attach('wood_block_10_2_1cm__link0')
+    if is_sim:
+        success = planner.attach('wood_block_10_2_1cm.link')
+    else:
+        success = planner.attach('wood_block_10_2_1cm__link0')
     print("Object attached:", success)
     planner.do_end_effector('close')
     print("Gripper Closed")
@@ -58,7 +61,10 @@ def graspTest():
     print("Place", fraction)
     planner.do_end_effector('open')
     print("Gripper Opened")
-    success = planner.dettach('wood_block_10_2_1cm__link0')
+    if is_sim:
+        success = planner.detach('wood_block_10_2_1cm.link')
+    else:
+        success = planner.detach('wood_block_10_2_1cm__link0')
     print("Object dettached:", success)
     plan, fraction = planner.plan_line_traj([0, 0, 1], app_dist)
     if fraction < 0.8:
