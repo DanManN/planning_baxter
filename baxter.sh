@@ -19,19 +19,18 @@ unset your_hostname
 # will be overwritten by any variables set here.
 
 # Specify Baxter's hostname
-baxter_hostname="baxter_hostname.local"
-baxter_hostname="localhost"
+baxter_hostname="172.16.71.88"
 
 # Set *Either* your computers ip address or hostname. Please note if using
 # your_hostname that this must be resolvable to Baxter.
-your_ip="192.168.XXX.XXX"
-your_ip=""
+your_ip="$(ifconfig | grep broadcast | cut -d' ' -f10)"
+# your_ip="172.16.71.8"
 
 #your_hostname="my_computer.local"
-your_hostname="localhost"
+# your_hostname="localhost"
 
 # Specify ROS distribution (e.g. indigo, hydro, etc.)
-ros_version="melodic"
+ros_version="noetic"
 #-----------------------------------------------------------------------------#
 
 tf=$(mktemp)
@@ -178,7 +177,12 @@ has been built (source /opt/ros/\${ros_version}/setup.sh; catkin_make).\n\
 	fi
 
 	alias simstart="roslaunch baxter_gazebo baxter_world.launch "
-	alias baxstat="rosrun baxter_tools enable_robot.py "
+	alias stat="rosrun baxter_tools enable_robot.py -s"
+	alias disable="rosrun baxter_tools enable_robot.py -d"
+	alias enable="rosrun baxter_tools enable_robot.py -e"
+	alias stop="rosrun baxter_tools enable_robot.py -S"
+	alias quiet="rostopic pub /robot/sonar/head_sonar/set_sonars_enabled std_msgs/UInt16 0"
+	alias sonar="rostopic pub /robot/sonar/head_sonar/set_sonars_enabled std_msgs/UInt16 4095"
 
 EOF
 
