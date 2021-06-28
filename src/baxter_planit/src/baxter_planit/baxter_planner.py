@@ -42,6 +42,7 @@ class BaxterPlanner(Planner):
             move_group.stop()
         else:
             eef_cmd = EndEffectorCommand()
+            eef_cmd.id = 65664
             if command == 'open':
                 eef_cmd.command = 'go'
                 eef_cmd.args = '{\"position\":100.0}'

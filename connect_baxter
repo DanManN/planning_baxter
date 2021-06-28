@@ -1,0 +1,24 @@
+#/usr/share/env bash
+source source_me
+
+MASTER=172.16.71.88
+echo $MASTER
+
+IP=$(ifconfig | grep broadcast | cut -d' ' -f10)
+echo $IP
+
+export ROS_IP=$IP
+# export ROS_HOSTNAME=$IP
+export ROS_MASTER_URI=http://$MASTER:11311
+
+alias quiet='rostopic pub /robot/sonar/head_sonar/set_sonars_enabled std_msgs/UInt16 0'
+alias sonar='rostopic pub /robot/sonar/head_sonar/set_sonars_enabled std_msgs/UInt16 4095'
+alias enable='rosrun baxter_tools enable_robot.py -e'
+alias disable='rosrun baxter_tools enable_robot.py -d'
+alias stop='rosrun baxter_tools enable_robot.py -S'
+alias stat='rosrun baxter_tools enable_robot.py -s'
+alias display='rosrun baxter_examples xdisplay_image.py -f '
+alias camera="rosrun baxter_tools camera_control.py "
+# alias camera_left="rosservice call /cameras/open '{name: left_hand_camera, settings: {width: 1280, height: 800 }}'"
+# alias camera_right="rosservice call /cameras/open '{name: right_hand_camera, settings: {width: 1280, height: 800 }}'"
+# alias camera_head="rosservice call /cameras/open '{name: head_camera, settings: {width: 1280, height: 800 }}'"
