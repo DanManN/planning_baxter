@@ -41,6 +41,7 @@ include_directories(
 install(PROGRAMS
    scripts/demo_table
    scripts/demo_tasks
+   scripts/demo_real
    scripts/init_rand
    nodes/baxter_planner
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
