@@ -33,30 +33,18 @@ def graspTest():
         v_scale=0.25,
         a_scale=1.0,
         grasping_group=chirality + "_hand",
-        group_name=chirality + "_arm"
+        group_name=chirality + "_arm",
     )
 
     ### place red cylinder next to plate, on the left ###
-    place_poses = planner.grasps.get_simple_placements([0.6, 0.06, 1.15])
-    success, plan, planning_time, error_code = planner.plan_ee_poses(place_poses, group_name=chirality + '_arm')
-    # success, plan, planning_time, error_code = planner.plan_ee_pose(
-    #     list_to_pose([0.6, 0.06, 1.15, -tau / 4, tau / 4, 0]), group_name=chirality + '_arm'
-    # )
-    print(success, planning_time, error_code)
-    if not success:
-        return
-    planner.execute(plan, v_scale=0.25, group_name=chirality + '_arm')
-    print("Preplaced")
-    planner.do_end_effector('open', group_name=chirality + '_hand')
-    print("Gripper Opened")
-    success = planner.detach('cylinder_red__linkcollision', group_name=chirality + "_arm")
-    print("Object detached:", success)
-    plan, fraction = planner.plan_line_traj([0, 0, 1], app_dist, group_name=chirality + '_arm', avoid_collisions=True)
-    print("PostPlace", fraction)
-    if fraction < 0.5:
-        return
-    planner.execute(plan, v_scale=0.125, group_name=chirality + '_arm')
-    print("PostPlaced", fraction)
+    planner.place(
+        'cylinder_red__linkcollision',
+        [0.6, 0.06, 1.15],
+        v_scale=0.25,
+        a_scale=1.0,
+        grasping_group=chirality + "_hand",
+        group_name=chirality + "_arm",
+    )
 
     chirality = 'right'
 
@@ -66,58 +54,18 @@ def graspTest():
         v_scale=0.25,
         a_scale=1.0,
         grasping_group=chirality + "_hand",
-        group_name=chirality + "_arm"
+        group_name=chirality + "_arm",
     )
 
     ### place blue cylinder next to the plate on the right ###
-    place_poses = planner.grasps.get_simple_placements([0.6, -0.06, 1.15])
-    success, plan, planning_time, error_code = planner.plan_ee_poses(place_poses, group_name=chirality + '_arm')
-    # success, plan, planning_time, error_code = planner.plan_ee_pose(
-    #     list_to_pose([0.6, -0.06, 1.15, -tau / 4, tau / 4, 0]), group_name=chirality + '_arm'
-    # )
-    print(success, planning_time, error_code)
-    if not success:
-        return
-    planner.execute(plan, v_scale=0.25, group_name=chirality + '_arm')
-    print("Preplaced")
-    planner.do_end_effector('open', group_name=chirality + '_hand')
-    print("Gripper Opened")
-    success = planner.detach('cylinder_blue__linkcollision', group_name=chirality + "_arm")
-    print("Object detached:", success)
-    plan, fraction = planner.plan_line_traj([0, 0, 1], app_dist, group_name=chirality + '_arm', avoid_collisions=True)
-    print("PostPlace", fraction)
-    if fraction < 0.5:
-        return
-    planner.execute(plan, v_scale=0.125, group_name=chirality + '_arm')
-    print("PostPlaced", fraction)
-
-    # ### pick up purple block ###
-    # planner.pick(
-    #     'stone_10_2_5_1cm_0__linkcollision',
-    #     v_scale=0.25,
-    #     a_scale=1.0,
-    #     grasping_group=chirality + "_hand",
-    #     group_name=chirality + "_arm"
-    # )
-
-    # ### place purple block on the plate ###
-    # place_poses = planner.grasps.get_simple_placements([0.6, 0, 1.15])
-    # success, plan, planning_time, error_code = planner.plan_ee_poses(place_poses, group_name=chirality + '_arm')
-    # print(success, planning_time, error_code)
-    # if not success:
-    #     return
-    # planner.execute(plan, v_scale=0.25, group_name=chirality + '_arm')
-    # print("Preplaced")
-    # planner.do_end_effector('open', group_name=chirality + '_hand')
-    # print("Gripper Opened")
-    # success = planner.detach('stone_10_2_5_1cm_0__linkcollision', group_name=chirality + "_arm")
-    # print("Object detached:", success)
-    # plan, fraction = planner.plan_line_traj([0, 0, 1], app_dist, group_name=chirality + '_arm', avoid_collisions=True)
-    # print("PostPlace", fraction)
-    # if fraction < 0.5:
-    #     return
-    # planner.execute(plan, v_scale=0.125, group_name=chirality + '_arm')
-    # print("PostPlaced", fraction)
+    planner.place(
+        'cylinder_blue__linkcollision',
+        [0.6, -0.06, 1.15],
+        v_scale=0.25,
+        a_scale=1.0,
+        grasping_group=chirality + "_hand",
+        group_name=chirality + "_arm",
+    )
 
 
 if __name__ == '__main__':

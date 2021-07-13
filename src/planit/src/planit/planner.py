@@ -176,8 +176,8 @@ class Planner:
 
         # plan preplacement
         displacement = [pre_disp_dist * x for x in pre_disp_dir]
-        poses = planner.grasps.get_simple_placements(obj_name, partial_pose, displacement)
-        success, raw_plan, planning_time, error_code = planner.plan_ee_poses(poses, group_name=group_name)
+        poses = self.grasps.get_simple_placements(obj_name, partial_pose, displacement)
+        success, raw_plan, planning_time, error_code = self.plan_ee_poses(poses, group_name=group_name)
         if not success:
             return error_code
         else:
@@ -202,7 +202,7 @@ class Planner:
         wpose.position.z += scale * pre_disp_dir[2]
         waypoints = [copy.deepcopy(wpose)]
         raw_plan, fraction = move_group.compute_cartesian_path(
-            waypoints, eef_step, jump_threshold, avoid_collisions=True
+            waypoints, eef_step, jump_threshold, avoid_collisions=False
         )
         print("Planned placement approach", fraction * pre_disp_dist, "for", obj_name, ".")
         if fraction < 0.5:
@@ -223,7 +223,7 @@ class Planner:
         self.do_end_effector('open', group_name=grasping_group)
 
         # detach from robot chain
-        success = planner.detach(obj_name, group_name=group_name)
+        success = self.detach(obj_name, group_name=group_name)
         if success:
             print("Placed", obj_name, ".")
         else:
@@ -237,7 +237,7 @@ class Planner:
         wpose.position.z += scale * post_disp_dir[2]
         waypoints = [copy.deepcopy(wpose)]
         raw_plan, fraction = move_group.compute_cartesian_path(
-            waypoints, eef_step, jump_threshold, avoid_collisions=True
+            waypoints, eef_step, jump_threshold, avoid_collisions=False
         )
         print("Planned displacement", fraction * post_disp_dist, "from", obj_name, ".")
         if fraction < 0.5:
