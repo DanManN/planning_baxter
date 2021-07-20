@@ -3,7 +3,7 @@
 import sys
 import copy
 from math import pi, tau
-from random import uniform, choice
+from random import uniform, choice, shuffle
 
 import numpy as np
 
@@ -17,6 +17,7 @@ init_states_pub = None
 updatePeriod = 0.5
 lastUpdateTime = None
 count = 0
+count_2 = 0
 
 ignore = {'ground_plane', 'table', 'baxter'}
 directions = {
@@ -26,12 +27,34 @@ directions = {
     'round_tin_base': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
     'wood_cube': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
     'plastic_cup': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'coke_can2' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'beer' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'green_prism' : [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'blue_prism' : [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'red_prism' : [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'purple_prism' : [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'teal_prism' : [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'yellow_prism' : [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'brown_cylinder' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'red_cylinder' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'blue_cylinder' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'green_cylinder' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'purple_cylinder' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'gray_cylinder' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    
 }
-
+#xyz coordinates
+positions = [
+		[9.5, -9.5, .05], [9.5, -8.5, .05], [9.5, -7.5, .05], [9.5, -6.5, .05], [9.5, -5.5, .01], 
+		[.75, -.6, 1.1], [.75, -.3, 1.1], [.75, 0, 1.1], [.75, .3, 1.1], [.75, .6, 1.1]
+]
+shuffle(positions)
 
 def on_model_states_msg(msg):
     global lastUpdateTime
     global count
+    global count_2
+    count_2 = 0
     sinceLastUpdateDuration = rospy.get_rostime() - lastUpdateTime
     if sinceLastUpdateDuration.to_sec() < updatePeriod:
         return
@@ -56,11 +79,18 @@ def on_model_states_msg(msg):
             # z = choice(np.linspace(tau, -tau, 9)[:-1])
             print(directions[model_name])
             q = quaternion_from_euler(*directions[model_name])
-            new_msg.pose.orientation.x = q[0]
-            new_msg.pose.orientation.y = q[1]
-            new_msg.pose.orientation.z = q[2]
-            new_msg.pose.orientation.w = q[3]
-            new_msg.pose.position.z += 0.05
+            #new_msg.pose.orientation.x = q[0]
+            #new_msg.pose.orientation.y = q[1]
+            #new_msg.pose.orientation.z = q[2]
+            #new_msg.pose.orientation.w = q[3]
+            #new_msg.pose.position.z += 0.001
+            #new_msg.pose.position.x = uniform(.55, .99)
+            #new_msg.pose.position.x += choice([0,0.05, -0.05])
+            #new_msg.pose.position.y += choice([0,0.05, -0.05])
+            new_msg.pose.position.x = positions[count_2][0]
+            new_msg.pose.position.y = positions[count_2][1]
+            new_msg.pose.position.z = positions[count_2][2]
+            count_2 += 1
             print(new_msg)
             init_states_pub.publish(new_msg)
 
