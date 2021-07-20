@@ -41,12 +41,23 @@ directions = {
     'green_cylinder' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
     'purple_cylinder' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
     'gray_cylinder' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'bleach_bottle' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'mustard_bottle' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'soup_can' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'meat_can' : [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'blue_can': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'sugar_box' : [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'wood_block' : [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'red_mug' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'cracker_box' : [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'drill' : [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
+    'apple' : [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
     
 }
 #xyz coordinates
 positions = [
-		[9.5, -9.5, .05], [9.5, -8.5, .05], [9.5, -7.5, .05], [9.5, -6.5, .05], [9.5, -5.5, .01], 
-		[.75, -.6, 1.1], [.75, -.3, 1.1], [.75, 0, 1.1], [.75, .3, 1.1], [.75, .6, 1.1]
+		[9.5, -9.5, .03], [9.5, -8.5, .03], [9.5, -7.5, .03], [9.5, -6.5, .03], [9.5, -5.5, .03], 
+		[.75, -.6, 1.05], [.75, -.3, 1.05], [.75, 0, 1.05], [.75, .3, 1.05], [.75, .6, 1.05]
 ]
 shuffle(positions)
 
