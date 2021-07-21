@@ -4,6 +4,7 @@ import sys
 import copy
 from math import pi, tau
 from random import uniform, choice, shuffle
+import time
 
 import numpy as np
 
@@ -78,8 +79,8 @@ def on_model_states_msg(msg):
 
     for (model_name, model_pose) in zip(msg.name, msg.pose):
         if model_name not in ignore:
-            print(model_name)
-            print(model_pose)
+            #print(model_name)
+            #print(model_pose)
             new_msg = ModelState()
             new_msg.model_name = model_name
             new_msg.reference_frame = "world"
@@ -88,12 +89,12 @@ def on_model_states_msg(msg):
             # x = choice(np.linspace(tau, -tau, 9)[:-1])
             # y = choice(np.linspace(tau, -tau, 9)[:-1])
             # z = choice(np.linspace(tau, -tau, 9)[:-1])
-            print(directions[model_name])
+            #print(directions[model_name])
             q = quaternion_from_euler(*directions[model_name])
-            #new_msg.pose.orientation.x = q[0]
-            #new_msg.pose.orientation.y = q[1]
-            #new_msg.pose.orientation.z = q[2]
-            #new_msg.pose.orientation.w = q[3]
+            new_msg.pose.orientation.x = q[0]
+            new_msg.pose.orientation.y = q[1]
+            new_msg.pose.orientation.z = q[2]
+            new_msg.pose.orientation.w = q[3]
             #new_msg.pose.position.z += 0.001
             #new_msg.pose.position.x = uniform(.55, .99)
             #new_msg.pose.position.x += choice([0,0.05, -0.05])
@@ -101,10 +102,23 @@ def on_model_states_msg(msg):
             new_msg.pose.position.x = positions[count_2][0]
             new_msg.pose.position.y = positions[count_2][1]
             new_msg.pose.position.z = positions[count_2][2]
+            #print(new_msg)
+            print(model_name, positions[count_2][0], positions[count_2][1], positions[count_2][2], q[0], q[1], q[2], q[3])
             count_2 += 1
-            print(new_msg)
             init_states_pub.publish(new_msg)
-
+            
+    #time.sleep(5)
+    #for (model_name, model_pose) in zip(msg.name, msg.pose):
+    #	if model_name not in ignore:
+    #	    new_msg = ModelState()
+    #	    new_msg.model_name = model_name
+    #	    new_msg.reference_frame = "world"
+    #	    new_msg.pose = copy.deepcopy(model_pose)
+    #	    #print(model_name)
+    #	    print(model_name, new_msg.pose.position.x, new_msg.pose.position.y, new_msg.pose.position.z, new_msg.pose.orientation.x, new_msg.pose.orientation.y, new_msg.pose.orientation.z, new_msg.pose.orientation.w)
+    	    
+def printModelLocations():
+    return
 
 def main():
     rospy.init_node('gazebo_rand_instance')
@@ -116,6 +130,8 @@ def main():
     global lastUpdateTime
     lastUpdateTime = rospy.get_rostime()
     modelStatesSub = rospy.Subscriber('/gazebo/model_states', ModelStates, on_model_states_msg)
+    #printModelLocations()
+    
     # msg = rospy.wait_for_message('/gazebo/model_states', ModelStates)
     # rospy.sleep(rospy.Duration(0, 100 * 1000))
 

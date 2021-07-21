@@ -10,3 +10,4 @@ esac
 
 source ./devel/setup.sh
 export MESH_WORKSPACE_PATH=models
+export GAZEBO_MODEL_PATH=$(pwd)/models
