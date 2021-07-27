@@ -79,4 +79,14 @@
     <arg name="left_electric_gripper" value="$(arg left_electric_gripper)" />
   </include>
 
+
+  <!--
+  <param name="image" value="/camera/rgb/image_raw" />
+  <param name="_save_all_image" value="false" />
+  <param name="_filename_format" value="screenshots/exp.jpg" />
+  <param name="__name" value="/image_saver" />
+  -->
+
+  <node name="image_saver" pkg="image_view" type="image_saver" respawn="true" output="screen" args="image:=/camera/rgb/image_raw _save_all_image:=false _filename_format:=$(dirname)/../../../../screenshots/exp%04i.jpg __name:=image_saver" />
+
 </launch>
