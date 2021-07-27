@@ -190,7 +190,7 @@ def publish_link_marker(link, full_linkname, **kwargs):
 
     # print(link, full_linkname, full_linkinstancename, kwargs)
     obj_msgs = link2obj_msg(link, full_linkinstancename, model_pose, use_collision, rospy.Duration(2 * updatePeriod))
-    # print(obj_msgs)
+    print(obj_msgs)
     if len(obj_msgs) > 0:
         for obj_msg in obj_msgs:
             perceptPub.publish(obj_msg)

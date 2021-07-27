@@ -40,7 +40,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/jasmine/model_editor_models/ycb_gazebo_sdf/006_mustard_bottle_textured/textured.dae</uri>
+            <uri>model://006_mustard_bottle_textured/textured.dae</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
