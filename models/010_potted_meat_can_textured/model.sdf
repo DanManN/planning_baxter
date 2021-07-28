@@ -1,14 +1,11 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.4">
   <model name="010_potted_meat_can_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
-        <!-- Volume:  3.5413186600e-04 -->
         <mass> 1.0 </mass>
-        <!-- Center of mass: -3.2840340000e-02 -2.6352690000e-02  3.7830850000e-02 -->
         <pose> -3.2840340000e-02 -2.6352690000e-02  3.7830850000e-02 0 0 0 </pose>
-        <!-- Inertia matrix -->
         <inertia>
           <ixx>  7.0538916484e-04 </ixx>
           <ixy> -2.7839777344e-05 </ixy>
@@ -27,9 +24,9 @@
       </visual>
       <collision name="collision">
         <geometry>
-          <mesh>
-            <uri>model://010_potted_meat_can_textured/textured.dae</uri>
-          </mesh>
+          <box>
+            <size>0.05725070454827204 0.08338079748852374 0.10154619471364795</size>
+          </box>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -52,6 +49,7 @@
             </ode>
           </contact>
         </surface>
+        <pose>-0.03285774847091113 -0.026551931233920183 0.03848484879256285 1.5676102310271811 0.00011173320258033797 -1.5242804438387434</pose>
       </collision>
     </link>
   </model>

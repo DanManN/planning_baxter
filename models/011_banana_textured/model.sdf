@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="011_banana_textured">
+    <pose>0 0 0  0 0 0</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose> -9.9361000000e-03  4.0726700000e-03  1.7126890000e-02 0 0 0 </pose>
+        <inertia>
+          <ixx>  2.1845154216e-03 </ixx>
+          <ixy> -6.4546732146e-04 </ixy>
+          <ixz>  1.5460353946e-05 </ixz>
+          <iyy>  4.5160742655e-04 </iyy>
+          <iyz> -1.2944433820e-05 </iyz>
+          <izz>  2.4866449675e-03 </izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://011_banana_textured/textured.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.03634957333982313 0.06897888846001644 0.19760237261887098</size>
+          </box>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>-0.003850263285824181 0.0039248699424061385 0.01783437087894396 -1.5824277028432276 1.5475697818552223 2.6988416346071156</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>

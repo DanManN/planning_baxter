@@ -1,7 +1,7 @@
-<?xml version='1.0'?>
-<sdf version='1.7'>
-  <model name='unit_cylinder'>
-    <link name='link'>
+<?xml version="1.0"?>
+<sdf version="1.7">
+  <model name="unit_cylinder">
+    <link name="link">
       <inertial>
         <mass>1</mass>
         <inertia>
@@ -18,7 +18,7 @@
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
       <pose>0 0 0 0 -0 0</pose>
-      <visual name='visual'>
+      <visual name="visual">
         <geometry>
           <cylinder>
             <radius>0.134471</radius>
@@ -30,13 +30,13 @@
             <name>Gazebo/Grey</name>
             <uri>file://media/materials/scripts/gazebo.material</uri>
           </script>
-          <shader type='pixel'/>
+          <shader type="pixel"/>
         </material>
         <pose>0 0 0 0 -0 0</pose>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='collision'>
+      <collision name="collision">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>

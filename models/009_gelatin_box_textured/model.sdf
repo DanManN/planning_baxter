@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="009_gelatin_box_textured">
+    <pose>0 0 0  0 0 0</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose> -2.2675490000e-02 -7.8602000000e-03  1.3877970000e-02 0 0 0 </pose>
+        <inertia>
+          <ixx>  6.7629022146e-04 </ixx>
+          <ixy>  4.3994151973e-05 </ixy>
+          <ixz>  1.3515396282e-06 </ixz>
+          <iyy>  4.9688856731e-04 </iyy>
+          <iyz> -2.5952199314e-06 </iyz>
+          <izz>  1.0452014914e-03 </izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://009_gelatin_box_textured/textured.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.029789716196536444 0.07271697617434505 0.08939781736051994</size>
+          </box>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>-0.022581009542832917 -0.008386747491105621 0.014218603586567952 1.2031219076157853 -1.556678132143745 -2.5408901912259205</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>

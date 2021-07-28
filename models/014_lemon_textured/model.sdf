@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="014_lemon_textured">
+    <pose>0 0 0  0 0 0</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose> -1.0770480000e-02  2.1014210000e-02  2.6208540000e-02 0 0 0 </pose>
+        <inertia>
+          <ixx>  3.1437078017e-04 </ixx>
+          <ixy> -3.1552044766e-05 </ixy>
+          <ixz>  1.1270020640e-06 </ixz>
+          <iyy>  3.2501312391e-04 </iyy>
+          <iyz> -1.1830780402e-07 </iyz>
+          <izz>  3.5100301964e-04 </izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://014_lemon_textured/textured.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <cylinder>
+            <length>0.06536226410252527</length>
+            <radius>0.027780308515966967</radius>
+          </cylinder>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>-0.011657814418021313 0.020592115879802787 0.02592221951165818 0.0 -1.2566370614359172 -2.5132741228718345</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>

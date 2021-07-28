@@ -1,7 +1,7 @@
-<?xml version='1.0'?>
-<sdf version='1.7'>
-  <model name='wood_cube'>
-    <link name='link'>
+<?xml version="1.0"?>
+<sdf version="1.7">
+  <model name="wood_cube">
+    <link name="link">
       <pose>-0 -0 0.0125 0 -0 0</pose>
       <inertial>
         <mass>0.0073</mass>
@@ -18,7 +18,7 @@
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
-      <visual name='visual'>
+      <visual name="visual">
         <geometry>
           <box>
             <size>0.025 0.025 0.025</size>
@@ -34,7 +34,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='collision'>
+      <collision name="collision">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>

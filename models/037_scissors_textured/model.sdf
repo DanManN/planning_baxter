@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="037_scissors_textured">
+    <pose>0 0 0  0 0 0</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose>  1.4591460000e-02  3.1621000000e-03  7.4006700000e-03 0 0 0 </pose>
+        <inertia>
+          <ixx>  1.4098468721e-03 </ixx>
+          <ixy> -3.3596100298e-04 </ixy>
+          <ixz> -5.7905125503e-06 </ixz>
+          <iyy>  4.6953854148e-04 </iyy>
+          <iyz> -6.3143209142e-06 </iyz>
+          <izz>  1.8576432074e-03 </izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://037_scissors_textured/textured.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.015361986085439556 0.08812522502424247 0.19758233061983643</size>
+          </box>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>0.03994540332436511 0.030956559502097383 0.0075521798752043925 -2.321460200532965 1.5676320208891998 1.8516744410360546</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>

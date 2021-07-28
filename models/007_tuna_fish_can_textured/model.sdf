@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="007_tuna_fish_can_textured">
+    <pose>0 0 0  0 0 0</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose> -2.5996330000e-02 -2.2140360000e-02  1.2989510000e-02 0 0 0 </pose>
+        <inertia>
+          <ixx>  5.2105506043e-04 </ixx>
+          <ixy>  1.4112858694e-07 </ixy>
+          <ixz>  8.0185967442e-08 </ixz>
+          <iyy>  5.2160882776e-04 </iyy>
+          <iyz>  1.7259322011e-08 </iyz>
+          <izz>  9.1347272400e-04 </izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://007_tuna_fish_can_textured/textured.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <cylinder>
+            <length>0.03346239956022727</length>
+            <radius>0.04292022598609767</radius>
+          </cylinder>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>-0.026062984325800558 -0.022140802813801045 0.013526324457892558 -4.410894054243692e-05 0.0002043938212416091 4.4108940542436914e-05</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>

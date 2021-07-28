@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="040_large_marker_textured">
+    <pose>0 0 0  0 0 0</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose> -3.5725120000e-02 -7.8807500000e-03  9.0182900000e-03 0 0 0 </pose>
+        <inertia>
+          <ixx>  1.1302891263e-03 </ixx>
+          <ixy>  2.2711762663e-05 </ixy>
+          <ixz> -6.2284451037e-08 </ixz>
+          <iyy>  3.9274386510e-05 </iyy>
+          <iyz> -5.8414756707e-07 </iyz>
+          <izz>  1.1308049165e-03 </izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://040_large_marker_textured/textured.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <cylinder>
+            <length>0.12080870072525929</length>
+            <radius>0.009938878251618407</radius>
+          </cylinder>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>-0.03577652595322228 -0.0050224709337957875 0.009024985476563042 -0.7749955566645435 -1.5700493875667596 -0.7749955566645436</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>

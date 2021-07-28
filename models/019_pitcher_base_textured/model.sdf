@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="019_pitcher_base_textured">
+    <pose>0 0 0  0 0 0</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose> -1.3413440000e-02  3.3477380000e-02  1.2263628000e-01 0 0 0 </pose>
+        <inertia>
+          <ixx>  5.2332799668e-03 </ixx>
+          <ixy> -3.1349307282e-05 </ixy>
+          <ixz> -2.3867558673e-05 </ixz>
+          <iyy>  5.2389218182e-03 </iyy>
+          <iyz> -4.2564263104e-05 </iyz>
+          <izz>  1.8455883387e-03 </izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://019_pitcher_base_textured/textured.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.14253379853445353 0.14633274227208948 0.2455604573530648</size>
+          </box>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>-0.001737131345688062 0.045924116963050564 0.11855833564917045 0.05040525574964668 -0.056634875037284926 -0.05968925125931326</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>

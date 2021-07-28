@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.3">
   <model name="kinect">
     <pose>0 0 0.036 0 0 0</pose>
@@ -6,13 +6,13 @@
       <inertial>
         <mass>0.1</mass>
       </inertial>
-
       <collision name="collision">
         <geometry>
           <box>
             <size>0.073000 0.276000 0.072000</size>
           </box>
         </geometry>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
       <visual name="visual">
         <geometry>

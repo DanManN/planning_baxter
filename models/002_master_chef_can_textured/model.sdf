@@ -1,14 +1,11 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.4">
   <model name="002_master_chef_can_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
-        <!-- Volume:  1.0545377200e-03 -->
         <mass> 1.0 </mass>
-        <!-- Center of mass: -1.7070740000e-02 -9.7628600000e-03  7.0584260000e-02 -->
         <pose> -1.7070740000e-02 -9.7628600000e-03  7.0584260000e-02 0 0 0 </pose>
-        <!-- Inertia matrix -->
         <inertia>
           <ixx>  2.1487432990e-03 </ixx>
           <ixy>  9.4180405420e-07 </ixy>
@@ -27,9 +24,10 @@
       </visual>
       <collision name="collision">
         <geometry>
-          <mesh>
-            <uri>model://002_master_chef_can_textured/textured.dae</uri>
-          </mesh>
+          <cylinder>
+            <length>0.1401640016847523</length>
+            <radius>0.05132912361890561</radius>
+          </cylinder>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -52,6 +50,7 @@
             </ode>
           </contact>
         </surface>
+        <pose>-0.017063670772531063 -0.009764098200564841 0.07000000084372004 0.0 -0.0 0.0</pose>
       </collision>
     </link>
   </model>

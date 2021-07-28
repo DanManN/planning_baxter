@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="033_spatula_textured">
+    <pose>0 0 0  0 0 0</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose> -4.6581380000e-02 -7.8605620000e-02  1.3189110000e-02 0 0 0 </pose>
+        <inertia>
+          <ixx>  8.6238642746e-04 </ixx>
+          <ixy>  2.3504258427e-03 </ixy>
+          <ixz> -2.4207564084e-05 </ixz>
+          <iyy>  8.8789681899e-03 </iyy>
+          <iyz>  6.9654044022e-06 </iyz>
+          <izz>  9.6515909447e-03 </izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://033_spatula_textured/textured.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.03261207289998314 0.0836021824228354 0.31102438615502304</size>
+          </box>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>-0.030330399089119487 -0.08707153864256235 0.01610328215015443 -2.422131864009513 1.5672720902307054 -2.6498592528296174</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>

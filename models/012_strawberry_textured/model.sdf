@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="012_strawberry_textured">
+    <pose>0 0 0  0 0 0</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose> -1.4938700000e-03  1.5432680000e-02  2.1114500000e-02 0 0 0 </pose>
+        <inertia>
+          <ixx>  2.0727670681e-04 </ixx>
+          <ixy> -2.0235465667e-05 </ixy>
+          <ixz> -5.3869165235e-07 </ixz>
+          <iyy>  2.1151061440e-04 </iyy>
+          <iyz> -6.1889165747e-06 </iyz>
+          <izz>  2.0897986972e-04 </izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://012_strawberry_textured/textured.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <cylinder>
+            <length>0.045407471179887506</length>
+            <radius>0.023873649980079258</radius>
+          </cylinder>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>-0.0021079399010338696 0.016151509589238857 0.02139986585309836 3.141592653589793 -1.2566370614359175 3.141592653589793</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>

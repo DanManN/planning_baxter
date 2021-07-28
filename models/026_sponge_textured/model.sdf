@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="026_sponge_textured">
+    <pose>0 0 0  0 0 0</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose> -1.5842370000e-02  1.1520710000e-02  9.3725000000e-03 0 0 0 </pose>
+        <inertia>
+          <ixx>  8.8309570446e-04 </ixx>
+          <ixy> -4.6779232943e-06 </ixy>
+          <ixz> -6.1410172758e-06 </ixz>
+          <iyy>  4.3558962245e-04 </iyy>
+          <iyz> -8.5488412093e-06 </iyz>
+          <izz>  1.2777151462e-03 </izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://026_sponge_textured/textured.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.018376249764483 0.07935834886880958 0.11112429834146717</size>
+          </box>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>-0.016366896310324806 0.013698917413387517 0.009192693282314549 2.0838979075294644 1.554211071838227 0.49277168402041943</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>

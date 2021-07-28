@@ -1,5 +1,4 @@
-<?xml version="1.0" ?>
-
+<?xml version="1.0"?>
 <sdf version="1.5">
   <model name="wood_block_10_2_1cm">
     <link name="link">
@@ -15,7 +14,6 @@
           <izz>1.1067708333333336e-05</izz>
         </inertia>
       </inertial>
-
       <collision name="collision">
         <geometry>
           <box>
@@ -24,9 +22,6 @@
         </geometry>
         <surface>
           <contact>
-            <!-- Red Pine coefficients for longitudinal axis of the wood
-                 according to:
-                 http://www.fpl.fs.fed.us/documnts/fplgtr/fplgtr113/ch04.pdf -->
             <poissons_ratio>0.347</poissons_ratio>
             <elastic_modulus>8.8e+09</elastic_modulus>
             <ode>
@@ -44,8 +39,8 @@
             </torsional>
           </friction>
         </surface>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
-
       <visual name="visual">
         <geometry>
           <box>
@@ -59,7 +54,6 @@
           </script>
         </material>
       </visual>
-
     </link>
   </model>
 </sdf>
