@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose> -1.8858540000e-02  1.6572700000e-02  2.6898620000e-02 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  8.6178178184e-04 </ixx>
           <ixy>  5.4463701125e-06 </ixy>
@@ -21,6 +21,7 @@
             <uri>model://025_mug_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>0.0401040191723519 -0.026059678362494842 0.0012121756346662946 1.5706876085199726 -0.9761574675736937 -1.570583189474879</pose>
       </visual>
       <collision name="collision">
         <geometry>
@@ -49,7 +50,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>-0.015607777917799805 0.020910205114491442 0.04010073752988672 -1.1112858874474267 1.5706590015697495 -0.5166470347167911</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

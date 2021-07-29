@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose>  2.3373040000e-02 -1.0273640000e-02  1.0276922000e-01 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  4.1189444558e-03 </ixx>
           <ixy>  7.9067271523e-06 </ixy>
@@ -21,6 +21,7 @@
             <uri>model://036_wood_block_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>-0.005029811044255705 -0.025606481383276668 -0.10251750788276842 -0.0021256024609104386 0.005671990270196122 1.7803706304411084</pose>
       </visual>
       <collision name="collision">
         <geometry>
@@ -49,7 +50,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>0.02341791955441188 -0.0104651935485088 0.10262997163695331 0.005105674162372236 0.003259109485515726 -1.7803683386567934</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

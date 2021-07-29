@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose> -4.6581380000e-02 -7.8605620000e-02  1.3189110000e-02 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  8.6238642746e-04 </ixx>
           <ixy>  2.3504258427e-03 </ixy>
@@ -21,11 +21,12 @@
             <uri>model://033_spatula_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>0.0158640704034651 0.09170816223354508 0.009932064059179874 -1.5825370768293145 -1.3430507003391623 1.584556336421507</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <box>
-            <size>0.03261207289998314 0.0836021824228354 0.31102438615502304</size>
+            <size>0.03261207289998315 0.08360218242283537 0.31102438615502304</size>
           </box>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -49,7 +50,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>-0.030330399089119487 -0.08707153864256235 0.01610328215015443 -2.422131864009513 1.5672720902307054 -2.6498592528296174</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

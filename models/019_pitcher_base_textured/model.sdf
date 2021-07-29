@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose> -1.3413440000e-02  3.3477380000e-02  1.2263628000e-01 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  5.2332799668e-03 </ixx>
           <ixy> -3.1349307282e-05 </ixy>
@@ -21,6 +21,7 @@
             <uri>model://019_pitcher_base_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>-0.002244533761891529 -0.05165722790878988 -0.11616632028699433 -0.04702222527958124 0.05947267953735683 0.05686228111903402</pose>
       </visual>
       <collision name="collision">
         <geometry>
@@ -49,7 +50,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>-0.001737131345688062 0.045924116963050564 0.11855833564917045 0.05040525574964668 -0.056634875037284926 -0.05968925125931326</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose> -1.7138950000e-02  1.1574370000e-02  9.9697960000e-02 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  4.3546483321e-03 </ixx>
           <ixy>  3.5311987973e-06 </ixy>
@@ -21,11 +21,12 @@
             <uri>model://021_bleach_cleanser_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>-0.011162462483310986 0.02438850291835997 0.12250573542632734 -3.136392250159056 0.06460401797851434 1.5551221310259247</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <box>
-            <size>0.06772573203492266 0.09831611002344244 0.2540507840606453</size>
+            <size>0.06772573203492266 0.09831611002344243 0.25405078406064524</size>
           </box>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -49,7 +50,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>-0.016251187118014463 0.012187065352232717 0.12375148165170058 -3.0770778893727 0.00621163779994866 1.5551545300638623</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

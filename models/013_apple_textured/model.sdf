@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose>  1.3105800000e-03 -3.8612400000e-03  3.6336750000e-02 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  6.1123228880e-04 </ixx>
           <ixy>  1.0003968967e-06 </ixy>
@@ -21,6 +21,7 @@
             <uri>model://013_apple_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>0.0007540752225695668 -0.0032839809575936282 -0.03555950167356059 0.0 -0.0 3.141592653589793</pose>
       </visual>
       <collision name="collision">
         <geometry>
@@ -50,7 +51,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>0.0007540752225695716 -0.0032839809575936204 0.03555950167356059 3.141592653589793 -1.2246467991473532e-16 1.884955592153876</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

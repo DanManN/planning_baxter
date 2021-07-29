@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose> -1.5842370000e-02  1.1520710000e-02  9.3725000000e-03 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  8.8309570446e-04 </ixx>
           <ixy> -4.6779232943e-06 </ixy>
@@ -21,11 +21,12 @@
             <uri>model://026_sponge_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>0.009323095015802339 0.016508217474951042 0.013438746148375945 -1.5789391158659178 0.020270404653240134 1.556181449073148</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <box>
-            <size>0.018376249764483 0.07935834886880958 0.11112429834146717</size>
+            <size>0.018376249764483 0.07935834886880955 0.11112429834146714</size>
           </box>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -49,7 +50,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>-0.016366896310324806 0.013698917413387517 0.009192693282314549 2.0838979075294644 1.554211071838227 0.49277168402041943</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

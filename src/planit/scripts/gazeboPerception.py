@@ -115,7 +115,9 @@ def link2obj_msg(link, full_linkname, model_pose, use_collision=False, lifetime=
         absolute = pysdf.pose_msg2homogeneous(model_pose)
         total_pose = concatenate_matrices(absolute, relative)
         obj_msg.pose = pysdf.homogeneous2pose_msg(total_pose)
-        # print("Rel: ", relative, "Abs: ", absolute, "Tot: ", total_pose, sep='\n')
+        # print("Rel: ", relative)
+        # print("Abs: ", absolute)
+        # print("Tot: ", total_pose)
         obj_msg.mesh = Mesh()
         obj_msg.solid = SolidPrimitive()
         obj_msg.solid.dimensions = [0]
@@ -190,7 +192,7 @@ def publish_link_marker(link, full_linkname, **kwargs):
 
     # print(link, full_linkname, full_linkinstancename, kwargs)
     obj_msgs = link2obj_msg(link, full_linkinstancename, model_pose, use_collision, rospy.Duration(2 * updatePeriod))
-    print(obj_msgs)
+    # print(obj_msgs)
     if len(obj_msgs) > 0:
         for obj_msg in obj_msgs:
             perceptPub.publish(obj_msg)

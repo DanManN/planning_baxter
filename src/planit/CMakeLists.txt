@@ -62,6 +62,6 @@ include_directories(
 #############
 
 install(PROGRAMS
-   scripts/gazebo2moveit.py
+   scripts/gazeboPerception.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

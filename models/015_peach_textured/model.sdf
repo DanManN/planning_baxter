@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose> -1.5047330000e-02  6.7839900000e-03  2.8259590000e-02 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  3.7270321886e-04 </ixx>
           <ixy> -1.6809696015e-05 </ixy>
@@ -21,11 +21,12 @@
             <uri>model://015_peach_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>-0.02801867988749591 0.003118841317520876 0.012211157594329426 2.7379860883761102 0.49556443208273865 2.4098526496642645</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <cylinder>
-            <length>0.057923994537762445</length>
+            <length>0.05792399453776245</length>
             <radius>0.031920789525603566</radius>
           </cylinder>
         </geometry>
@@ -50,7 +51,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>-0.014364922496224009 0.006581627225516859 0.026348000841377034 3.141592653589793 -0.6283185307179588 2.5132741228718345</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

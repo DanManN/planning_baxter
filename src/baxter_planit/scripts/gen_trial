@@ -29,45 +29,51 @@ ignore = {'ground_plane', 'table', 'baxter', 'kinect'}
 def new_directions():
     return {
         'cylinder_red': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'cylinder_blue': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'stone_10_2_5_1cm_0': [0, choice([0, tau / 4]), choice(np.linspace(0, tau, 9)[:-1])],
-        'round_tin_base': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
         'wood_cube': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'plastic_cup': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'coke_can2': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'beer': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'green_prism': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'blue_prism': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'red_prism': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'purple_prism': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'teal_prism': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'yellow_prism': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'brown_cylinder': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'red_cylinder': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'blue_cylinder': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'green_cylinder': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'purple_cylinder': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'gray_cylinder': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'bleach_bottle': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'mustard_bottle': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'soup_can': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'meat_can': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'blue_can': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'sugar_box': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'wood_block': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'red_mug': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'cracker_box': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'drill': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'apple': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
+        '003_cracker_box_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '004_sugar_box_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '005_tomato_soup_can_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '006_mustard_bottle_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '007_tuna_fish_can_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '008_pudding_box_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '009_gelatin_box_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '010_potted_meat_can_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '011_banana_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '021_bleach_cleanser_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '025_mug_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '030_fork_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '031_spoon_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '032_knife_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '033_spatula_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '035_power_drill_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '037_scissors_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        '040_large_marker_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
     }
-
 
 directions = new_directions()
 
 # randomize object positions
 positions = [
-    [9.5, -9.5, .03], [9.5, -8.5, .03], [9.5, -7.5, .03], [9.5, -6.5, .03], [9.5, -5.5, .03], [.75, -.6, 1.05],
-    [.75, -.3, 1.05], [.75, 0, 1.05], [.75, .3, 1.05], [.75, .6, 1.05]
+    # table positions:
+    [.75, -.4, 1.08],
+    [.75, 0, 1.08],
+    [.75, .4, 1.08],
+    # offscreen positions:
+    [9.5, -9.5, .03],
+    [9.5, -8.5, .03],
+    [9.5, -7.5, .03],
+    [9.5, -6.5, .03],
+    [9.5, -5.5, .03],
+    [9.5, -4.5, .03],
+    [9.5, -3.5, .03],
+    [9.5, -2.5, .03],
+    [9.5, -1.5, .03],
+    [9.5, -0.5, .03],
+    [9.5, 0.5, .03],
+    [9.5, 1.5, .03],
+    [9.5, 2.5, .03],
+    [9.5, 3.5, .03],
+    [9.5, 4.5, .03],
 ]
 shuffle(positions)
 
@@ -87,8 +93,7 @@ def on_model_states_msg(msg):
     pos_ind = 0
     for (model_name, model_pose) in zip(msg.name, msg.pose):
         if model_name not in ignore:
-            # print(model_name)
-            # print(model_pose)
+            print(model_name, model_pose)
             new_msg = ModelState()
             new_msg.model_name = model_name
             new_msg.reference_frame = "world"

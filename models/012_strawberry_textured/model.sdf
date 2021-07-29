@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose> -1.4938700000e-03  1.5432680000e-02  2.1114500000e-02 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  2.0727670681e-04 </ixx>
           <ixy> -2.0235465667e-05 </ixy>
@@ -21,12 +21,13 @@
             <uri>model://012_strawberry_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>-0.021003871119971852 0.016151509589238867 -0.0046081522471147045 3.769075292590178e-16 -1.2566370614359172 3.1415926535897927</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <cylinder>
-            <length>0.045407471179887506</length>
-            <radius>0.023873649980079258</radius>
+            <length>0.0454074711798875</length>
+            <radius>0.02387364998007925</radius>
           </cylinder>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -50,7 +51,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>-0.0021079399010338696 0.016151509589238857 0.02139986585309836 3.141592653589793 -1.2566370614359175 3.141592653589793</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose> -3.2840340000e-02 -2.6352690000e-02  3.7830850000e-02 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  7.0538916484e-04 </ixx>
           <ixy> -2.7839777344e-05 </ixy>
@@ -21,11 +21,12 @@
             <uri>model://010_potted_meat_can_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>-0.024991054585890574 -0.03837893781841188 -0.03417930069545641 -1.5023840484178486 1.5241711794008408 0.06844989612393823</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <box>
-            <size>0.05725070454827204 0.08338079748852374 0.10154619471364795</size>
+            <size>0.05725070454827203 0.08338079748852376 0.10154619471364795</size>
           </box>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -49,7 +50,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>-0.03285774847091113 -0.026551931233920183 0.03848484879256285 1.5676102310271811 0.00011173320258033797 -1.5242804438387434</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

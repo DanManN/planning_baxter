@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose> -1.5054350000e-02 -2.3109380000e-02  7.5042310000e-02 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  2.4304633618e-03 </ixx>
           <ixy>  1.2578583989e-04 </ixy>
@@ -21,11 +21,12 @@
             <uri>model://006_mustard_bottle_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>0.027558094268339994 0.004356866217479952 0.09231366824835778 -3.139177006519122 0.0045636712946318094 1.143613587145962</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <box>
-            <size>0.05763789213322798 0.09574856139771101 0.1913923140897332</size>
+            <size>0.05763789213322798 0.09574856139771099 0.1913923140897332</size>
           </box>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -49,7 +50,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>-0.014961444123412293 -0.02305331122689411 0.09243886747264683 -3.138439906181772 0.00408933309138124 1.1436145213555926</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

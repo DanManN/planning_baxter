@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose> -1.7070740000e-02 -9.7628600000e-03  7.0584260000e-02 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  2.1487432990e-03 </ixx>
           <ixy>  9.4180405420e-07 </ixy>
@@ -21,12 +21,13 @@
             <uri>model://001_chips_can_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>-0.04494670329806416 -0.005940801208339536 -0.12605365603055824 -1.5717813133600038 -0.004654921565373177 -1.5707917417747685</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <cylinder>
-            <length>0.24089470208521999</length>
-            <radius>0.044576524386085115</radius>
+            <length>0.24089470208516214</length>
+            <radius>0.044576524386084275</radius>
           </cylinder>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -50,7 +51,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>-0.0053537630031343635 -0.12612415401098293 0.044822521701567024 3.141592653589793 -1.5698113508933174 -1.5661414029745735</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose> -1.4853580000e-02 -1.4205070000e-02  1.0220482000e-01 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  5.8284476667e-03 </ixx>
           <ixy> -1.2156971874e-06 </ixy>
@@ -21,11 +21,12 @@
             <uri>model://003_cracker_box_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>-0.012659690813577873 0.014287684830315353 0.10361138490821326 -3.140919322869203 -0.010603469289787086 3.1378391165981</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <box>
-            <size>0.07172171712267807 0.16384180899567619 0.21354082245590955</size>
+            <size>0.07172171712267805 0.16384180899567624 0.21354082245590955</size>
           </box>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -49,7 +50,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>-0.013811135720355963 -0.014170392411248345 0.10348032325485303 -3.1409590916539685 0.010605919694741475 3.137846046237604</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

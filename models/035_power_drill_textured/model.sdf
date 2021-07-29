@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose> -3.0714640000e-02  2.4350760000e-02  2.3567650000e-02 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  3.9885132555e-03 </ixx>
           <ixy>  4.1125634559e-04 </ixy>
@@ -21,11 +21,12 @@
             <uri>model://035_power_drill_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>0.023300146216393862 -0.04382658611174958 -0.011723984329402859 1.5982297537186034 0.02780822306930874 -1.5755861901892871</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <box>
-            <size>0.0570375692331013 0.18418253032458007 0.18674508936917755</size>
+            <size>0.05703756923310131 0.18418253032458007 0.18674508936917758</size>
           </box>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -49,7 +50,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>-0.04402355936964552 0.011144907396145098 0.023212831193774354 2.941854306788344 1.5428170997940125 -1.742792130613887</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

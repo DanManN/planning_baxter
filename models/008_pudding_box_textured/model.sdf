@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose>  1.5176500000e-03  1.8795880000e-02  1.8657700000e-02 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  8.1135081270e-04 </ixx>
           <ixy> -1.4673426614e-04 </ixy>
@@ -21,11 +21,12 @@
             <uri>model://008_pudding_box_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>0.01822196108754589 0.016439973074292458 0.009613137811339455 -1.605589818483124 1.0906067709340082 1.5400600989747888</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <box>
-            <size>0.03827376221947275 0.08971093390318564 0.11274066490351026</size>
+            <size>0.038273762219472755 0.08971093390318564 0.11274066490351027</size>
           </box>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -49,7 +50,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>0.0006764644928498801 0.018883453238921297 0.018376141833983752 -3.133813023674889 1.554725631843258 0.48772219198223854</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

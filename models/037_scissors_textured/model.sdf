@@ -5,7 +5,7 @@
     <link name="body">
       <inertial>
         <mass> 1.0 </mass>
-        <pose>  1.4591460000e-02  3.1621000000e-03  7.4006700000e-03 0 0 0 </pose>
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
           <ixx>  1.4098468721e-03 </ixx>
           <ixy> -3.3596100298e-04 </ixy>
@@ -21,11 +21,12 @@
             <uri>model://037_scissors_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>0.007493062668491148 -0.018363338920148943 0.047091623876973535 -1.5733117338883047 0.5392554420020363 1.5718185287746609</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <box>
-            <size>0.015361986085439556 0.08812522502424247 0.19758233061983643</size>
+            <size>0.015361986085439556 0.08812522502424247 0.19758233061983646</size>
           </box>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -49,7 +50,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>0.03994540332436511 0.030956559502097383 0.0075521798752043925 -2.321460200532965 1.5676320208891998 1.8516744410360546</pose>
+        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

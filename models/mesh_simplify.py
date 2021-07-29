@@ -27,9 +27,12 @@ def mesh2primitive_solid(mesh_file):
     vol_box = box[1][0] * box[1][1] * box[1][2]
 
     poses = {}
-    poses[vol_sphere] = list(sphere[0]) + [0, 0, 0]
-    poses[vol_cylinder] = transform2pose(cylinder['transform'])
-    poses[vol_box] = transform2pose(inverse_matrix(box[0]))
+    # poses[vol_sphere] = list(sphere[0]) + [0, 0, 0]
+    # poses[vol_cylinder] = transform2pose(cylinder['transform'])
+    # poses[vol_box] = transform2pose(inverse_matrix(box[0]))
+    poses[vol_sphere] = [-p for p in sphere[0]] + [0, 0, 0]
+    poses[vol_cylinder] = transform2pose(inverse_matrix(cylinder['transform']))
+    poses[vol_box] = transform2pose(box[0])
 
     shapes = {}
     shapes[vol_sphere] = ('sphere', sphere[1])
@@ -75,7 +78,12 @@ if __name__ == '__main__':
     for filename in glob(sys.argv[1]):
         print(filename)
         tree = ET.parse(filename)
-        link = tree.find(".//*[collision]")
+        link = tree.find('.//*[collision]')
+        inertial = link.find('inertial')
+        if inertial is None:
+            print("\tSkipping massless object!")
+            continue
+
         to_remove = set()
         for ch in link:
             if ch.tag != 'collision':
@@ -114,8 +122,21 @@ if __name__ == '__main__':
                 print('\tReplacing mesh with', solid_desc)
                 geom.remove(mesh)
                 solid_xml = primitive_solid2xml(*solid_desc['shape'])
-                pose.text = ' '.join([str(p) for p in solid_desc['pose']])
                 geom.append(solid_xml)
+                # pose.text = ' '.join([str(p) for p in solid_desc['pose']])
+
+                vis_geom = link.find('visual')
+                vpose = link.find('pose')
+                if vpose is None:
+                    vpose = ET.Element('pose')
+                    vis_geom.append(vpose)
+                vpose.text = ' '.join([str(p) for p in solid_desc['pose']])
+
+                ipose = inertial.find('pose')
+                if ipose is None:
+                    ipose = ET.Element('pose')
+                    inertial.append(ipose)
+                ipose.text = '0 0 0 0 0 0'
             else:
                 print('\tNot a mesh.')
 
