@@ -45,10 +45,10 @@ class BaxterPlanner(Planner):
             eef_cmd.id = 65664
             if command == 'open':
                 eef_cmd.command = 'go'
-                eef_cmd.args = '{\"position\":100.0}'
+                eef_cmd.args = '{\"position\":100.0, \"force\":100}'
             elif command == 'close':
                 eef_cmd.command = 'go'
-                eef_cmd.args = '{\"position\":0.0}'
+                eef_cmd.args = '{\"position\":0.0, \"force\":100}'
             if group_name == 'left_hand':
                 self.eef_pub_left.publish(eef_cmd)
             elif group_name == 'right_hand':
