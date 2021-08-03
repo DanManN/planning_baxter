@@ -1,28 +1,28 @@
+<?xml version="1.0"?>
 <sdf version="1.4">
   <model name="033_spatula_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
-        
         <mass> 1.0 </mass>
-        
         <pose>0 0 0 0 0 0</pose>
-        
         <inertia>
-        <ixx>0.0002240093871456265</ixx>
-        <ixy>0.0</ixy>
-        <ixz>0.0</ixz>
-        <iyy>0.009517276879188259</iyy>
-        <iyz>0.0</iyz>
-        <izz>0.009651659295726119</izz>
-        </inertia></inertial>
+          <ixx>0.0002240093871456265</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.009517276879188259</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.009651659295726119</izz>
+        </inertia>
+      </inertial>
       <visual name="visual">
         <geometry>
           <mesh>
             <uri>model://033_spatula_textured/textured.dae</uri>
           </mesh>
         </geometry>
-      <pose>0.06556647936252226 0.06360047111440037 -0.013192765671997661 -0.0020117013120585043 -0.003314691832860242 -0.2651658137727719</pose></visual>
+        <pose>0.024316932692646124 0.0881029873786801 -0.013006593722199308 0.0034120834510874476 0.001841741808292408 0.2651834080416322</pose>
+      </visual>
       <collision name="collision">
         <geometry>
           <mesh>
@@ -39,7 +39,7 @@
               <slip2>0</slip2>
             </ode>
             <torsional>
-              <ode />
+              <ode/>
             </torsional>
           </friction>
           <contact>
@@ -50,7 +50,8 @@
             </ode>
           </contact>
         </surface>
-      <pose>0.06556647936252226 0.06360047111440037 -0.013192765671997661 -0.0020117013120585043 -0.003314691832860242 -0.2651658137727719</pose></collision>
+        <pose>0.024316932692646124 0.0881029873786801 -0.013006593722199308 0.0034120834510874476 0.001841741808292408 0.2651834080416322</pose>
+      </collision>
     </link>
   </model>
 </sdf>

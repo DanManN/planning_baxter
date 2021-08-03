@@ -1,21 +1,18 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.4">
   <model name="012_strawberry_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
-        <!-- Volume:  4.8323563000e-05 -->
         <mass> 1.0 </mass>
-        <!-- Center of mass: -1.4938700000e-03  1.5432680000e-02  2.1114500000e-02 -->
-        <pose> -1.4938700000e-03  1.5432680000e-02  2.1114500000e-02 0 0 0 </pose>
-        <!-- Inertia matrix -->
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
-          <ixx>  2.0727670681e-04 </ixx>
-          <ixy> -2.0235465667e-05 </ixy>
-          <ixz> -5.3869165235e-07 </ixz>
-          <iyy>  2.1151061440e-04 </iyy>
-          <iyz> -6.1889165747e-06 </iyz>
-          <izz>  2.0897986972e-04 </izz>
+          <ixx>0.00018804156668440243</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.0002091355122880768</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.0002305901119575207</izz>
         </inertia>
       </inertial>
       <visual name="visual">
@@ -24,11 +21,12 @@
             <uri>model://012_strawberry_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>-0.01383808453796234 -0.02065040143678218 0.008263758626028005 -1.3118401642923738 -0.6946114245546983 -0.3903125541481074</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <mesh>
-            <uri>model://012_strawberry_textured/textured.dae</uri>
+            <uri>model://012_strawberry_textured/textured.col.dae</uri>
           </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -52,6 +50,7 @@
             </ode>
           </contact>
         </surface>
+        <pose>-0.01383808453796234 -0.02065040143678218 0.008263758626028005 -1.3118401642923738 -0.6946114245546983 -0.3903125541481074</pose>
       </collision>
     </link>
   </model>

@@ -1,21 +1,18 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.4">
   <model name="030_fork_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
-        <!-- Volume:  1.9601862000e-05 -->
         <mass> 1.0 </mass>
-        <!-- Center of mass:  8.4994300000e-03 -2.1533140000e-02  6.7092600000e-03 -->
-        <pose>  8.4994300000e-03 -2.1533140000e-02  6.7092600000e-03 0 0 0 </pose>
-        <!-- Inertia matrix -->
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
-          <ixx>  3.3887413349e-05 </ixx>
-          <ixy>  2.4197803250e-06 </ixy>
-          <ixz> -3.2241891102e-05 </ixz>
-          <iyy>  2.3941594681e-03 </iyy>
-          <iyz>  1.8944271723e-06 </iyz>
-          <izz>  2.4083582927e-03 </izz>
+          <ixx>3.3447162777553386e-05</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.0023939289473183228</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.002409029064053124</izz>
         </inertia>
       </inertial>
       <visual name="visual">
@@ -24,11 +21,12 @@
             <uri>model://030_fork_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>-0.008612028950276842 -0.022176585380309238 0.0038681541543154827 -3.017026531699697 -0.01334217095453903 -0.002714488955233855</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <mesh>
-            <uri>model://030_fork_textured/textured.dae</uri>
+            <uri>model://030_fork_textured/textured.col.dae</uri>
           </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -52,6 +50,7 @@
             </ode>
           </contact>
         </surface>
+        <pose>-0.008612028950276842 -0.022176585380309238 0.0038681541543154827 -3.017026531699697 -0.01334217095453903 -0.002714488955233855</pose>
       </collision>
     </link>
   </model>

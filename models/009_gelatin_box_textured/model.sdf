@@ -1,21 +1,18 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.4">
   <model name="009_gelatin_box_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
-        <!-- Volume:  1.7305596900e-04 -->
         <mass> 1.0 </mass>
-        <!-- Center of mass: -2.2675490000e-02 -7.8602000000e-03  1.3877970000e-02 -->
-        <pose> -2.2675490000e-02 -7.8602000000e-03  1.3877970000e-02 0 0 0 </pose>
-        <!-- Inertia matrix -->
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
-          <ixx>  6.7629022146e-04 </ixx>
-          <ixy>  4.3994151973e-05 </ixy>
-          <ixz>  1.3515396282e-06 </ixz>
-          <iyy>  4.9688856731e-04 </iyy>
-          <iyz> -2.5952199314e-06 </iyz>
-          <izz>  1.0452014914e-03 </izz>
+          <ixx>0.00048666644218271565</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.0006864964861038301</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.0010452173518834544</izz>
         </inertia>
       </inertial>
       <visual name="visual">
@@ -24,12 +21,13 @@
             <uri>model://009_gelatin_box_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>0.0024607828100741127 -0.023837005356554686 -0.013939166606875272 -0.005401796068043552 0.0008354814563321582 -1.7988028990163765</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <mesh>
-            <uri>model://009_gelatin_box_textured/textured.dae</uri>
-          </mesh>
+          <box>
+            <size>0.029789716196536444 0.07271697617434505 0.08939781736051994</size>
+          </box>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -52,6 +50,7 @@
             </ode>
           </contact>
         </surface>
+        <pose>-0.0005325408407206187 2.6286406346172353e-05 0.000343393848634849 1.5697356507445464 -1.559682063587776 1.5769088533744184</pose>
       </collision>
     </link>
   </model>

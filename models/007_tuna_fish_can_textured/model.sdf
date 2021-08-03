@@ -1,21 +1,18 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.4">
   <model name="007_tuna_fish_can_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
-        <!-- Volume:  1.5261897300e-04 -->
         <mass> 1.0 </mass>
-        <!-- Center of mass: -2.5996330000e-02 -2.2140360000e-02  1.2989510000e-02 -->
-        <pose> -2.5996330000e-02 -2.2140360000e-02  1.2989510000e-02 0 0 0 </pose>
-        <!-- Inertia matrix -->
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
-          <ixx>  5.2105506043e-04 </ixx>
-          <ixy>  1.4112858694e-07 </ixy>
-          <ixz>  8.0185967442e-08 </ixz>
-          <iyy>  5.2160882776e-04 </iyy>
-          <iyz>  1.7259322011e-08 </iyz>
-          <izz>  9.1347272400e-04 </izz>
+          <ixx>0.0005210211539719076</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.0005216427170703119</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.0009134727411477803</izz>
         </inertia>
       </inertial>
       <visual name="visual">
@@ -24,12 +21,14 @@
             <uri>model://007_tuna_fish_can_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>0.020110277937348996 0.027599724488459303 -0.012983220474224183 4.411777054714305e-05 -0.00020435417787395712 0.23567936469124465</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <mesh>
-            <uri>model://007_tuna_fish_can_textured/textured.dae</uri>
-          </mesh>
+          <cylinder>
+            <length>0.03346239956024129</length>
+            <radius>0.04292022598609619</radius>
+          </cylinder>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -52,6 +51,7 @@
             </ode>
           </contact>
         </surface>
+        <pose>-6.480946670783111e-05 -1.604324267411375e-05 0.0005368008055360012 -1.8468245559417645e-10 3.769724893072472e-08 0.23572348264809928</pose>
       </collision>
     </link>
   </model>

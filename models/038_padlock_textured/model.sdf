@@ -1,21 +1,18 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.4">
   <model name="038_padlock_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
-        <!-- Volume:  4.5702026000e-05 -->
         <mass> 1.0 </mass>
-        <!-- Center of mass: -1.7076080000e-02  9.5173900000e-03  1.3626340000e-02 -->
-        <pose> -1.7076080000e-02  9.5173900000e-03  1.3626340000e-02 0 0 0 </pose>
-        <!-- Inertia matrix -->
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
-          <ixx>  1.8831641074e-04 </ixx>
-          <ixy>  1.2776879957e-05 </ixy>
-          <ixz> -1.6028405393e-05 </ixz>
-          <iyy>  2.4741917787e-04 </iyy>
-          <iyz>  1.2238341469e-06 </iyz>
-          <izz>  3.3711647926e-04 </izz>
+          <ixx>0.00018401152536710535</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.0002500168962286254</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.00033882364627426916</izz>
         </inertia>
       </inertial>
       <visual name="visual">
@@ -24,11 +21,12 @@
             <uri>model://038_padlock_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>0.017119086053070456 -0.006268841876731497 -0.015345646829189251 -0.0015151851637081092 0.10622308887992228 0.19955619657825346</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <mesh>
-            <uri>model://038_padlock_textured/textured.dae</uri>
+            <uri>model://038_padlock_textured/textured.col.dae</uri>
           </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -52,6 +50,7 @@
             </ode>
           </contact>
         </surface>
+        <pose>0.017119086053070456 -0.006268841876731497 -0.015345646829189251 -0.0015151851637081092 0.10622308887992228 0.19955619657825346</pose>
       </collision>
     </link>
   </model>

@@ -1,21 +1,18 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.4">
   <model name="008_pudding_box_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
-        <!-- Volume:  3.4177240000e-04 -->
         <mass> 1.0 </mass>
-        <!-- Center of mass:  1.5176500000e-03  1.8795880000e-02  1.8657700000e-02 -->
-        <pose>  1.5176500000e-03  1.8795880000e-02  1.8657700000e-02 0 0 0 </pose>
-        <!-- Inertia matrix -->
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
-          <ixx>  8.1135081270e-04 </ixx>
-          <ixy> -1.4673426614e-04 </ixy>
-          <ixz> -1.9441713550e-05 </ixz>
-          <iyy>  1.0115733640e-03 </iyy>
-          <iyz> -6.1593750695e-06 </iyz>
-          <izz>  1.6130209321e-03 </izz>
+          <ixx>0.0007333720334837207</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.001089069154385225</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.0016135039209310541</izz>
         </inertia>
       </inertial>
       <visual name="visual">
@@ -24,12 +21,13 @@
             <uri>model://008_pudding_box_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>-0.010541131837252506 -0.015784608669504735 -0.018531832195634555 -0.004526206216944961 0.023404432722568206 -0.4857779269165933</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <mesh>
-            <uri>model://008_pudding_box_textured/textured.dae</uri>
-          </mesh>
+          <box>
+            <size>0.03827376221947275 0.08971093390318564 0.11274066490351026</size>
+          </box>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -52,6 +50,7 @@
             </ode>
           </contact>
         </surface>
+        <pose>-0.0007092094806015799 0.000472033997632966 -0.00026218876438261277 -0.7954029487855642 1.5611107897137695 2.3403513042416813</pose>
       </collision>
     </link>
   </model>

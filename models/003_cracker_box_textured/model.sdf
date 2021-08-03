@@ -1,21 +1,18 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.4">
   <model name="003_cracker_box_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
-        <!-- Volume:  2.1732890620e-03 -->
         <mass> 1.0 </mass>
-        <!-- Center of mass: -1.4853580000e-02 -1.4205070000e-02  1.0220482000e-01 -->
-        <pose> -1.4853580000e-02 -1.4205070000e-02  1.0220482000e-01 0 0 0 </pose>
-        <!-- Inertia matrix -->
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
-          <ixx>  5.8284476667e-03 </ixx>
-          <ixy> -1.2156971874e-06 </ixy>
-          <ixz>  3.7193151667e-05 </ixz>
-          <iyy>  4.0928755029e-03 </iyy>
-          <iyz>  1.3268114999e-05 </iyz>
-          <izz>  2.4318893100e-03 </izz>
+          <ixx>0.0024313759304404503</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.004092980997122475</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.005828855552037073</izz>
         </inertia>
       </inertial>
       <visual name="visual">
@@ -24,12 +21,13 @@
             <uri>model://003_cracker_box_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>0.1024716201052403 0.009008371851285944 -0.016930871015691146 -1.5822870563545677 0.3091147487167096 1.5593007885117511</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <mesh>
-            <uri>model://003_cracker_box_textured/textured.dae</uri>
-          </mesh>
+          <box>
+            <size>0.07172171712267807 0.16384180899567619 0.21354082245590955</size>
+          </box>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -52,6 +50,7 @@
             </ode>
           </contact>
         </surface>
+        <pose>-0.001263693627078205 0.0009926205261100423 -0.0003641209586000768 -1.5620294497149123 -0.30547238099515933 -1.5711266831941582</pose>
       </collision>
     </link>
   </model>

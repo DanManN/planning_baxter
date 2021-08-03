@@ -1,21 +1,18 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.4">
   <model name="032_knife_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
-        <!-- Volume:  2.1835754000e-05 -->
         <mass> 1.0 </mass>
-        <!-- Center of mass:  8.4451900000e-03 -2.9092630000e-02  5.0003700000e-03 -->
-        <pose>  8.4451900000e-03 -2.9092630000e-02  5.0003700000e-03 0 0 0 </pose>
-        <!-- Inertia matrix -->
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
-          <ixx>  3.6222866405e-05 </ixx>
-          <ixy>  1.8285418493e-05 </ixy>
-          <ixz> -1.8788988006e-04 </ixz>
-          <iyy>  3.7514511933e-03 </iyy>
-          <iyz>  2.5965625002e-06 </iyz>
-          <izz>  3.7492295709e-03 </izz>
+          <ixx>2.6648442043963262e-05</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.003751171564280951</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.0037590836242800867</izz>
         </inertia>
       </inertial>
       <visual name="visual">
@@ -24,11 +21,12 @@
             <uri>model://032_knife_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>-0.008830083609333602 -0.02934965685304967 -0.0018257383849589277 -2.9232302225768367 -0.04816944449161835 -0.015742069839535338</pose>
       </visual>
       <collision name="collision">
         <geometry>
           <mesh>
-            <uri>model://032_knife_textured/textured.dae</uri>
+            <uri>model://032_knife_textured/textured.col.dae</uri>
           </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
@@ -52,6 +50,7 @@
             </ode>
           </contact>
         </surface>
+        <pose>-0.008830083609333602 -0.02934965685304967 -0.0018257383849589277 -2.9232302225768367 -0.04816944449161835 -0.015742069839535338</pose>
       </collision>
     </link>
   </model>

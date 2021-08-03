@@ -1,21 +1,18 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.4">
   <model name="040_large_marker_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
-        <!-- Volume:  2.7400097000e-05 -->
         <mass> 1.0 </mass>
-        <!-- Center of mass: -3.5725120000e-02 -7.8807500000e-03  9.0182900000e-03 -->
-        <pose> -3.5725120000e-02 -7.8807500000e-03  9.0182900000e-03 0 0 0 </pose>
-        <!-- Inertia matrix -->
+        <pose>0 0 0 0 0 0</pose>
         <inertia>
-          <ixx>  1.1302891263e-03 </ixx>
-          <ixy>  2.2711762663e-05 </ixy>
-          <ixz> -6.2284451037e-08 </ixz>
-          <iyy>  3.9274386510e-05 </iyy>
-          <iyz> -5.8414756707e-07 </iyz>
-          <izz>  1.1308049165e-03 </izz>
+          <ixx>3.88014872299238e-05</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.001130705932837409</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.0011308610092426673</izz>
         </inertia>
       </inertial>
       <visual name="visual">
@@ -24,12 +21,14 @@
             <uri>model://040_large_marker_textured/textured.dae</uri>
           </mesh>
         </geometry>
+        <pose>0.007131021821083012 0.03412272087629481 -0.014300644107406923 -3.126534625497984 0.6430428567650112 1.5967947536908318</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <mesh>
-            <uri>model://040_large_marker_textured/textured.dae</uri>
-          </mesh>
+          <cylinder>
+            <length>0.12080870072526215</length>
+            <radius>0.009938878251610059</radius>
+          </cylinder>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -52,6 +51,7 @@
             </ode>
           </contact>
         </surface>
+        <pose>0.0028587330774875698 3.35478477354878e-06 -8.975456799327139e-06 -1.5707963028586274 0.9281250139930121 -1.5707963297631111</pose>
       </collision>
     </link>
   </model>
