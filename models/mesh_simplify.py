@@ -105,7 +105,7 @@ def approximate_mesh(mesh_file):
 
     min_volume = min(vol_box, vol_sphere, vol_cylinder, vol_decomp)
 
-    # return {'transform': transforms[vol_box], 'shape': shapes[vol_box]}
+    return {'transform': transforms[vol_box], 'shape': shapes[vol_box]}
     # return {'transform': transforms[vol_sphere], 'shape': shapes[vol_sphere]}
     # return {'transform': transforms[vol_cylinder], 'shape': shapes[vol_cylinder]}
     return {'transform': transforms[min_volume], 'shape': shapes[min_volume]}
@@ -211,13 +211,52 @@ def main(argv):
                     # different convention?
                     # iarr[:3, :3] *= -1
                     # iarr[(0, 1, 2), (0, 1, 2)] *= -1
+
+                    axes = list(
+                        {
+                            # 'sxyz': (0, 0, 0, 0),
+                            'sxyx': (0, 0, 1, 0),
+                            'sxzy': (0, 1, 0, 0),
+                            'sxzx': (0, 1, 1, 0),
+                            # 'syzx': (1, 0, 0, 0),
+                            # 'syzy': (1, 0, 1, 0),
+                            # 'syxz': (1, 1, 0, 0),
+                            # 'syxy': (1, 1, 1, 0),
+                            # 'szxy': (2, 0, 0, 0),
+                            # 'szxz': (2, 0, 1, 0),
+                            # 'szyx': (2, 1, 0, 0),
+                            # 'szyz': (2, 1, 1, 0),
+                            # 'rzyx': (0, 0, 0, 1),
+                            'rxyx': (0, 0, 1, 1),
+                            'ryzx': (0, 1, 0, 1),
+                            'rxzx': (0, 1, 1, 1),
+                            # 'rxzy': (1, 0, 0, 1),
+                            # 'ryzy': (1, 0, 1, 1),
+                            'rzxy': (1, 1, 0, 1),
+                            # 'ryxy': (1, 1, 1, 1),
+                            # 'ryxz': (2, 0, 0, 1),
+                            # 'rzxz': (2, 0, 1, 1),
+                            # 'rxyz': (2, 1, 0, 1),
+                            # 'rzyz': (2, 1, 1, 1)
+                        }.keys()
+                    )
+                    ind = 6
+                    # ind = int(argv[2])
+                    # ind = int(filename.split('_')[0])
+                    print('\tIndex:', ind)
+
                     inertia_scale, inertia_basis = trimesh.inertia.principal_axis(iarr)
-                    moment_transform = euler_matrix(*euler_from_matrix(inertia_basis.T))
+                    print('\tMoments:', inertia_scale)
+                    angles = euler_from_matrix(inertia_basis.T, axes[ind])
+                    print('\tAngles:', angles)
+                    moment_transform = euler_matrix(*angles, axes[ind])
                     inertial.remove(inertia)
                     inertia = inertia_to_xml(np.diag(inertia_scale))
                 inertial.append(inertia)
 
                 # compute pose for collision and visual geometry
+                print(com_transform)
+                print(moment_transform)
                 inertia_transform = inverse_matrix(concatenate_matrices(com_transform, moment_transform))
                 pose_visual = transform2pose(inertia_transform)
                 pose_collision = transform2pose(concatenate_matrices(inertia_transform, transform))
