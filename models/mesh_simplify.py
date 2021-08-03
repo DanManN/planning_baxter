@@ -6,8 +6,16 @@ from glob import glob
 import xml.etree.ElementTree as ET
 
 import trimesh
-from numpy import zeros, eye, array, diag, triu_indices, triu_indices_from
-from trimesh.transformations import euler_from_matrix, translation_from_matrix, translation_matrix, inverse_matrix, concatenate_matrices
+import numpy as np
+from numpy import triu_indices, triu_indices_from
+from trimesh.transformations import \
+        euler_from_matrix, \
+        euler_matrix, \
+        translation_from_matrix, \
+        translation_matrix, \
+        inverse_matrix, \
+        concatenate_matrices, \
+        superimposition_matrix
 
 
 def transform2pose(transform):
@@ -21,7 +29,7 @@ def sym_to_mat(tri_array):
     if len(tri_array) != (n * (n + 1)) // 2:
         print("Length of array unsuitable for creating a symmetric matrix!")
         return None
-    symmetric = zeros((n, n))
+    symmetric = np.zeros((n, n))
     R, C = triu_indices(n)
     symmetric[R, C] = tri_array
     symmetric[C, R] = tri_array
@@ -49,7 +57,7 @@ def inertia_from_xml(inode):
 
 def inertia_to_xml(itensor):
     """convert an inertia tensor to xml"""
-    arr = array(itensor)
+    arr = np.array(itensor)
     ixx, ixy, ixz, iyy, iyz, izz = arr[triu_indices_from(arr)]
     return ET.fromstring(
         f"""
@@ -87,7 +95,7 @@ def approximate_mesh(mesh_file):
     transforms[vol_box] = inverse_matrix(box[0])
     transforms[vol_sphere] = translation_matrix([p for p in sphere[0]])
     transforms[vol_cylinder] = cylinder['transform']
-    transforms[vol_decomp] = eye(4)
+    transforms[vol_decomp] = np.eye(4)
 
     shapes = {}
     shapes[vol_box] = ('box', *box[1])
@@ -97,7 +105,7 @@ def approximate_mesh(mesh_file):
 
     min_volume = min(vol_box, vol_sphere, vol_cylinder, vol_decomp)
 
-    # return {'transform': transforms[vol_box], 'shape': shapes[vol_box]}
+    return {'transform': transforms[vol_box], 'shape': shapes[vol_box]}
     # return {'transform': transforms[vol_sphere], 'shape': shapes[vol_sphere]}
     # return {'transform': transforms[vol_cylinder], 'shape': shapes[vol_cylinder]}
     return {'transform': transforms[min_volume], 'shape': shapes[min_volume]}
@@ -185,32 +193,32 @@ def main(argv):
                 transform = solid_desc['transform']
 
                 # set inertia to link frame
-                inertia_transform = eye(4)
+                com_transform = np.eye(4)
                 ipose = inertial.find('pose')
                 if ipose is None:
                     ipose = ET.Element('pose')
                     inertial.append(ipose)
                 else:
-                    inertia_transform[:3, 3] = [float(x) for x in ipose.text.split()[:3]]
+                    com_transform = translation_matrix([float(x) for x in ipose.text.split()[:3]])
                 ipose.text = '0 0 0 0 0 0'
 
+                moment_transform = np.eye(4)
                 inertia = inertial.find('inertia')
                 if inertia is None:
-                    inertia = inertia_to_xml(eye(3))
+                    inertia = inertia_to_xml(np.eye(3))
                 else:
                     iarr = inertia_from_xml(inertia)
+                    # different convention?
+                    # iarr[:3, :3] *= -1
+                    # iarr[(0, 1, 2), (0, 1, 2)] *= -1
                     inertia_scale, inertia_basis = trimesh.inertia.principal_axis(iarr)
-                    inertia_transform[:3, 0] = inertia_basis[0]
-                    inertia_transform[:3, 1] = inertia_basis[1]
-                    inertia_transform[:3, 2] = inertia_basis[2]
-                    inertia_transform[:3, :3] *= -1  # why is this necessary
-                    inertia_transform[(0, 1, 2), (0, 1, 2)] *= -1  # but not this?
+                    moment_transform = euler_matrix(*euler_from_matrix(inertia_basis.T))
                     inertial.remove(inertia)
-                    inertia = inertia_to_xml(diag(inertia_scale))
+                    inertia = inertia_to_xml(np.diag(inertia_scale))
                 inertial.append(inertia)
 
                 # compute pose for collision and visual geometry
-                inertia_transform = inverse_matrix(inertia_transform)
+                inertia_transform = inverse_matrix(concatenate_matrices(com_transform, moment_transform))
                 pose_visual = transform2pose(inertia_transform)
                 pose_collision = transform2pose(concatenate_matrices(inertia_transform, transform))
 
