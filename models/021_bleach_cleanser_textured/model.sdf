@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="021_bleach_cleanser_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        <!-- Volume:  9.7234539800e-04 -->
         <mass> 1.0 </mass>
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Center of mass: -1.7138950000e-02  1.1574370000e-02  9.9697960000e-02 -->
+        <pose> -1.7138950000e-02  1.1574370000e-02  9.9697960000e-02 0 0 0 </pose>
+        <!-- Inertia matrix -->
         <inertia>
           <ixx>  4.3546483321e-03 </ixx>
           <ixy>  3.5311987973e-06 </ixy>
@@ -21,13 +24,12 @@
             <uri>model://021_bleach_cleanser_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>-0.011162462483310986 0.02438850291835997 0.12250573542632734 -3.136392250159056 0.06460401797851434 1.5551221310259247</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <box>
-            <size>0.06772573203492266 0.09831611002344243 0.25405078406064524</size>
-          </box>
+          <mesh>
+            <uri>model://021_bleach_cleanser_textured/textured.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -50,7 +52,6 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

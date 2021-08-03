@@ -6,8 +6,8 @@ from glob import glob
 import xml.etree.ElementTree as ET
 
 import trimesh
-# import numpy as np
-from trimesh.transformations import euler_from_matrix, translation_from_matrix, inverse_matrix
+from numpy import zeros, eye, array, diag, triu_indices, triu_indices_from
+from trimesh.transformations import euler_from_matrix, translation_from_matrix, translation_matrix, inverse_matrix, concatenate_matrices
 
 
 def transform2pose(transform):
@@ -15,33 +15,92 @@ def transform2pose(transform):
     return list(translation_from_matrix(transform)) + list(euler_from_matrix(transform))
 
 
-def mesh2primitive_solid(mesh_file):
-    """find minimum volume bounding simple solid for given mesh"""
+def sym_to_mat(tri_array):
+    """take an array containing triangular matrix elements and return a symmetric matrix"""
+    n = int((2 * len(tri_array))**0.5)
+    if len(tri_array) != (n * (n + 1)) // 2:
+        print("Length of array unsuitable for creating a symmetric matrix!")
+        return None
+    symmetric = zeros((n, n))
+    R, C = triu_indices(n)
+    symmetric[R, C] = tri_array
+    symmetric[C, R] = tri_array
+    return symmetric
+
+
+def inertia_from_xml(inode):
+    """extract the inertia tensor from xml"""
+    if inode.attrib:
+        ixx = float(inode.attrib['ixx'])
+        ixy = float(inode.attrib['ixy'])
+        ixz = float(inode.attrib['ixz'])
+        iyy = float(inode.attrib['iyy'])
+        iyz = float(inode.attrib['iyz'])
+        izz = float(inode.attrib['izz'])
+    else:
+        ixx = float(inode.find('ixx').text)
+        ixy = float(inode.find('ixy').text)
+        ixz = float(inode.find('ixz').text)
+        iyy = float(inode.find('iyy').text)
+        iyz = float(inode.find('iyz').text)
+        izz = float(inode.find('izz').text)
+    return sym_to_mat([ixx, ixy, ixz, iyy, iyz, izz])
+
+
+def inertia_to_xml(itensor):
+    """convert an inertia tensor to xml"""
+    arr = array(itensor)
+    ixx, ixy, ixz, iyy, iyz, izz = arr[triu_indices_from(arr)]
+    return ET.fromstring(
+        f"""
+        <inertia>
+        <ixx>{ixx}</ixx>
+        <ixy>{ixy}</ixy>
+        <ixz>{ixz}</ixz>
+        <iyy>{iyy}</iyy>
+        <iyz>{iyz}</iyz>
+        <izz>{izz}</izz>
+        </inertia>
+        """
+    )
+
+
+def approximate_mesh(mesh_file):
+    """find minimum volume bounding solid or approximate mesh given a complex mesh"""
     mesh_obj = trimesh.load(mesh_file, force='mesh')
-    sphere = trimesh.nsphere.minimum_nsphere(mesh_obj)
-    cylinder = trimesh.bounds.minimum_cylinder(mesh_obj, sample_count=6)
+
     box = trimesh.bounds.oriented_bounds(mesh_obj)
+    sphere = trimesh.nsphere.fit_nsphere(mesh_obj.vertices)
+    cylinder = trimesh.bounds.minimum_cylinder(mesh_obj, sample_count=6)
+    decomp = trimesh.util.concatenate(trimesh.decomposition.convex_decomposition(mesh_obj))
 
-    vol_sphere = (4 / 3) * pi * (sphere[1]**2)
-    vol_cylinder = cylinder['height'] * pi * (cylinder['radius']**2)
     vol_box = box[1][0] * box[1][1] * box[1][2]
+    print('\tbox:', vol_box)
+    vol_sphere = (4 / 3) * pi * (sphere[1]**2)
+    print('\tshere:', vol_sphere)
+    vol_cylinder = cylinder['height'] * pi * (cylinder['radius']**2)
+    print('\tcylinder', vol_cylinder)
+    vol_decomp = decomp.volume
+    print('\tconvex:', vol_decomp)
 
-    poses = {}
-    # poses[vol_sphere] = list(sphere[0]) + [0, 0, 0]
-    # poses[vol_cylinder] = transform2pose(cylinder['transform'])
-    # poses[vol_box] = transform2pose(inverse_matrix(box[0]))
-    poses[vol_sphere] = [-p for p in sphere[0]] + [0, 0, 0]
-    poses[vol_cylinder] = transform2pose(inverse_matrix(cylinder['transform']))
-    poses[vol_box] = transform2pose(box[0])
+    transforms = {}
+    transforms[vol_box] = inverse_matrix(box[0])
+    transforms[vol_sphere] = translation_matrix([p for p in sphere[0]])
+    transforms[vol_cylinder] = cylinder['transform']
+    transforms[vol_decomp] = eye(4)
 
     shapes = {}
+    shapes[vol_box] = ('box', *box[1])
     shapes[vol_sphere] = ('sphere', sphere[1])
     shapes[vol_cylinder] = ('cylinder', cylinder['radius'], cylinder['height'])
-    shapes[vol_box] = ('box', *box[1])
+    shapes[vol_decomp] = ('mesh', decomp)
 
-    min_volume = min(vol_sphere, vol_cylinder, vol_box)
+    min_volume = min(vol_box, vol_sphere, vol_cylinder, vol_decomp)
 
-    return {'pose': poses[min_volume], 'shape': shapes[min_volume]}
+    # return {'transform': transforms[vol_box], 'shape': shapes[vol_box]}
+    # return {'transform': transforms[vol_sphere], 'shape': shapes[vol_sphere]}
+    # return {'transform': transforms[vol_cylinder], 'shape': shapes[vol_cylinder]}
+    return {'transform': transforms[min_volume], 'shape': shapes[min_volume]}
 
 
 def primitive_solid2xml(solid, x_r, y_l=None, z_z=None):
@@ -74,8 +133,8 @@ def primitive_solid2xml(solid, x_r, y_l=None, z_z=None):
     return None
 
 
-if __name__ == '__main__':
-    for filename in glob(sys.argv[1]):
+def main(argv):
+    for filename in glob(argv[1]):
         print(filename)
         tree = ET.parse(filename)
         link = tree.find('.//*[collision]')
@@ -113,30 +172,75 @@ if __name__ == '__main__':
                 print('\tGeom:', list(geom))
             else:
                 print('\tNo geometry?')
-                sys.exit(-1)
+                return
 
             mesh = geom.find("mesh")
             if mesh is not None:
-                meshfile = mesh.find('uri').text.replace('model://', './')
-                solid_desc = mesh2primitive_solid(meshfile)
-                print('\tReplacing mesh with', solid_desc)
-                geom.remove(mesh)
-                solid_xml = primitive_solid2xml(*solid_desc['shape'])
-                geom.append(solid_xml)
-                # pose.text = ' '.join([str(p) for p in solid_desc['pose']])
+                mesh_uri = mesh.find('uri')
+                meshfile = mesh_uri.text.replace('model://', '')
 
+                # get approximating solid or mesh
+                solid_desc = approximate_mesh(meshfile)
+                shape = solid_desc['shape']
+                transform = solid_desc['transform']
+
+                # set inertia to link frame
+                inertia_transform = eye(4)
+                ipose = inertial.find('pose')
+                if ipose is None:
+                    ipose = ET.Element('pose')
+                    inertial.append(ipose)
+                else:
+                    inertia_transform[:3, 3] = [float(x) for x in ipose.text.split()[:3]]
+                ipose.text = '0 0 0 0 0 0'
+
+                inertia = inertial.find('inertia')
+                if inertia is None:
+                    inertia = inertia_to_xml(eye(3))
+                else:
+                    iarr = inertia_from_xml(inertia)
+                    inertia_scale, inertia_basis = trimesh.inertia.principal_axis(iarr)
+                    inertia_transform[:3, 0] = inertia_basis[0]
+                    inertia_transform[:3, 1] = inertia_basis[1]
+                    inertia_transform[:3, 2] = inertia_basis[2]
+                    inertia_transform[:3, :3] *= -1  # why is this necessary
+                    inertia_transform[(0, 1, 2), (0, 1, 2)] *= -1  # but not this?
+                    inertial.remove(inertia)
+                    inertia = inertia_to_xml(diag(inertia_scale))
+                inertial.append(inertia)
+
+                # compute pose for collision and visual geometry
+                inertia_transform = inverse_matrix(inertia_transform)
+                pose_visual = transform2pose(inertia_transform)
+                pose_collision = transform2pose(concatenate_matrices(inertia_transform, transform))
+
+                # set visual pose
                 vis_geom = link.find('visual')
                 vpose = link.find('pose')
                 if vpose is None:
                     vpose = ET.Element('pose')
                     vis_geom.append(vpose)
-                vpose.text = ' '.join([str(p) for p in solid_desc['pose']])
+                vpose.text = ' '.join([str(p) for p in pose_visual])
 
-                ipose = inertial.find('pose')
-                if ipose is None:
-                    ipose = ET.Element('pose')
-                    inertial.append(ipose)
-                ipose.text = '0 0 0 0 0 0'
+                # set collision pose
+                pose.text = ' '.join([str(p) for p in pose_collision])
+
+                # update geometry
+                if shape[0] == 'mesh':
+                    col_meshfile = '.'.join(meshfile.split('.')[:-1] + ['col', 'dae'])
+                    print('\tNew collision mesh file: ', col_meshfile)
+                    with open(col_meshfile, 'wb') as f:
+                        # bits = trimesh.exchange.stl.export_stl(shape[1])
+                        bits = trimesh.exchange.dae.export_collada(shape[1])
+                        f.write(bits)
+                    mesh_uri.text = 'model://' + col_meshfile
+                else:
+                    print('\tReplacing mesh with', shape)
+                    geom.remove(mesh)
+                    solid_xml = primitive_solid2xml(*shape)
+                    geom.append(solid_xml)
+                    if shape[0] == 'sphere':
+                        pose.text = '0 0 0 0 0 0'
             else:
                 print('\tNot a mesh.')
 
@@ -144,3 +248,7 @@ if __name__ == '__main__':
             link.remove(e)
 
         tree.write(filename)
+
+
+if __name__ == '__main__':
+    main(sys.argv)

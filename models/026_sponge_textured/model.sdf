@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="026_sponge_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        <!-- Volume:  1.1574259900e-04 -->
         <mass> 1.0 </mass>
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Center of mass: -1.5842370000e-02  1.1520710000e-02  9.3725000000e-03 -->
+        <pose> -1.5842370000e-02  1.1520710000e-02  9.3725000000e-03 0 0 0 </pose>
+        <!-- Inertia matrix -->
         <inertia>
           <ixx>  8.8309570446e-04 </ixx>
           <ixy> -4.6779232943e-06 </ixy>
@@ -21,13 +24,12 @@
             <uri>model://026_sponge_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>0.009323095015802339 0.016508217474951042 0.013438746148375945 -1.5789391158659178 0.020270404653240134 1.556181449073148</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <box>
-            <size>0.018376249764483 0.07935834886880955 0.11112429834146714</size>
-          </box>
+          <mesh>
+            <uri>model://026_sponge_textured/textured.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -50,7 +52,6 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

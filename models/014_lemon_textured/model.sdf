@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="014_lemon_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        <!-- Volume:  9.6834694000e-05 -->
         <mass> 1.0 </mass>
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Center of mass: -1.0770480000e-02  2.1014210000e-02  2.6208540000e-02 -->
+        <pose> -1.0770480000e-02  2.1014210000e-02  2.6208540000e-02 0 0 0 </pose>
+        <!-- Inertia matrix -->
         <inertia>
           <ixx>  3.1437078017e-04 </ixx>
           <ixy> -3.1552044766e-05 </ixy>
@@ -21,14 +24,12 @@
             <uri>model://014_lemon_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>-0.0238276874058284 0.02351166308577418 -0.010551983209521085 1.0658163591440548 -0.8779340056606375 1.9729425622119363</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <cylinder>
-            <length>0.06536226410252527</length>
-            <radius>0.027780308515966964</radius>
-          </cylinder>
+          <mesh>
+            <uri>model://014_lemon_textured/textured.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -51,7 +52,6 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

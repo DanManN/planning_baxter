@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="004_sugar_box_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        <!-- Volume:  6.3793371600e-04 -->
         <mass> 1.0 </mass>
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Center of mass: -7.6984100000e-03 -1.7078160000e-02  8.6023820000e-02 -->
+        <pose> -7.6984100000e-03 -1.7078160000e-02  8.6023820000e-02 0 0 0 </pose>
+        <!-- Inertia matrix -->
         <inertia>
           <ixx>  3.1530279732e-03 </ixx>
           <ixy> -1.8465066361e-05 </ixy>
@@ -21,13 +24,12 @@
             <uri>model://004_sugar_box_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>0.003954482020765211 -0.0177770844521222 0.08775342727437457 -3.1313384988220894 -0.03044061745311172 -0.04079629266478267</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <box>
-            <size>0.04512661133829923 0.09209573559315604 0.17608737901868163</size>
-          </box>
+          <mesh>
+            <uri>model://004_sugar_box_textured/textured.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -50,7 +52,6 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

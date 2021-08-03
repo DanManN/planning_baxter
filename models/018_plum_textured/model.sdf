@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="018_plum_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        <!-- Volume:  8.6177818000e-05 -->
         <mass> 1.0 </mass>
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Center of mass: -7.7426200000e-03  1.9492230000e-02  2.3720320000e-02 -->
+        <pose> -7.7426200000e-03  1.9492230000e-02  2.3720320000e-02 0 0 0 </pose>
+        <!-- Inertia matrix -->
         <inertia>
           <ixx>  2.9160680884e-04 </ixx>
           <ixy> -3.3405034692e-06 </ixy>
@@ -21,14 +24,12 @@
             <uri>model://018_plum_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>-0.019879215879282763 0.0018226564846487955 0.026229000388411805 3.141592653589793 3.7843667304341506e-17 1.8849555921538759</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <cylinder>
-            <length>0.05305800080532208</length>
-            <radius>0.028665193451492786</radius>
-          </cylinder>
+          <mesh>
+            <uri>model://018_plum_textured/textured.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -51,7 +52,6 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

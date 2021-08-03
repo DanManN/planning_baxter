@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="005_tomato_soup_can_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        <!-- Volume:  3.1936111500e-04 -->
         <mass> 1.0 </mass>
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Center of mass: -9.3421000000e-03  8.4224250000e-02  5.0025820000e-02 -->
+        <pose> -9.3421000000e-03  8.4224250000e-02  5.0025820000e-02 0 0 0 </pose>
+        <!-- Inertia matrix -->
         <inertia>
           <ixx>  1.0026548160e-03 </ixx>
           <ixy> -4.1885969743e-07 </ixy>
@@ -21,14 +24,12 @@
             <uri>model://005_tomato_soup_can_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>0.009220720229365896 0.08370449014779921 0.05102349895241787 3.141592653589793 -1.2246467991473532e-16 1.2246467991473532e-16</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <cylinder>
-            <length>0.10184299790853402</length>
-            <radius>0.03417339171688009</radius>
-          </cylinder>
+          <mesh>
+            <uri>model://005_tomato_soup_can_textured/textured.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -51,7 +52,6 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

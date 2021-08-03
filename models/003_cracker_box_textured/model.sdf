@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="003_cracker_box_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        <!-- Volume:  2.1732890620e-03 -->
         <mass> 1.0 </mass>
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Center of mass: -1.4853580000e-02 -1.4205070000e-02  1.0220482000e-01 -->
+        <pose> -1.4853580000e-02 -1.4205070000e-02  1.0220482000e-01 0 0 0 </pose>
+        <!-- Inertia matrix -->
         <inertia>
           <ixx>  5.8284476667e-03 </ixx>
           <ixy> -1.2156971874e-06 </ixy>
@@ -21,13 +24,12 @@
             <uri>model://003_cracker_box_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>-0.012659690813577873 0.014287684830315353 0.10361138490821326 -3.140919322869203 -0.010603469289787086 3.1378391165981</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <box>
-            <size>0.07172171712267805 0.16384180899567624 0.21354082245590955</size>
-          </box>
+          <mesh>
+            <uri>model://003_cracker_box_textured/textured.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -50,7 +52,6 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

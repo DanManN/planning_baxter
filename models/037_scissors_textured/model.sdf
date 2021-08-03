@@ -1,33 +1,33 @@
-<?xml version="1.0"?>
 <sdf version="1.4">
   <model name="037_scissors_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        
         <mass> 1.0 </mass>
+        
         <pose>0 0 0 0 0 0</pose>
+        
         <inertia>
-          <ixx>  1.4098468721e-03 </ixx>
-          <ixy> -3.3596100298e-04 </ixy>
-          <ixz> -5.7905125503e-06 </ixz>
-          <iyy>  4.6953854148e-04 </iyy>
-          <iyz> -6.3143209142e-06 </iyz>
-          <izz>  1.8576432074e-03 </izz>
-        </inertia>
-      </inertial>
+        <ixx>0.00036179867794567647</ixx>
+        <ixy>0.0</ixy>
+        <ixz>0.0</ixz>
+        <iyy>0.0015175084525668886</iyy>
+        <iyz>0.0</iyz>
+        <izz>0.0018577214904674346</izz>
+        </inertia></inertial>
       <visual name="visual">
         <geometry>
           <mesh>
             <uri>model://037_scissors_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>0.007493062668491148 -0.018363338920148943 0.047091623876973535 -1.5733117338883047 0.5392554420020363 1.5718185287746609</pose>
-      </visual>
+      <pose>-0.0014304641762970833 0.014776899659447054 -0.0072528296226622045 -0.008171486338263199 0.008451271607165294 -1.260536419171395</pose></visual>
       <collision name="collision">
         <geometry>
-          <box>
-            <size>0.015361986085439556 0.08812522502424247 0.19758233061983646</size>
-          </box>
+          <mesh>
+            <uri>model://037_scissors_textured/textured.col.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -39,7 +39,7 @@
               <slip2>0</slip2>
             </ode>
             <torsional>
-              <ode/>
+              <ode />
             </torsional>
           </friction>
           <contact>
@@ -50,8 +50,7 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
-      </collision>
+      <pose>-0.0014304641762970833 0.014776899659447054 -0.0072528296226622045 -0.008171486338263199 0.008451271607165294 -1.260536419171395</pose></collision>
     </link>
   </model>
 </sdf>

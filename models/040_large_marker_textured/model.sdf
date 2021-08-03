@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="040_large_marker_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        <!-- Volume:  2.7400097000e-05 -->
         <mass> 1.0 </mass>
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Center of mass: -3.5725120000e-02 -7.8807500000e-03  9.0182900000e-03 -->
+        <pose> -3.5725120000e-02 -7.8807500000e-03  9.0182900000e-03 0 0 0 </pose>
+        <!-- Inertia matrix -->
         <inertia>
           <ixx>  1.1302891263e-03 </ixx>
           <ixy>  2.2711762663e-05 </ixy>
@@ -21,14 +24,12 @@
             <uri>model://040_large_marker_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>-0.009008516441552506 0.03587798175805858 0.004272287783536826 1.5702625798885113 0.020805071053742907 1.5702625798885113</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <cylinder>
-            <length>0.12080870072526217</length>
-            <radius>0.009938878251610076</radius>
-          </cylinder>
+          <mesh>
+            <uri>model://040_large_marker_textured/textured.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -51,7 +52,6 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

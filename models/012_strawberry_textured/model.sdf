@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="012_strawberry_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        <!-- Volume:  4.8323563000e-05 -->
         <mass> 1.0 </mass>
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Center of mass: -1.4938700000e-03  1.5432680000e-02  2.1114500000e-02 -->
+        <pose> -1.4938700000e-03  1.5432680000e-02  2.1114500000e-02 0 0 0 </pose>
+        <!-- Inertia matrix -->
         <inertia>
           <ixx>  2.0727670681e-04 </ixx>
           <ixy> -2.0235465667e-05 </ixy>
@@ -21,14 +24,12 @@
             <uri>model://012_strawberry_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>-0.021003871119971852 0.016151509589238867 -0.0046081522471147045 3.769075292590178e-16 -1.2566370614359172 3.1415926535897927</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <cylinder>
-            <length>0.0454074711798875</length>
-            <radius>0.02387364998007925</radius>
-          </cylinder>
+          <mesh>
+            <uri>model://012_strawberry_textured/textured.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -51,7 +52,6 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

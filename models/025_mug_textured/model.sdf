@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="025_mug_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        <!-- Volume:  1.3812199400e-04 -->
         <mass> 1.0 </mass>
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Center of mass: -1.8858540000e-02  1.6572700000e-02  2.6898620000e-02 -->
+        <pose> -1.8858540000e-02  1.6572700000e-02  2.6898620000e-02 0 0 0 </pose>
+        <!-- Inertia matrix -->
         <inertia>
           <ixx>  8.6178178184e-04 </ixx>
           <ixy>  5.4463701125e-06 </ixy>
@@ -21,13 +24,12 @@
             <uri>model://025_mug_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>0.0401040191723519 -0.026059678362494842 0.0012121756346662946 1.5706876085199726 -0.9761574675736937 -1.570583189474879</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <box>
-            <size>0.08125581991814272 0.09286854980543341 0.1052988556052204</size>
-          </box>
+          <mesh>
+            <uri>model://025_mug_textured/textured.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -50,7 +52,6 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

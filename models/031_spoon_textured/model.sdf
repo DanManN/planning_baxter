@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="031_spoon_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        <!-- Volume:  2.4321194000e-05 -->
         <mass> 1.0 </mass>
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Center of mass: -1.8055900000e-02 -1.0160590000e-02  1.0048590000e-02 -->
+        <pose> -1.8055900000e-02 -1.0160590000e-02  1.0048590000e-02 0 0 0 </pose>
+        <!-- Inertia matrix -->
         <inertia>
           <ixx>  4.7538032878e-04 </ixx>
           <ixy>  1.1719385529e-03 </ixy>
@@ -21,13 +24,12 @@
             <uri>model://031_spoon_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>0.009478467097925134 -0.019497368787933376 -0.022185776809619348 1.5655908583510885 1.1883916806698194 -1.5947063352692004</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <box>
-            <size>0.020394916367569037 0.041454911921547974 0.19565576228014883</size>
-          </box>
+          <mesh>
+            <uri>model://031_spoon_textured/textured.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -50,7 +52,6 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

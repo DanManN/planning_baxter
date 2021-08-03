@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="038_padlock_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        <!-- Volume:  4.5702026000e-05 -->
         <mass> 1.0 </mass>
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Center of mass: -1.7076080000e-02  9.5173900000e-03  1.3626340000e-02 -->
+        <pose> -1.7076080000e-02  9.5173900000e-03  1.3626340000e-02 0 0 0 </pose>
+        <!-- Inertia matrix -->
         <inertia>
           <ixx>  1.8831641074e-04 </ixx>
           <ixy>  1.2776879957e-05 </ixy>
@@ -21,13 +24,12 @@
             <uri>model://038_padlock_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>0.015155308129304008 0.017454651167672967 -0.0110352757068884 -1.6333979917666726 0.36010881664681 1.4440553011372739</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <box>
-            <size>0.028841402642496062 0.05367564946850751 0.07025844262093527</size>
-          </box>
+          <mesh>
+            <uri>model://038_padlock_textured/textured.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -50,7 +52,6 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>

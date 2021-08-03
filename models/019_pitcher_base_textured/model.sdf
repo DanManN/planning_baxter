@@ -1,11 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="019_pitcher_base_textured">
     <pose>0 0 0  0 0 0</pose>
     <link name="body">
       <inertial>
+        <!-- Volume:  2.5490302730e-03 -->
         <mass> 1.0 </mass>
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Center of mass: -1.3413440000e-02  3.3477380000e-02  1.2263628000e-01 -->
+        <pose> -1.3413440000e-02  3.3477380000e-02  1.2263628000e-01 0 0 0 </pose>
+        <!-- Inertia matrix -->
         <inertia>
           <ixx>  5.2332799668e-03 </ixx>
           <ixy> -3.1349307282e-05 </ixy>
@@ -21,13 +24,12 @@
             <uri>model://019_pitcher_base_textured/textured.dae</uri>
           </mesh>
         </geometry>
-        <pose>-0.002244533761891529 -0.05165722790878988 -0.11616632028699433 -0.04702222527958124 0.05947267953735683 0.05686228111903402</pose>
       </visual>
       <collision name="collision">
         <geometry>
-          <box>
-            <size>0.14253379853445353 0.14633274227208948 0.2455604573530648</size>
-          </box>
+          <mesh>
+            <uri>model://019_pitcher_base_textured/textured.dae</uri>
+          </mesh>
         </geometry>
         <max_contacts>10</max_contacts>
         <surface>
@@ -50,7 +52,6 @@
             </ode>
           </contact>
         </surface>
-        <pose>0 0 0 0 0 0</pose>
       </collision>
     </link>
   </model>
