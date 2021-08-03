@@ -105,7 +105,7 @@ def approximate_mesh(mesh_file):
 
     min_volume = min(vol_box, vol_sphere, vol_cylinder, vol_decomp)
 
-    return {'transform': transforms[vol_box], 'shape': shapes[vol_box]}
+    # return {'transform': transforms[vol_box], 'shape': shapes[vol_box]}
     # return {'transform': transforms[vol_sphere], 'shape': shapes[vol_sphere]}
     # return {'transform': transforms[vol_cylinder], 'shape': shapes[vol_cylinder]}
     return {'transform': transforms[min_volume], 'shape': shapes[min_volume]}
