@@ -1,10 +1,14 @@
 #!/usr/bin/env python
+""" generate experiment trials """
 
+import os
 import sys
 import copy
-from math import pi, tau
-from random import uniform, choice, shuffle
+import glob
 import time
+from math import pi, tau
+from threading import Lock
+from random import uniform, choice, shuffle
 
 import numpy as np
 
@@ -16,48 +20,61 @@ from gazebo_msgs.msg import ModelStates, ModelState
 from moveit_commander.conversions import *
 
 count = 0
+lock = Lock()
 outfile = None
-updatePeriod = 0.5
-lastUpdateTime = None
 init_states_pub = None
 
 # don't mess with these objects
 ignore = {'ground_plane', 'table', 'baxter', 'kinect'}
 
 
+def recieved(msg):
+    global count
+    lock.acquire()
+    count -= 1
+    lock.release()
+
+
+def randAngle(min_angle=0, max_angle=7 * tau / 8, num=8):
+    """ return random angle between min_angle and max_angle (up to resolution of num) """
+    return choice(np.linspace(min_angle, max_angle, num))
+
+
 # random orientation generator
-def new_directions():
+def randOrientations():
+    """ get randomized object orientations """
     return {
-        'cylinder_red': [choice([0, tau / 4]), 0, choice(np.linspace(0, tau, 9)[:-1])],
-        'wood_cube': [0, 0, choice(np.linspace(0, tau, 9)[:-1])],
-        '003_cracker_box_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '004_sugar_box_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '005_tomato_soup_can_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '006_mustard_bottle_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '007_tuna_fish_can_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '008_pudding_box_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '009_gelatin_box_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '010_potted_meat_can_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '011_banana_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '021_bleach_cleanser_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '025_mug_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '030_fork_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '031_spoon_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '032_knife_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '033_spatula_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '035_power_drill_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '037_scissors_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
-        '040_large_marker_textured': [choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1]),choice(np.linspace(0, tau, 9)[:-1])],
+        'cylinder_red': [randAngle(0, tau / 4, 2), 0, randAngle()],
+        'wood_cube': [0, 0, randAngle()],
+        '003_cracker_box_textured': [randAngle(), randAngle(), randAngle()],
+        '004_sugar_box_textured': [randAngle(), randAngle(), randAngle()],
+        '005_tomato_soup_can_textured': [randAngle(), randAngle(), randAngle()],
+        '006_mustard_bottle_textured': [randAngle(), randAngle(), randAngle()],
+        '007_tuna_fish_can_textured': [randAngle(), randAngle(), randAngle()],
+        '008_pudding_box_textured': [randAngle(), randAngle(), randAngle()],
+        '009_gelatin_box_textured': [randAngle(), randAngle(), randAngle()],
+        '010_potted_meat_can_textured': [randAngle(), randAngle(), randAngle()],
+        '011_banana_textured': [randAngle(), randAngle(), randAngle()],
+        '021_bleach_cleanser_textured': [randAngle(), randAngle(), randAngle()],
+        '025_mug_textured': [randAngle(), randAngle(), randAngle()],
+        '030_fork_textured': [randAngle(), randAngle(), randAngle()],
+        '031_spoon_textured': [randAngle(), randAngle(), randAngle()],
+        '032_knife_textured': [randAngle(), randAngle(), randAngle()],
+        '033_spatula_textured': [randAngle(), randAngle(), randAngle()],
+        '035_power_drill_textured': [randAngle(), randAngle(), randAngle()],
+        '037_scissors_textured': [randAngle(), randAngle(), randAngle()],
+        '040_large_marker_textured': [randAngle(), randAngle(), randAngle()],
     }
 
-directions = new_directions()
+
+orientations = randOrientations()
 
 # randomize object positions
 positions = [
     # table positions:
-    [.75, -.4, 1.08],
-    [.75, 0, 1.08],
-    [.75, .4, 1.08],
+    [.75, -.4, 1.1],
+    [.75, 0, 1.1],
+    [.75, .4, 1.1],
     # offscreen positions:
     [9.5, -9.5, .03],
     [9.5, -8.5, .03],
@@ -79,21 +96,16 @@ shuffle(positions)
 
 
 def on_model_states_msg(msg):
+    """ do once when model state is sent """
     global count
     global outfile
-    global lastUpdateTime
-    sinceLastUpdateDuration = rospy.get_rostime() - lastUpdateTime
-    if sinceLastUpdateDuration.to_sec() < updatePeriod:
-        return
-    lastUpdateTime = rospy.get_rostime()
-
-    if count > 1:
-        return
+    global orientations
+    global init_states_pub
 
     pos_ind = 0
     for (model_name, model_pose) in zip(msg.name, msg.pose):
         if model_name not in ignore:
-            print(model_name, model_pose)
+            # print(model_name, model_pose)
             new_msg = ModelState()
             new_msg.model_name = model_name
             new_msg.reference_frame = "world"
@@ -102,8 +114,8 @@ def on_model_states_msg(msg):
             # x = choice(np.linspace(tau, -tau, 9)[:-1])
             # y = choice(np.linspace(tau, -tau, 9)[:-1])
             # z = choice(np.linspace(tau, -tau, 9)[:-1])
-            # print(directions[model_name])
-            q = quaternion_from_euler(*directions[model_name])
+            # print(orientations[model_name])
+            q = quaternion_from_euler(*orientations[model_name])
             new_msg.pose.orientation.x = q[0]
             new_msg.pose.orientation.y = q[1]
             new_msg.pose.orientation.z = q[2]
@@ -116,7 +128,7 @@ def on_model_states_msg(msg):
             new_msg.pose.position.y = positions[pos_ind][1]
             new_msg.pose.position.z = positions[pos_ind][2]
             # print(new_msg)
-            if count == 1 and positions[pos_ind][2] > 1:
+            if positions[pos_ind][2] > 1:
                 if outfile is None:
                     continue
                 print(
@@ -132,65 +144,67 @@ def on_model_states_msg(msg):
                     file=outfile
                 )
             pos_ind += 1
-            init_states_pub.publish(new_msg)
 
-    count += 1
+            lock.acquire()
+            count += 1
+            lock.release()
+            init_states_pub.publish(new_msg)
 
 
 def main():
+    """ main """
     global count
     global outfile
-    global directions
-    global lastUpdateTime
+    global orientations
     global init_states_pub
 
     rospy.init_node('gazebo_rand_instance')
-    init_states_pub = rospy.Publisher('/gazebo/set_model_state', ModelState, queue_size=10)
-    lastUpdateTime = rospy.get_rostime()
-    rospy.Subscriber('/gazebo/model_states', ModelStates, on_model_states_msg)
+    init_states_pub = rospy.Publisher('/gazebo/set_model_state', ModelState, queue_size=40)
+    check_states_pub = rospy.Subscriber('/gazebo/set_model_state', ModelState, recieved)
     image_save = rospy.ServiceProxy('/image_saver/save', Empty)
-    # msg = rospy.wait_for_message('/gazebo/model_states', ModelStates)
-    # rospy.sleep(rospy.Duration(0, 100 * 1000))
-    # rospy.loginfo('Spinning')
-
-    # ignore very first message
-    while count < 1:
-        rospy.Rate(10).sleep()
+    rospy.Rate(1 / 0.5).sleep()
 
     try:
-        first = int(sys.argv[1])
+        num_exp = int(sys.argv[1])
+    except:
+        num_exp = 1
+
+    try:
+        directory = sys.argv[2]
+    except:
+        directory = "experiments"
+
+    try:
+        first = int(sorted(glob.glob(f'{directory}/exp*.jpg')).pop()[-8:-4]) + 1
     except:
         first = 0
 
-    try:
-        num_exp = int(sys.argv[2])
-    except:
-        num_exp = first + 1
-
-    for i in range(first, num_exp):
-        outfile = open(f"experiments/exp{i:04d}.csv", "w")
+    for i in range(first, first + num_exp):
+        print(f'exp{i:04d}:')
+        outfile = open(f"{directory}/exp{i:04d}.csv", "w")
 
         # first orientation
         print("object,px,py,pz,qx,qy,qz,qw", file=outfile)
-        count = 1
-        directions = new_directions()
-        while count < 2:
+        orientations = randOrientations()
+        msg = rospy.wait_for_message('/gazebo/model_states', ModelStates)
+        on_model_states_msg(msg)
+
+        print("updating orientations...")
+        print(f"Waiting for {count} objects")
+        while count:
+            print(f"Waiting for {count} objects")
             rospy.Rate(10).sleep()
+        print("orientations updated.")
 
         # capture screen and data
-        input()
+        old_file = rospy.get_param('/image_saver/filename_format')
+        new_file = old_file.replace('RENAME', f'exp{i:04d}')
+        input(f"Save {new_file} ?")
         image_save()
-
-        # # second orientation
-        # print("object,px1,py1,pz1,ox1,oy1,oz1,ow1", file=outfile)
-        # count = 1
-        # directions = new_directions()
-        # while count < 2:
-        #     rospy.Rate(10).sleep()
-
-        # # capture screen and data again
-        # input()
-        # image_save()
+        while not os.path.exists(old_file):
+            rospy.Rate(10).sleep()
+        os.rename(old_file, new_file)
+        os.rename(old_file.replace('jpg', 'ini'), new_file.replace('jpg', 'ini'))
 
         outfile.close()
 
