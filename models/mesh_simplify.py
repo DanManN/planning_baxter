@@ -14,8 +14,7 @@ from trimesh.transformations import \
         translation_from_matrix, \
         translation_matrix, \
         inverse_matrix, \
-        concatenate_matrices, \
-        superimposition_matrix
+        concatenate_matrices
 
 
 def transform2pose(transform):
@@ -73,6 +72,36 @@ def inertia_to_xml(itensor):
     )
 
 
+def solid2xml(solid, x_r, y_l=None, z_z=None):
+    """ convert simple solid to xml """
+    if solid == 'sphere':
+        return ET.fromstring(
+            f"""
+            <sphere>
+            <radius>{x_r}</radius>
+            </sphere>
+            """
+        )
+    if solid == 'cylinder':
+        return ET.fromstring(
+            f"""
+            <cylinder>
+            <length>{y_l}</length>
+            <radius>{x_r}</radius>
+            </cylinder>
+            """
+        )
+    if solid == 'box':
+        return ET.fromstring(
+            f"""
+            <box>
+            <size>{x_r} {y_l} {z_z}</size>
+            </box>
+            """
+        )
+    return None
+
+
 def approximate_mesh(mesh_file):
     """find minimum volume bounding solid or approximate mesh given a complex mesh"""
     mesh_obj = trimesh.load(mesh_file, force='mesh')
@@ -105,40 +134,11 @@ def approximate_mesh(mesh_file):
 
     min_volume = min(vol_box, vol_sphere, vol_cylinder, vol_decomp)
 
-    return {'transform': transforms[vol_box], 'shape': shapes[vol_box]}
+    # return {'transform': transforms[vol_box], 'shape': shapes[vol_box]}
     # return {'transform': transforms[vol_sphere], 'shape': shapes[vol_sphere]}
     # return {'transform': transforms[vol_cylinder], 'shape': shapes[vol_cylinder]}
+    # return {'transform': transforms[vol_decomp], 'shape': shapes[vol_decomp]}
     return {'transform': transforms[min_volume], 'shape': shapes[min_volume]}
-
-
-def primitive_solid2xml(solid, x_r, y_l=None, z_z=None):
-    """ convert simple solid to xml """
-    if solid == 'sphere':
-        return ET.fromstring(
-            f"""
-            <sphere>
-            <radius>{x_r}</radius>
-            </sphere>
-            """
-        )
-    if solid == 'cylinder':
-        return ET.fromstring(
-            f"""
-            <cylinder>
-            <length>{y_l}</length>
-            <radius>{x_r}</radius>
-            </cylinder>
-            """
-        )
-    if solid == 'box':
-        return ET.fromstring(
-            f"""
-            <box>
-            <size>{x_r} {y_l} {z_z}</size>
-            </box>
-            """
-        )
-    return None
 
 
 def main(argv):
@@ -212,51 +212,25 @@ def main(argv):
                     # iarr[:3, :3] *= -1
                     # iarr[(0, 1, 2), (0, 1, 2)] *= -1
 
-                    axes = list(
-                        {
-                            # 'sxyz': (0, 0, 0, 0),
-                            'sxyx': (0, 0, 1, 0),
-                            'sxzy': (0, 1, 0, 0),
-                            'sxzx': (0, 1, 1, 0),
-                            # 'syzx': (1, 0, 0, 0),
-                            # 'syzy': (1, 0, 1, 0),
-                            # 'syxz': (1, 1, 0, 0),
-                            # 'syxy': (1, 1, 1, 0),
-                            # 'szxy': (2, 0, 0, 0),
-                            # 'szxz': (2, 0, 1, 0),
-                            # 'szyx': (2, 1, 0, 0),
-                            # 'szyz': (2, 1, 1, 0),
-                            # 'rzyx': (0, 0, 0, 1),
-                            'rxyx': (0, 0, 1, 1),
-                            'ryzx': (0, 1, 0, 1),
-                            'rxzx': (0, 1, 1, 1),
-                            # 'rxzy': (1, 0, 0, 1),
-                            # 'ryzy': (1, 0, 1, 1),
-                            'rzxy': (1, 1, 0, 1),
-                            # 'ryxy': (1, 1, 1, 1),
-                            # 'ryxz': (2, 0, 0, 1),
-                            # 'rzxz': (2, 0, 1, 1),
-                            # 'rxyz': (2, 1, 0, 1),
-                            # 'rzyz': (2, 1, 1, 1)
-                        }.keys()
-                    )
-                    ind = 6
-                    # ind = int(argv[2])
-                    # ind = int(filename.split('_')[0])
-                    print('\tIndex:', ind)
-
+                    # find transformation from world to principal axes
                     inertia_scale, inertia_basis = trimesh.inertia.principal_axis(iarr)
-                    print('\tMoments:', inertia_scale)
-                    angles = euler_from_matrix(inertia_basis.T, axes[ind])
-                    print('\tAngles:', angles)
-                    moment_transform = euler_matrix(*angles, axes[ind])
+                    e0, e1, e2 = inertia_basis
+                    moment_transform[:3, 0] = e0
+                    moment_transform[:3, 1] = e1
+                    if np.allclose(np.cross(e0, e1), e2):
+                        moment_transform[:3, 2] = e2
+                    elif np.allclose(np.cross(e0, e1), -e2):
+                        moment_transform[:3, 2] = -e2
+                    else:
+                        print("Adjust vector equality tolerance! Are these equal?:")
+                        print(np.cross(e0, e1), np.cross(e1, e0), e2)
+                        return
+
                     inertial.remove(inertia)
                     inertia = inertia_to_xml(np.diag(inertia_scale))
                 inertial.append(inertia)
 
                 # compute pose for collision and visual geometry
-                print(com_transform)
-                print(moment_transform)
                 inertia_transform = inverse_matrix(concatenate_matrices(com_transform, moment_transform))
                 pose_visual = transform2pose(inertia_transform)
                 pose_collision = transform2pose(concatenate_matrices(inertia_transform, transform))
@@ -284,7 +258,7 @@ def main(argv):
                 else:
                     print('\tReplacing mesh with', shape)
                     geom.remove(mesh)
-                    solid_xml = primitive_solid2xml(*shape)
+                    solid_xml = solid2xml(*shape)
                     geom.append(solid_xml)
                     if shape[0] == 'sphere':
                         pose.text = '0 0 0 0 0 0'
