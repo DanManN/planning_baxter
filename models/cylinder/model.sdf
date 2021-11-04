@@ -5,7 +5,7 @@
       <pose>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0 0 -0.025 0 -0 0</pose>
-        <mass>0.35</mass>
+        <mass>1</mass>
         <inertia>
           <ixx>0</ixx>
           <ixy>0</ixy>
@@ -26,7 +26,10 @@
           </cylinder>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <ambient>1 0 0 1</ambient>
+          <diffuse>1 0 0 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+          <emissive>0 0 0 0</emissive>
         </material>
         <pose>0 0 0 0 -0 0</pose>
         <transparency>0</transparency>
@@ -45,8 +48,8 @@
         <surface>
           <friction>
             <ode>
-              <mu>0.033</mu>
-              <mu2>10</mu2>
+              <mu>0.2</mu>
+              <mu2>0.2</mu2>
               <fdir1>0 0 0</fdir1>
               <slip1>0</slip1>
               <slip2>0</slip2>
