@@ -7,7 +7,7 @@
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
   <arg name="debug" default="false" />
-  <arg name="world" default="shelf" />
+  <arg name="world" default="tasks" />
 
   <!-- These arguments load the electric grippers, for example left_electric_gripper:=true -->
   <arg name="left_electric_gripper" default="true" />
@@ -38,7 +38,7 @@
   <!-- Publish a static transform between the world and the base of the robot -->
   <!--<node pkg="tf2_ros" type="static_transform_publisher" name="base_to_world" args="0 0 0 0 0 0 1 world base" />-->
 
-  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot
+  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot 
     adjust baxter height? //-z 0.93
   -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-param robot_description -urdf -model baxter
@@ -78,6 +78,7 @@
     <arg name="right_electric_gripper" value="$(arg right_electric_gripper)" />
     <arg name="left_electric_gripper" value="$(arg left_electric_gripper)" />
   </include>
+
 
   <!--
   <param name="image" value="/camera/rgb/image_raw" />
