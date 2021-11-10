@@ -12,7 +12,6 @@ if __name__ == '__main__':
     spawn_model = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
     orient = Quaternion(0, 0, 0, 1)
 
-
     path_dir = os.path.dirname(os.path.dirname(__file__))
 
     path_models = os.path.join(path_dir, '../../../models')
@@ -21,12 +20,12 @@ if __name__ == '__main__':
 
     sdff = f.read()
 
-    obs_f = open(os.path.join(path_models, 'small_cylinder/model.sdf'))
+    obs_f = open(os.path.join(path_models, 'small_obstacle/model.sdf'))
 
     obs_sdff = obs_f.read()
 
 
-    position_file_address = os.path.join(path_dir, 'Examples', 's1.txt')
+    position_file_address = os.path.join(path_dir, 'Examples', 'basic.txt')
     position_file = open(position_file_address, 'r')
     obj_index = 0
     obs_index = 0
@@ -41,18 +40,20 @@ if __name__ == '__main__':
         elif Isobstacle:
             pos = line.split()
             print("throwing obstacles %d" % (obs_index))
-            x = -0.55 + float(pos[0])
-            y = 0.3 + float(pos[1])
+            x = float(pos[0])
+            y = float(pos[1])
             z = 1.08
+            print(x, ", " , y, ", ", z)
             spawn_model('small_obstacle_'+str(obs_index), obs_sdff, "",
                         Pose(Point(x=x, y=y, z=z), orient), "world")
             obs_index += 1
         else:
             pos = line.split()
             print("throwing obj %d" % (obj_index))
-            x = -0.55 + float(pos[0])
-            y = 0.3 + float(pos[1])
+            x = float(pos[0])
+            y = float(pos[1])
             z = 1.08
+            print(x, ", " , y, ", ", z)
             spawn_model('object_'+str(obj_index), sdff, "",
                         Pose(Point(x=x, y=y, z=z), orient), "world")
             obj_index += 1
