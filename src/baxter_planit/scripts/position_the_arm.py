@@ -18,17 +18,6 @@ def position_the_arm():
 
     planner = BaxterPlanner(False)
 
-    # plan, planning_time = planner.plan_line_traj([-1,0,1], 0.7)
-    # planner.execute(plan, v_scale = 1)
-
-    # success, plan, planning_time, error_code = planner.plan_ee_pose(
-    #     [0.72, 0.25, 1.13, -pi / 2, pi / 2, -pi / 2])
-    #     # [0.82, 0.25, 1.33, pi/4, +pi / 2, -pi / 2])
-    # print(success, planning_time, error_code)
-    # if not success:
-    #     return False
-    # planner.execute(plan, v_scale = 1)
-
     y = PH.model_pos('object_0')[1]
     BOUNDARY_N = 0.6
     phi = 0
@@ -61,17 +50,13 @@ def position_the_arm():
             planner.execute(plan, v_scale=1)
         else:
             success, plan, planning_time, error_code = planner.plan_ee_pose(
-                [0.72, 0.25, 1.13, -pi / 2, -pi / 2, -pi / 2])
+                [0.72, 0.3, 1.13, -pi / 2, -pi / 2, -pi / 2])
             # [0.82, 0.25, 1.33, pi/4, +pi / 2, -pi / 2])
             # print(success, planning_time, error_code)
             if not success:
                 return False
             planner.execute(plan, v_scale=1)
 
-    # model = "baxter"
-    # link = "l_gripper_l_finger"
-    # print(link_state(link, model).link_state.pose.orientation)
-    # print(e_from_q(link_state(link, model).link_state.pose.orientation))
     print(PH.angle_phi())
 
 
@@ -80,8 +65,8 @@ if __name__ == '__main__':
 
     ARM_LENGTH = 0.2
     RADIUS_OBS = 0.03
-    # RADIUS_CC = 0.1  # 0.07  # 0.315
-    WIDTH_ARM = 0.12  # 0.1
+    # RADIUS_CC = 0.1
+    WIDTH_ARM = 0.12
     BOUNDARY_N = 0.6
     BOUNDARY_S = 0
 

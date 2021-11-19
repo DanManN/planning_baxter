@@ -21,6 +21,8 @@ import numpy as np
 
 def main():
 
+    f = open("plan.txt","w")
+
     # obj_pos_y = model_pos('object_0')[1]
     time_sim_0 = time.time()  # start timer
     time_sim = time.time() - time_sim_0  # simulation time
@@ -94,6 +96,8 @@ def main():
 
     print(Obs)
     PH.write_data(count_act, planner_time, time_sim, Obs, "PHIA")
+
+    f.close()
 
 
 if __name__ == '__main__':

@@ -326,8 +326,13 @@ class PH_planning:
         # if length > 0.03:  # fail to move tiny lengh
         self.straight_movement([direction[0], direction[1], 0], length)
         # print("\033[34m move_rel_tip: final tip position \033[0m", np.array(self.tip_position(phi = phi)))
+        self.write_in_plan(str([direction[0], direction[1], 0])+", " + str(length))
+
+
 
     def push_planning(self, square):
+
+        self.write_in_plan("actions")
 
         # # reach needed to go beyond (self.RADIUS_OBS) the center point of the obstacles
         pose_wrist = self.link_pos(link="left_wrist")
@@ -399,6 +404,8 @@ class PH_planning:
 
     def push_planning_phi(self, square, phi=0):
 
+        self.write_in_plan("actions")
+
         # # reach needed to go beyond (self.RADIUS_OBS) the center point of the obstacles
         pose_obj = self.trans_rot(self.model_pos('object_0')[0:2], phi)
         tip = self.trans_rot(self.tip_position(phi=phi), phi)[0]
@@ -452,3 +459,8 @@ class PH_planning:
             self.move_rel_tip(self.rot_trans([max_reach, arm_region_plus], phi), phi)
 
         return True
+
+
+    def write_in_plan(self, row):
+        with open("plan.txt","a") as f:
+            f.write(str(row) +"\n")
