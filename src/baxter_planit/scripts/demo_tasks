@@ -15,7 +15,7 @@ app_dist = 0.1
 def graspTest():
     global planner
     is_sim = sys.argv[1] != 'false' if len(sys.argv) > 1 else True
-    planner = BaxterPlanner(is_sim)
+    planner = BaxterPlanner(is_sim=is_sim)
     if is_sim:
         print("Test?")
         time.sleep(1)
