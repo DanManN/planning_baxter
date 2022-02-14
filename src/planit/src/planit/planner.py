@@ -141,6 +141,7 @@ class Planner:
         move_group.execute(plan, wait=True)
         move_group.stop()
         print("Displaced", obj_name, ".")
+        return True
 
     def place(
         self,
@@ -248,6 +249,7 @@ class Planner:
         move_group.execute(plan, wait=True)
         move_group.stop()
         print("Displaced", obj_name, ".")
+        return True
 
     def plan_ee_pose(
         self, ee_pose=[0, 0, 0, 0, 0, 0], constraints=None, group_name="left_arm"
