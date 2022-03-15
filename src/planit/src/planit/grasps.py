@@ -50,7 +50,6 @@ class Grasps:
                 horz.append(p.getQuaternionFromEuler((x, y, z)))
 
         # object position and orientation
-        # obj_pos, obj_rot = p.getBasePositionAndOrientation(object_id)
         obj_pos, obj_rot = pose_msg2list(obj.pose)
 
         # positions along shape
@@ -110,8 +109,11 @@ class Grasps:
 
         poses = []
         for pos, rot in grasps:
-            tpos, trot = p.multiplyTransforms((0, 0, 0), rot, offset, obj_rot)
-            pose = list(tpos + np.add(obj_pos, pos)) + list(trot)
+            pos_inv, rot_inv = p.invertTransform(pos, rot)
+            off, roff = p.multiplyTransforms((0, 0, 0), rot, offset, rot_inv)
+            n_pos, n_rot = p.multiplyTransforms(off, roff, pos, rot)
+            tpos, trot = p.multiplyTransforms(obj_pos, obj_rot, n_pos, n_rot)
+            pose = [tpos, trot]
             poses.append(pose)
 
         return poses
