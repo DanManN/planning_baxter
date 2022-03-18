@@ -36,6 +36,7 @@ class PH_planning:
 
         # position_file_address
         self.position_file_address = position_file_address
+        self.position_file_address = "/Users/ewerton/Dropbox/Robot/planning_baxter/src/baxter_planit/scripts/config.txt"
 
         self.y_shift = 0.56
 
@@ -276,18 +277,18 @@ class PH_planning:
                         y_values.append(Obs[k][1])
                     return [[min(x_values), min(y_values)], [max(x_values), max(y_values)]]
 
-    def move_rel_tip(self, point, phi=0):
-        """Move relative to tip 2d"""
-        tip = np.array(self.tip_position())
-        point = np.array([point[0], point[1]])
-        # print("\033[34m move_rel_tip: initial tip position \033[0m", tip)
+    def move_rel_pt(self, pt_inital, pt_end, phi=0):
+        """Move relative to pt_inital 2d"""
+        pt_inital = np.array([pt_inital[0], pt_inital[1]])
+        pt_end = np.array([pt_end[0], pt_end[1]])
+        # print("\033[34m move_rel_pt: initial tip position \033[0m", tip)
 
-        length = np.linalg.norm(point - tip)
-        direction = (point - tip) / length
+        length = np.linalg.norm(pt_end - pt_inital)
+        direction = (pt_end - pt_inital) / length
 
-        print("\033[34m move to point \033[0m", point)
+        print("\033[34m move to point \033[0m", pt_end)
 
-        # print("\033[34m move_rel_tip: final tip position \033[0m", np.array(self.tip_position(phi = phi)))
+        # print("\033[34m move_rel_pt: final tip position \033[0m", np.array(self.tip_position(phi = phi)))
         self.write_in_plan(str([direction[0], direction[1], 0])+", " + str(length))
 
     def push_planning(self, square):
@@ -332,11 +333,12 @@ class PH_planning:
                 out_reach = arm_region_minus - self.WIDTH_ARM / 2
                 clean_direction = arm_region_plus
 
-            self.move_rel_tip([tip, out_reach])  # move y coordinate
+            self.move_rel_initial(self.tip_position(), [tip, out_reach])  # move y coordinate
 
-            self.move_rel_tip([max_reach, out_reach])  # move x coordinate
+            self.move_rel_initial([tip, out_reach], [max_reach, out_reach])  # move x coordinate
 
-            self.move_rel_tip([max_reach, clean_direction])  # cleaning, move y coordinate
+            # cleaning, move y coordinate
+            self.move_rel_initial([max_reach, out_reach], [max_reach, clean_direction])
 
             return True
 
@@ -344,21 +346,27 @@ class PH_planning:
             print("\033[34m Pushing from top to bottom \033[0m", square[0][1] -
                   arm_region_minus, "<", arm_region_plus - square[1][1])
 
-            self.move_rel_tip([tip, square[1][1] + self.WIDTH_ARM / 2])  # move y coordinate
+            self.move_rel_pt(self.tip_position(), [
+                             tip, square[1][1] + self.WIDTH_ARM / 2])  # move y coordinate
 
-            self.move_rel_tip([max_reach, square[1][1] + self.WIDTH_ARM / 2])
+            self.move_rel_pt([tip, square[1][1] + self.WIDTH_ARM / 2],
+                             [max_reach, square[1][1] + self.WIDTH_ARM / 2])
 
-            self.move_rel_tip([max_reach, arm_region_minus])
+            self.move_rel_pt([max_reach, square[1][1] + self.WIDTH_ARM / 2],
+                             [max_reach, arm_region_minus])
 
         else:
             print("\033[34m Pushing from bottom to top \033[0m",
                   square[0][1] - arm_region_minus, ">", arm_region_plus - square[1][1])
 
-            self.move_rel_tip([tip, square[0][1] - self.WIDTH_ARM / 2])  # move y coordinate
+            self.move_rel_pt(self.tip_position(), [
+                             tip, square[0][1] - self.WIDTH_ARM / 2])  # move y coordinate
 
-            self.move_rel_tip([max_reach, square[0][1] - self.WIDTH_ARM / 2])  # move x coordinate
+            self.move_rel_pt([tip, square[0][1] - self.WIDTH_ARM / 2], [max_reach,
+                                                                        square[0][1] - self.WIDTH_ARM / 2])  # move x coordinate
 
-            self.move_rel_tip([max_reach, arm_region_plus])  # cleaning, move y coordinate
+            self.move_rel_pt([max_reach, square[0][1] - self.WIDTH_ARM / 2],
+                             [max_reach, arm_region_plus])  # cleaning, move y coordinate
 
         return True
 
@@ -394,29 +402,33 @@ class PH_planning:
             print("\033[34m Pushing from top to bottom \033[0m", phi)
 
             print("rotated space", [tip, square[1][1] + self.WIDTH_ARM / 2])
-            self.move_rel_tip(self.rot_trans(
+            self.move_rel_pt(self.tip_position(), self.rot_trans(
                 [tip, square[1][1] + self.WIDTH_ARM / 2], phi), phi)  # move y coordinate
 
             print("rotated space", [max_reach, square[1][1] + self.WIDTH_ARM / 2])
-            self.move_rel_tip(self.rot_trans(
+            self.move_rel_pt(self.rot_trans(
+                [tip, square[1][1] + self.WIDTH_ARM / 2], phi), self.rot_trans(
                 [max_reach, square[1][1] + self.WIDTH_ARM / 2], phi), phi)
 
             print("rotated space", [max_reach, arm_region_minus])
-            self.move_rel_tip(self.rot_trans([max_reach, arm_region_minus], phi), phi)
+            self.move_rel_pt(self.rot_trans(
+                [max_reach, square[1][1] + self.WIDTH_ARM / 2], phi), self.rot_trans([max_reach, arm_region_minus], phi), phi)
 
         else:
             print("\033[34m Pushing for -phi \033[0m", phi)
 
             print("rotated space", [tip, square[0][1] - self.WIDTH_ARM / 2])
-            self.move_rel_tip(self.rot_trans(
+            self.move_rel_pt(self.tip_position(), self.rot_trans(
                 [tip, square[0][1] - self.WIDTH_ARM / 2], phi), phi)  # move y coordinate
 
             print("rotated space", [max_reach, square[0][1] - self.WIDTH_ARM / 2])
-            self.move_rel_tip(self.rot_trans(
+            self.move_rel_pt(self.rot_trans(
+                [tip, square[0][1] - self.WIDTH_ARM / 2], phi), self.rot_trans(
                 [max_reach, square[0][1] - self.WIDTH_ARM / 2], phi), phi)
 
             print("rotated space", [max_reach, arm_region_plus])
-            self.move_rel_tip(self.rot_trans([max_reach, arm_region_plus], phi), phi)
+            self.move_rel_pt(self.rot_trans(
+                [max_reach, square[0][1] - self.WIDTH_ARM / 2], phi), self.rot_trans([max_reach, arm_region_plus], phi), phi)
 
         return True
 
