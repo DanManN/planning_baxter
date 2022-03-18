@@ -65,20 +65,25 @@ def main():
 if __name__ == '__main__':
 
     ARM_LENGTH = 0.2
-    RADIUS_OBS = 0.03
+    RADIUS_OBS = 0.033
     # RADIUS_CC = 0.1  # 0.07  # 0.315
     WIDTH_ARM = 0.12  # 0.1
-    BOUNDARY_N = 0.6
-    BOUNDARY_S = 0
+    BOUNDARY_N = 0.58
+    BOUNDARY_S = 0.0
 
-    TABLE = 0.7
+    TABLE = 0.68  # x 
     nu = 0.015
     h = 0.08
 
     # nu = 0
     # h = 0
 
+    config_file = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
+        'config.txt'
+    )
+
     PH = PH_planning.PH_planning(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
-                                 BOUNDARY_S, TABLE, nu, h)
+                                 BOUNDARY_S, TABLE, nu, h, position_file_address=config_file)
 
     main()
