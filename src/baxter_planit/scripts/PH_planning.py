@@ -4,8 +4,8 @@
 import sys
 from math import pi
 
-import tf
-from geometry_msgs.msg import Quaternion
+# import tf
+# from geometry_msgs.msg import Quaternion
 
 # from geometry_msgs.msg import *
 import time
@@ -34,38 +34,44 @@ class PH_planning:
         self.h = h
         self.TABLE = TABLE  # x distance of the table to the (0,0)
 
+        # position_file_address
         self.position_file_address = position_file_address
 
         self.y_shift = 0.56
 
-        self.phi = self.angle_phi()
-
         self.world = dict()
+
+        # self.phi = self.angle_phi()
 
         self.read_world()
 
     def read_world(self):
-        
+
         positions_file = open(self.position_file_address, 'r')
         obj_index = 0
         obs_index = 0
         for line in positions_file.readlines():
             print(line)
             if (line == "objects\n"):
-                pos = line.split()
-                self.world['object_'+str(obj_index)] = [float(pos[0]), float(pos[1]) + self.y_shift]
-                obj_index += 1
+                name = line[0:-1]
+                index = 0
 
             elif (line == "obstacles\n"):
-                pos = line.split()
-                self.world['small_obstacle_' +
-                           str(obj_index)] = [float(pos[0]), float(pos[1]) + self.y_shift]
-                obs_index += 1
+                name = line[0:-1]
+                index = 0
+
+            elif (line == "tip_gripper\n"):
+                name = line[0:-1]
+                index = 0
+
             else:
                 pos = line.split()
-                self.world['tip_gripper'] = [float(pos[0]), float(pos[1]) + self.y_shift]
+                self.world[name+"_"+str(index)] = [float(pos[0]), float(pos[1]) + self.y_shift]
+                index += 1
 
         positions_file.close()
+
+        print(self.world)
 
     def persistent_radius_CC(self, Obs):
         rips = Rips()
@@ -142,13 +148,13 @@ class PH_planning:
 
     def tip_position(self):
         """Return the position of the tip of the gripper"""
-        return self.world["tip_gripper"]
+        return self.world["tip_gripper_0"]
 
     def model_pos(self, i):
         """Return position of the model"""
         return self.world[i]
 
-    def is_close_to_wall(self, target='object_0'):
+    def is_close_to_wall(self, target='objects_0'):
         if self.WIDTH_ARM <= self.model_pos(target)[1] <= self.BOUNDARY_N - self.WIDTH_ARM:
             return False
         else:
@@ -161,8 +167,8 @@ class PH_planning:
             return 0
 
         # -self.TABLE since the table is self.TABLE far from the axis x
-        x = self.model_pos('object_0')[0] - self.TABLE
-        y = self.model_pos('object_0')[1]
+        x = self.model_pos('objects_0')[0] - self.TABLE
+        y = self.model_pos('objects_0')[1]
 
         # target closer to north wall ( higher value for y)
         if y > self.BOUNDARY_N - self.WIDTH_ARM:
@@ -177,21 +183,20 @@ class PH_planning:
 
     def pos_obstacles(self):
         """Return all 2D positions of the obstacles"""
-        list = []
+        all_obstacles = []
+
+        print(list(self.world.keys()))
+
         for i in list(self.world.keys()):
-            if i[0:5] != "small":
+            if i[0:9] != "obstacles":
                 continue
-            # pose_temp = self.model_state(i, "world")
-            # x, y = pose_temp.pose.position.x, pose_temp.pose.position.y
-
             x, y = self.model_pos(i)
-
-            list.append([x, y])
-        return list
+            all_obstacles.append([x, y])
+        return all_obstacles
 
     def path_region(self):
         """Return all obstacle in the path region, also the closest point (in the path region) to the tip"""
-        pose_obj = self.model_pos('object_0')  # target object position
+        pose_obj = self.model_pos('objects_0')  # target object position
         # path region x axis, - self.TABLE * self.RADIUS_OBS since we can consider paralell obstacles to the target
         arm_reach = pose_obj[0] - self.TABLE * self.RADIUS_OBS
         arm_region_minus, arm_region_plus = pose_obj[1] - self.WIDTH_ARM / \
@@ -220,7 +225,7 @@ class PH_planning:
 
     def path_region_phi(self, phi=0):
         """Return all obstacle in the path region with phi inclination, also the closest point (in the path region) to the tip"""
-        pos_obj = self.model_pos('object_0')  # target object position
+        pos_obj = self.model_pos('objects_0')  # target object position
         R = self.rot(-phi)
         arm_region_minus,  arm_region_plus = 0, 2 * self.WIDTH_ARM
         c, s, t = np.cos(phi), np.sin(phi), np.tan(phi)
@@ -273,7 +278,7 @@ class PH_planning:
 
     def move_rel_tip(self, point, phi=0):
         """Move relative to tip 2d"""
-        tip = np.array(self.tip_position(phi=phi))
+        tip = np.array(self.tip_position())
         point = np.array([point[0], point[1]])
         # print("\033[34m move_rel_tip: initial tip position \033[0m", tip)
 
@@ -291,7 +296,7 @@ class PH_planning:
 
         # # reach needed to go beyond (self.RADIUS_OBS) the center point of the obstacles
 
-        pose_obj = self.model_pos('object_0')
+        pose_obj = self.model_pos('objects_0')
         tip = self.tip_position()[0]
 
         """ arm_region is the region where the arm can push the Connected Component away from the path region"""
@@ -362,7 +367,7 @@ class PH_planning:
         self.write_in_plan("actions")
 
         # # reach needed to go beyond (self.RADIUS_OBS) the center point of the obstacles
-        pose_obj = self.trans_rot(self.model_pos('object_0')[0:2], phi)
+        pose_obj = self.trans_rot(self.model_pos('objects_0')[0:2], phi)
         tip = self.trans_rot(self.tip_position(phi=phi), phi)[0]
 
         """ arm_region is the region where the arm can push the Connected Component away from the path region"""
@@ -418,5 +423,3 @@ class PH_planning:
     def write_in_plan(self, row):
         with open("plan.txt", "a") as f:
             f.write(str(row) + "\n")
-
-
