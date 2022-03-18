@@ -34,11 +34,38 @@ class PH_planning:
         self.h = h
         self.TABLE = TABLE  # x distance of the table to the (0,0)
 
-        position_file_address = self.position_file_address
+        self.position_file_address = position_file_address
 
         self.y_shift = 0.56
 
         self.phi = self.angle_phi()
+
+        self.world = dict()
+
+        self.read_world()
+
+    def read_world(self):
+        
+        positions_file = open(self.position_file_address, 'r')
+        obj_index = 0
+        obs_index = 0
+        for line in positions_file.readlines():
+            print(line)
+            if (line == "objects\n"):
+                pos = line.split()
+                self.world['object_'+str(obj_index)] = [float(pos[0]), float(pos[1]) + self.y_shift]
+                obj_index += 1
+
+            elif (line == "obstacles\n"):
+                pos = line.split()
+                self.world['small_obstacle_' +
+                           str(obj_index)] = [float(pos[0]), float(pos[1]) + self.y_shift]
+                obs_index += 1
+            else:
+                pos = line.split()
+                self.world['tip_gripper'] = [float(pos[0]), float(pos[1]) + self.y_shift]
+
+        positions_file.close()
 
     def persistent_radius_CC(self, Obs):
         rips = Rips()
@@ -151,7 +178,7 @@ class PH_planning:
     def pos_obstacles(self):
         """Return all 2D positions of the obstacles"""
         list = []
-        for i in self.world.keys():
+        for i in list(self.world.keys()):
             if i[0:5] != "small":
                 continue
             # pose_temp = self.model_state(i, "world")
@@ -392,25 +419,4 @@ class PH_planning:
         with open("plan.txt", "a") as f:
             f.write(str(row) + "\n")
 
-    def read_world(self):
-        self.world = dict()
-        positions_file = open(self.position_file_address, 'r')
-        obj_index = 0
-        obs_index = 0
-        for line in positions_file.readlines():
-            print(line)
-            if (line == "objects\n"):
-                pos = line.split()
-                self.world['object_'+str(obj_index)] = [float(pos[0]), float(pos[1]) + self.y_shift]
-                obj_index += 1
 
-            elif (line == "obstacles\n"):
-                pos = line.split()
-                self.world['small_obstacle_' +
-                           str(obj_index)] = [float(pos[0]), float(pos[1]) + self.y_shift]
-                obs_index += 1
-            else:
-                pos = line.split()
-                self.world['tip_gripper'] = [float(pos[0]), float(pos[1]) + self.y_shift]
-
-        positions_file.close()
