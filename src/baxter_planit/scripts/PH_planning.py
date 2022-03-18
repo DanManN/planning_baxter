@@ -157,7 +157,7 @@ class PH_planning:
             # pose_temp = self.model_state(i, "world")
             # x, y = pose_temp.pose.position.x, pose_temp.pose.position.y
 
-            x, y, _ = self.model_pos(i)
+            x, y = self.model_pos(i)
 
             list.append([x, y])
         return list
@@ -401,15 +401,16 @@ class PH_planning:
             print(line)
             if (line == "objects\n"):
                 pos = line.split()
-                self.world['object_'+str(obj_index)] = [float(pos[0]), float(pos[1])]
+                self.world['object_'+str(obj_index)] = [float(pos[0]), float(pos[1]) + self.y_shift]
                 obj_index += 1
 
             elif (line == "obstacles\n"):
                 pos = line.split()
-                self.world['small_obstacle_'+str(obj_index)] = [float(pos[0]), float(pos[1])]
+                self.world['small_obstacle_' +
+                           str(obj_index)] = [float(pos[0]), float(pos[1]) + self.y_shift]
                 obs_index += 1
             else:
                 pos = line.split()
-                self.world['tip_gripper'] = [float(pos[0]), float(pos[1])]
+                self.world['tip_gripper'] = [float(pos[0]), float(pos[1]) + self.y_shift]
 
         positions_file.close()
