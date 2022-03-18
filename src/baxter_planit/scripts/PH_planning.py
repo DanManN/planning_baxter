@@ -397,19 +397,19 @@ class PH_planning:
         positions_file = open(self.position_file_address, 'r')
         obj_index = 0
         obs_index = 0
-        for line in position_file.readlines():
+        for line in positions_file.readlines():
             print(line)
             if (line == "objects\n"):
                 pos = line.split()
-                world['object_'+str(obj_index)] = [float(pos[0]), float(pos[1])]
+                self.world['object_'+str(obj_index)] = [float(pos[0]), float(pos[1])]
                 obj_index += 1
 
             elif (line == "obstacles\n"):
                 pos = line.split()
-                world['small_obstacle_'+str(obj_index)] = [float(pos[0]), float(pos[1])]
+                self.world['small_obstacle_'+str(obj_index)] = [float(pos[0]), float(pos[1])]
                 obs_index += 1
             else:
                 pos = line.split()
-                world['tip_gripper'] = [float(pos[0]), float(pos[1])]
+                self.world['tip_gripper'] = [float(pos[0]), float(pos[1])]
 
         positions_file.close()
