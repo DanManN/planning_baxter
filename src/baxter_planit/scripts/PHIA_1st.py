@@ -14,6 +14,10 @@ import PH_planning
 import numpy as np
 
 
+a = {0: 1, 2: 3}
+list(a.keys())
+
+
 def main():
 
     f = open("plan.txt", "w")
@@ -22,26 +26,29 @@ def main():
 
     # close to wall
     # print(PH.is_close_to_wall())
-    if PH.is_close_to_wall():
 
-        print("phi", PH.phi)
-
-        planner_timeF = time.time()
-
-        Obs, closest_pt = PH.path_region_phi(phi=PH.phi)
-        RADIUS_CC = PH.min_radius_CC(Obs)
-
-        square = PH.squared_CC(Obs, closest_pt, RADIUS_CC)
-        print("square ", square, "closest_pt ", closest_pt)
-
-        planner_time = planner_timeF - time.time()
-
-        PH.push_planning_phi(square, PH.phi)
-
-        print("how close is to the goal", PH.tip_position()[0] -
-              PH.model_pos('object_0')[0], "Obs set ", len(Obs), "planning time", planner_time)
+    # if PH.is_close_to_wall():
+    #
+    #     print("phi", PH.phi)
+    #
+    #     planner_timeF = time.time()
+    #
+    #     Obs, closest_pt = PH.path_region_phi(phi=PH.phi)
+    #     RADIUS_CC = PH.min_radius_CC(Obs)
+    #
+    #     square = PH.squared_CC(Obs, closest_pt, RADIUS_CC)
+    #     print("square ", square, "closest_pt ", closest_pt)
+    #
+    #     planner_time = planner_timeF - time.time()
+    #
+    #     PH.push_planning_phi(square, PH.phi)
+    #
+    #     print("how close is to the goal", PH.tip_position()[0] -
+    #           PH.model_pos('object_0')[0], "Obs set ", len(Obs), "planning time", planner_time)
 
     # far from wall
+    if 0:
+        0 == 1
     else:
 
         planner_timeF = time.time()
@@ -57,7 +64,7 @@ def main():
         PH.push_planning(square)
 
         print("how close is to the goal", PH.tip_position()[0] -
-              PH.model_pos('object_0')[0], "Obs set ", len(Obs), "planning time", planner_time)
+              PH.model_pos('objects_0')[0], "Obs set ", len(Obs), "planning time", planner_time)
 
     f.close()
 
@@ -71,7 +78,7 @@ if __name__ == '__main__':
     BOUNDARY_N = 0.58
     BOUNDARY_S = 0.0
 
-    TABLE = 0.68  # x 
+    TABLE = 0.68  # x
     nu = 0.015
     h = 0.08
 
@@ -79,7 +86,8 @@ if __name__ == '__main__':
     # h = 0
 
     config_file = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
+        os.path.dirname(os.path.dirname(os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__))))),
         'config.txt'
     )
 
