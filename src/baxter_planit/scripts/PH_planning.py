@@ -3,21 +3,14 @@
 
 import sys
 from math import pi
-from planit.msg import PercievedObject
-from baxter_planit import BaxterPlanner
 
-
-import rospy
 import tf
-import threading
-from gazebo_msgs.srv import DeleteModel, SpawnModel, SetModelState, GetModelState, GetWorldProperties, GetLinkState
-from gazebo_msgs.msg import ModelState, ModelStates
 from geometry_msgs.msg import Quaternion
+
 # from geometry_msgs.msg import *
 import time
 import os
 import random
-import rospkg
 from Connected_Comp import *
 
 import numpy as np
@@ -27,23 +20,9 @@ from ripser import ripser, Rips
 class PH_planning:
 
     def __init__(self, ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
-                 BOUNDARY_S, TABLE, nu, h):
-
-        rospack = rospkg.RosPack()
-
-        Lock = threading.Lock()
+                 BOUNDARY_S, TABLE, nu, h, position_file_address="config.txt"):
 
         balls_arr = []
-
-        rospy.wait_for_service('/gazebo/set_model_state')
-        rospy.wait_for_service('/gazebo/get_model_state')
-        rospy.wait_for_service('/gazebo/get_link_state')
-        self.set_model_state = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
-        self.model_state = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
-        self.link_state = rospy.ServiceProxy('/gazebo/get_link_state', GetLinkState)
-        self.world_properties = rospy.ServiceProxy(
-            '/gazebo/get_world_properties', GetWorldProperties)
-        # orient = Quaternion(0, 0, 1, 1)
 
         self.ARM_LENGTH = ARM_LENGTH
         self.RADIUS_OBS = RADIUS_OBS
@@ -55,9 +34,9 @@ class PH_planning:
         self.h = h
         self.TABLE = TABLE  # x distance of the table to the (0,0)
 
-        rospy.init_node("baxter_planit", anonymous=False)
+        position_file_address = self.position_file_address
 
-        self.planner = BaxterPlanner(False)
+        self.y_shift = 0.56
 
         self.phi = self.angle_phi()
 
@@ -134,37 +113,13 @@ class PH_planning:
             P = np.matmul(R, T.reshape(2, 1))
         return [P[0, 0], P[1, 0]]
 
-    def link_pos(self, model="baxter", link="l_gripper_l_finger"):
-        """Return position of the link"""
-        # return self.link_state(link, model).self.link_state.pose
-        return [self.link_state(link, model).link_state.pose.position.x,
-                self.link_state(link, model).link_state.pose.position.y,
-                self.link_state(link, model).link_state.pose.position.z]
-
-    def tip_position(self, model="baxter", link="l_gripper_l_finger", phi=0):
-        """Return the position of the tip of the gripper taking
-        in account the orientation"""
-        # sign = -np.sign(self.link_state(link, model).link_state.pose.orientation.x) # not working I need to understand orientation
-        sign = 1
-        length_finger = 0.1127  # length of the left finger
-        # print("orientation", sign)
-        x, y = self.link_pos()[0:2]
-        roll = self.e_from_q(self.link_state(link, model).link_state.pose.orientation)[0]
-        sign = -np.sign(np.cos(roll))
-        # print("x + sign * np.cos(phi) * length_finger", x, sign, np.cos(phi), length_finger, x + sign * np.cos(phi) * length_finger)
-        # print("y-np.sign(self.link_state(link, model).link_state.pose.orientation.y) * np.sin(phi) * length_finger", y-np.sign(self.link_state(link, model).link_state.pose.orientation.y) * np.sin(phi) * length_finger, y, np.sign(self.link_state(link, model).link_state.pose.orientation.y), np.sin(phi), length_finger)
-        # print(self.link_state(link, model).link_state.pose.orientation)
-        # print(roll, sign)
-        angle_sign = np.sign(roll)
-        # return  [x + sign * np.cos(phi) * length_finger, y +
-        #         angle_sign * np.sin(phi) * length_finger]
-
-        return [x + sign * np.cos(phi) * length_finger, y +
-                np.sin(phi) * length_finger]
+    def tip_position(self):
+        """Return the position of the tip of the gripper"""
+        return self.world["tip_gripper"]
 
     def model_pos(self, i):
         """Return position of the model"""
-        return [self.model_state(i, "world").pose.position.x, self.model_state(i, "world").pose.position.y, self.model_state(i, "world").pose.position.z]
+        return self.world[i]
 
     def is_close_to_wall(self, target='object_0'):
         if self.WIDTH_ARM <= self.model_pos(target)[1] <= self.BOUNDARY_N - self.WIDTH_ARM:
@@ -193,35 +148,17 @@ class PH_planning:
 
         return sign * np.arcsin((-self.WIDTH_ARM * x + np.sqrt(x**2 * t - t * (self.WIDTH_ARM**2) + t**2)) / (x**2 + t))
 
-    def model_velocity(self, i):
-        """Return velocity of the model"""
-        return [self.model_state(i, "world").twist.linear.x, self.model_state(i, "world").twist.linear.y, self.model_state(i, "world").twist.linear.z]
-
-    def is_static(self):
-        """Return true if objects are no longer moving."""
-        model_names = self.world_properties().model_names
-        # print(model_names)
-        v = [np.linalg.norm(self.model_velocity(i)) for i in model_names]
-        # print(v, "\n")
-        return all(np.array(v) < 1e-2)
-
-    def wait_static(self, timeout=3):
-        """Step simulator asynchronously until objects settle."""
-        t0 = time.time()
-        while (time.time() - t0) < timeout:
-            if self.is_static():
-                return True
-        print(f"Warning: move_joints exceeded {timeout} second timeout. Skipping.")
-        return False
-
     def pos_obstacles(self):
         """Return all 2D positions of the obstacles"""
         list = []
-        for i in self.world_properties().model_names:
+        for i in self.world.keys():
             if i[0:5] != "small":
                 continue
-            pose_temp = self.model_state(i, "world")
-            x, y = pose_temp.pose.position.x, pose_temp.pose.position.y
+            # pose_temp = self.model_state(i, "world")
+            # x, y = pose_temp.pose.position.x, pose_temp.pose.position.y
+
+            x, y, _ = self.model_pos(i)
+
             list.append([x, y])
         return list
 
@@ -307,12 +244,6 @@ class PH_planning:
                         y_values.append(Obs[k][1])
                     return [[min(x_values), min(y_values)], [max(x_values), max(y_values)]]
 
-    def straight_movement(self, direction=[1, 0, 0], length=0.1):
-        self.planner.do_end_effector('close')
-        # print("\033[34m straight move: direction length \033[0m", direction, length)
-        plan, planning_time = self.planner.plan_line_traj(direction, length)
-        self.planner.execute(plan)
-
     def move_rel_tip(self, point, phi=0):
         """Move relative to tip 2d"""
         tip = np.array(self.tip_position(phi=phi))
@@ -323,19 +254,16 @@ class PH_planning:
         direction = (point - tip) / length
 
         print("\033[34m move to point \033[0m", point)
-        # if length > 0.03:  # fail to move tiny lengh
-        self.straight_movement([direction[0], direction[1], 0], length)
+
         # print("\033[34m move_rel_tip: final tip position \033[0m", np.array(self.tip_position(phi = phi)))
         self.write_in_plan(str([direction[0], direction[1], 0])+", " + str(length))
-
-
 
     def push_planning(self, square):
 
         self.write_in_plan("actions")
 
         # # reach needed to go beyond (self.RADIUS_OBS) the center point of the obstacles
-        pose_wrist = self.link_pos(link="left_wrist")
+
         pose_obj = self.model_pos('object_0')
         tip = self.tip_position()[0]
 
@@ -460,7 +388,28 @@ class PH_planning:
 
         return True
 
-
     def write_in_plan(self, row):
-        with open("plan.txt","a") as f:
-            f.write(str(row) +"\n")
+        with open("plan.txt", "a") as f:
+            f.write(str(row) + "\n")
+
+    def read_world(self):
+        self.world = dict()
+        positions_file = open(self.position_file_address, 'r')
+        obj_index = 0
+        obs_index = 0
+        for line in position_file.readlines():
+            print(line)
+            if (line == "objects\n"):
+                pos = line.split()
+                world['object_'+str(obj_index)] = [float(pos[0]), float(pos[1])]
+                obj_index += 1
+
+            elif (line == "obstacles\n"):
+                pos = line.split()
+                world['small_obstacle_'+str(obj_index)] = [float(pos[0]), float(pos[1])]
+                obs_index += 1
+            else:
+                pos = line.split()
+                world['tip_gripper'] = [float(pos[0]), float(pos[1])]
+
+        positions_file.close()
