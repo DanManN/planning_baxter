@@ -13,14 +13,6 @@
   <arg name="left_electric_gripper" default="true" />
   <arg name="right_electric_gripper" default="true" />
 
-  <!-- Load the URDF into the ROS Parameter Server -->
-  <!-- This xacro will pull in baxter_base.urdf.xacro, left_end_effector.urdf.xacro,
-                                           and right_end_effector.urdf.xacro
-       Note: if you set this to false, you MUST have set the robot_description prior
-             to launching baxter_world -->
-  <arg name="load_robot_description" default="true" />
-  <param if="$(arg load_robot_description)" name="robot_description" command="$(find xacro)/xacro $(find baxter_moveit)/urdf/baxter.urdf.xacro gazebo:=true" />
-
   <!-- We resume the logic in empty_world.launch, changing the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <!--<arg name="world_name" value="$(find baxter_gazebo)/worlds/baxter.world"/>-->
@@ -32,6 +24,14 @@
     <arg name="headless" value="$(arg headless)" />
   </include>
 
+  <!-- Load the URDF into the ROS Parameter Server -->
+  <!-- This xacro will pull in baxter_base.urdf.xacro, left_end_effector.urdf.xacro,
+                                           and right_end_effector.urdf.xacro
+       Note: if you set this to false, you MUST have set the robot_description prior
+             to launching baxter_world -->
+  <arg name="load_robot_description" default="true" />
+  <param if="$(arg load_robot_description)" name="robot_description" command="$(find xacro)/xacro $(find baxter_moveit)/urdf/baxter.urdf.xacro gazebo:=true" />
+
   <!-- Load the software version into the ROS Parameter Server -->
   <param name="rethink/software_version" value="1.2.0.57" />
 
@@ -41,7 +41,7 @@
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot
     adjust baxter height? //-z 0.93
   -->
-  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-param robot_description -urdf -model baxter
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-param robot_description -urdf -model baxter 
         -J baxter::right_s0 -0.272659
         -J baxter::right_s1 1.04701
         -J baxter::right_e0 -0.00123203

@@ -1,11 +1,11 @@
 <?xml version='1.0'?>
 <sdf version ='1.6'>
-  <model name ='small_cylinder'>
-    <pose>0 0 .025 0 0 0</pose>
+  <model name ='cup'>
+    <pose>0 0 0 -1.57 0 0</pose>
     <link name ='link'>
       <pose>0 0 0 0 0 0</pose>
       <inertial>
-      <pose>0 0 -0.025 0 0 0</pose>
+      <pose>0 0 0 0 0 0</pose>
         <mass>1</mass>
         <inertia> <!-- inertias are tricky to compute -->
           <!-- http://gazebosim.org/tutorials?tut=inertia&cat=build_robot -->
@@ -19,7 +19,10 @@
       </inertial>
       <collision name ='collision'>
         <geometry>
-          <cylinder><radius>0.033</radius><length>0.1206</length></cylinder>
+          <mesh>
+          <uri>/home/pracsys/retrieval/Kai/Sim_baxter/models/cup/to-go_coffee_cup_OBJ.obj</uri>
+          <scale>0.01149 0.01149 0.01149</scale>
+          </mesh>
         </geometry>
         <surface>
           <friction>
@@ -32,7 +35,10 @@
       </collision>
       <visual name='visual'>
         <geometry>
-          <cylinder><radius>0.033</radius><length>0.1206</length></cylinder>
+          <mesh>
+          <uri>/home/pracsys/retrieval/Kai/Sim_baxter/models/cup/to-go_coffee_cup_OBJ.obj</uri>
+          <scale>0.01149 0.01149 0.01149</scale>
+          </mesh>
         </geometry>
         <!-- <material>
             <ambient>0 0 0.5 1</ambient>

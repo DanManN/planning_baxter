@@ -1,14 +1,10 @@
 # PHIA.py  2021-10-26
 # MIT LICENSE 2020 Ewerton R. Vieira
 
-# planning just first action
-
 import sys
 from math import pi
 from planit.msg import PercievedObject
 from baxter_planit import BaxterPlanner
-from moveit_commander.conversions import *
-from setup_moveit_obstacles import setup_moveit_obstacles
 
 import rospy
 from gazebo_msgs.srv import DeleteModel, SpawnModel, SetModelState, GetModelState, GetWorldProperties
@@ -24,10 +20,6 @@ import numpy as np
 
 
 def main():
-
-    current_path = os.path.dirname(os.path.abspath(__file__))
-
-    f = open(os.path.join(current_path , "../../../../plan.txt"),"w")
 
     # obj_pos_y = model_pos('object_0')[1]
     time_sim_0 = time.time()  # start timer
@@ -50,20 +42,26 @@ def main():
         Obs, closest_pt = PH.path_region_phi(phi=PH.phi)
         RADIUS_CC = PH.min_radius_CC(Obs)
 
-        # print(Obs, closest_pt)
-        square = PH.squared_CC(Obs, closest_pt, RADIUS_CC)
-        print("square ", square, "closest_pt ", closest_pt)
-        planner_timeF = time.time()
+        print(Obs, closest_pt)
+        print(RADIUS_CC)
+        while len(Obs) != 0 and time_sim < 300:
+            square = PH.squared_CC(Obs, closest_pt, RADIUS_CC)
+            print("square ", square, "closest_pt ", closest_pt)
+            planner_timeF = time.time()
 
-        PH.push_planning_phi(square, PH.phi)
+            PH.push_planning_phi(square, PH.phi)
 
-        planner_time += planner_timeF - planner_time0
+            planner_time += planner_timeF - planner_time0
 
-        planner_time0 = time.time()
+            planner_time0 = time.time()
 
-        print("how close is to the goal", PH.tip_position(phi=PH.phi)[0] -
-                PH.model_pos('object_0')[0], "Obs set ", len(Obs))
-        time_sim = time.time() - time_sim_0  # simulation time
+            Obs, closest_pt = PH.path_region_phi(phi=PH.phi)
+            RADIUS_CC = PH.min_radius_CC(Obs)
+
+            print("how close is to the goal", PH.tip_position(phi=PH.phi)[0] -
+                  PH.model_pos('object_0')[0], "Obs set ", len(Obs))
+            count_act += 1
+            time_sim = time.time() - time_sim_0  # simulation time
 
     # far from wall
     else:
@@ -98,21 +96,22 @@ def main():
     print(Obs)
     PH.write_data(count_act, planner_time, time_sim, Obs, "PHIA")
 
-    f.close()
-
 
 if __name__ == '__main__':
 
     ARM_LENGTH = 0.2
-    RADIUS_OBS = 0.033
+    RADIUS_OBS = 0.1
     # RADIUS_CC = 0.1  # 0.07  # 0.315
     WIDTH_ARM = 0.12  # 0.1
-    BOUNDARY_N = 0.58
-    BOUNDARY_S = 0.0
+    BOUNDARY_N = 0.0
+    BOUNDARY_S = 0.6
 
     TABLE = 0.68  # x 
     nu = 0.015
     h = 0.08
+
+    # nu = 0
+    # h = 0
 
     PH = PH_planning.PH_planning(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
                                  BOUNDARY_S, TABLE, nu, h)

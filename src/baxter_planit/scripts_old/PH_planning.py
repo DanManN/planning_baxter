@@ -3,14 +3,21 @@
 
 import sys
 from math import pi
+from planit.msg import PercievedObject
+from baxter_planit import BaxterPlanner
 
+
+import rospy
 import tf
-# from geometry_msgs.msg import Quaternion
-
+import threading
+from gazebo_msgs.srv import DeleteModel, SpawnModel, SetModelState, GetModelState, GetWorldProperties, GetLinkState
+from gazebo_msgs.msg import ModelState, ModelStates
+from geometry_msgs.msg import Quaternion
 # from geometry_msgs.msg import *
 import time
 import os
 import random
+import rospkg
 from Connected_Comp import *
 
 import numpy as np
@@ -20,9 +27,23 @@ from ripser import ripser, Rips
 class PH_planning:
 
     def __init__(self, ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
-                 BOUNDARY_S, TABLE, nu, h, position_file_address="config.txt"):
+                 BOUNDARY_S, TABLE, nu, h):
+
+        rospack = rospkg.RosPack()
+
+        Lock = threading.Lock()
 
         balls_arr = []
+
+        rospy.wait_for_service('/gazebo/set_model_state')
+        rospy.wait_for_service('/gazebo/get_model_state')
+        rospy.wait_for_service('/gazebo/get_link_state')
+        self.set_model_state = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
+        self.model_state = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
+        self.link_state = rospy.ServiceProxy('/gazebo/get_link_state', GetLinkState)
+        self.world_properties = rospy.ServiceProxy(
+            '/gazebo/get_world_properties', GetWorldProperties)
+        # orient = Quaternion(0, 0, 1, 1)
 
         self.ARM_LENGTH = ARM_LENGTH
         self.RADIUS_OBS = RADIUS_OBS
@@ -34,45 +55,11 @@ class PH_planning:
         self.h = h
         self.TABLE = TABLE  # x distance of the table to the (0,0)
 
-        # position_file_address
-        self.position_file_address = position_file_address
-        # self.position_file_address = "/Users/ewerton/Dropbox/Robot/planning_baxter/src/baxter_planit/scripts/config.txt"
+        rospy.init_node("baxter_planit", anonymous=False)
 
-        self.y_shift = 0.56
+        self.planner = BaxterPlanner(False)
 
-        self.world = dict()
-
-        # self.phi = self.angle_phi()
-
-        self.read_world()
-
-    def read_world(self):
-
-        positions_file = open(self.position_file_address, 'r')
-        obj_index = 0
-        obs_index = 0
-        for line in positions_file.readlines():
-            print(line)
-            if (line == "objects\n"):
-                name = line[0:-1]
-                index = 0
-
-            elif (line == "obstacles\n"):
-                name = line[0:-1]
-                index = 0
-
-            elif (line == "tip_gripper\n"):
-                name = line[0:-1]
-                index = 0
-
-            else:
-                pos = line.split()
-                self.world[name+"_"+str(index)] = [float(pos[0]), float(pos[1]) + self.y_shift]
-                index += 1
-
-        positions_file.close()
-
-        print(self.world)
+        self.phi = self.angle_phi()
 
     def persistent_radius_CC(self, Obs):
         rips = Rips()
@@ -147,15 +134,39 @@ class PH_planning:
             P = np.matmul(R, T.reshape(2, 1))
         return [P[0, 0], P[1, 0]]
 
-    def tip_position(self):
-        """Return the position of the tip of the gripper"""
-        return self.world["tip_gripper_0"]
+    def link_pos(self, model="baxter", link="l_gripper_l_finger"):
+        """Return position of the link"""
+        # return self.link_state(link, model).self.link_state.pose
+        return [self.link_state(link, model).link_state.pose.position.x,
+                self.link_state(link, model).link_state.pose.position.y,
+                self.link_state(link, model).link_state.pose.position.z]
+
+    def tip_position(self, model="baxter", link="l_gripper_l_finger", phi=0):
+        """Return the position of the tip of the gripper taking
+        in account the orientation"""
+        # sign = -np.sign(self.link_state(link, model).link_state.pose.orientation.x) # not working I need to understand orientation
+        sign = 1
+        length_finger = 0.1127  # length of the left finger
+        # print("orientation", sign)
+        x, y = self.link_pos()[0:2]
+        roll = self.e_from_q(self.link_state(link, model).link_state.pose.orientation)[0]
+        sign = -np.sign(np.cos(roll))
+        # print("x + sign * np.cos(phi) * length_finger", x, sign, np.cos(phi), length_finger, x + sign * np.cos(phi) * length_finger)
+        # print("y-np.sign(self.link_state(link, model).link_state.pose.orientation.y) * np.sin(phi) * length_finger", y-np.sign(self.link_state(link, model).link_state.pose.orientation.y) * np.sin(phi) * length_finger, y, np.sign(self.link_state(link, model).link_state.pose.orientation.y), np.sin(phi), length_finger)
+        # print(self.link_state(link, model).link_state.pose.orientation)
+        # print(roll, sign)
+        angle_sign = np.sign(roll)
+        # return  [x + sign * np.cos(phi) * length_finger, y +
+        #         angle_sign * np.sin(phi) * length_finger]
+
+        return [x + sign * np.cos(phi) * length_finger, y +
+                np.sin(phi) * length_finger]
 
     def model_pos(self, i):
         """Return position of the model"""
-        return self.world[i]
+        return [self.model_state(i, "world").pose.position.x, self.model_state(i, "world").pose.position.y, self.model_state(i, "world").pose.position.z]
 
-    def is_close_to_wall(self, target='objects_0'):
+    def is_close_to_wall(self, target='object_0'):
         if self.WIDTH_ARM <= self.model_pos(target)[1] <= self.BOUNDARY_N - self.WIDTH_ARM:
             return False
         else:
@@ -168,8 +179,8 @@ class PH_planning:
             return 0
 
         # -self.TABLE since the table is self.TABLE far from the axis x
-        x = self.model_pos('objects_0')[0] - self.TABLE
-        y = self.model_pos('objects_0')[1]
+        x = self.model_pos('object_0')[0] - self.TABLE
+        y = self.model_pos('object_0')[1]
 
         # target closer to north wall ( higher value for y)
         if y > self.BOUNDARY_N - self.WIDTH_ARM:
@@ -182,22 +193,41 @@ class PH_planning:
 
         return sign * np.arcsin((-self.WIDTH_ARM * x + np.sqrt(x**2 * t - t * (self.WIDTH_ARM**2) + t**2)) / (x**2 + t))
 
+    def model_velocity(self, i):
+        """Return velocity of the model"""
+        return [self.model_state(i, "world").twist.linear.x, self.model_state(i, "world").twist.linear.y, self.model_state(i, "world").twist.linear.z]
+
+    def is_static(self):
+        """Return true if objects are no longer moving."""
+        model_names = self.world_properties().model_names
+        # print(model_names)
+        v = [np.linalg.norm(self.model_velocity(i)) for i in model_names]
+        # print(v, "\n")
+        return all(np.array(v) < 1e-2)
+
+    def wait_static(self, timeout=3):
+        """Step simulator asynchronously until objects settle."""
+        t0 = time.time()
+        while (time.time() - t0) < timeout:
+            if self.is_static():
+                return True
+        print(f"Warning: move_joints exceeded {timeout} second timeout. Skipping.")
+        return False
+
     def pos_obstacles(self):
         """Return all 2D positions of the obstacles"""
-        all_obstacles = []
-
-        print(list(self.world.keys()))
-
-        for i in list(self.world.keys()):
-            if i[0:9] != "obstacles":
+        list = []
+        for i in self.world_properties().model_names:
+            if i[0:5] != "small":
                 continue
-            x, y = self.model_pos(i)
-            all_obstacles.append([x, y])
-        return all_obstacles
+            pose_temp = self.model_state(i, "world")
+            x, y = pose_temp.pose.position.x, pose_temp.pose.position.y
+            list.append([x, y])
+        return list
 
     def path_region(self):
         """Return all obstacle in the path region, also the closest point (in the path region) to the tip"""
-        pose_obj = self.model_pos('objects_0')  # target object position
+        pose_obj = self.model_pos('object_0')  # target object position
         # path region x axis, - self.TABLE * self.RADIUS_OBS since we can consider paralell obstacles to the target
         arm_reach = pose_obj[0] - self.TABLE * self.RADIUS_OBS
         arm_region_minus, arm_region_plus = pose_obj[1] - self.WIDTH_ARM / \
@@ -226,7 +256,7 @@ class PH_planning:
 
     def path_region_phi(self, phi=0):
         """Return all obstacle in the path region with phi inclination, also the closest point (in the path region) to the tip"""
-        pos_obj = self.model_pos('objects_0')  # target object position
+        pos_obj = self.model_pos('object_0')  # target object position
         R = self.rot(-phi)
         arm_region_minus,  arm_region_plus = 0, 2 * self.WIDTH_ARM
         c, s, t = np.cos(phi), np.sin(phi), np.tan(phi)
@@ -277,27 +307,31 @@ class PH_planning:
                         y_values.append(Obs[k][1])
                     return [[min(x_values), min(y_values)], [max(x_values), max(y_values)]]
 
-    def move_rel_pt(self, pt_inital, pt_end, phi=0):
-        """Move relative to pt_inital 2d"""
-        pt_inital = np.array([pt_inital[0], pt_inital[1]])
-        pt_end = np.array([pt_end[0], pt_end[1]])
-        # print("\033[34m move_rel_pt: initial tip position \033[0m", tip)
+    def straight_movement(self, direction=[1, 0, 0], length=0.1):
+        self.planner.do_end_effector('close')
+        # print("\033[34m straight move: direction length \033[0m", direction, length)
+        plan, planning_time = self.planner.plan_line_traj(direction, length)
+        self.planner.execute(plan)
 
-        length = np.linalg.norm(pt_end - pt_inital)
-        direction = (pt_end - pt_inital) / length
+    def move_rel_tip(self, point, phi=0):
+        """Move relative to tip 2d"""
+        tip = np.array(self.tip_position(phi=phi))
+        point = np.array([point[0], point[1]])
+        # print("\033[34m move_rel_tip: initial tip position \033[0m", tip)
 
-        print("\033[34m move to point \033[0m", pt_end)
+        length = np.linalg.norm(point - tip)
+        direction = (point - tip) / length
 
-        # print("\033[34m move_rel_pt: final tip position \033[0m", np.array(self.tip_position(phi = phi)))
-        self.write_in_plan(str([direction[0], direction[1], 0])+", " + str(length))
+        print("\033[34m move to point \033[0m", point)
+        # if length > 0.03:  # fail to move tiny lengh
+        self.straight_movement([direction[0], direction[1], 0], length)
+        # print("\033[34m move_rel_tip: final tip position \033[0m", np.array(self.tip_position(phi = phi)))
 
     def push_planning(self, square):
 
-        self.write_in_plan("actions")
-
         # # reach needed to go beyond (self.RADIUS_OBS) the center point of the obstacles
-
-        pose_obj = self.model_pos('objects_0')
+        pose_wrist = self.link_pos(link="left_wrist")
+        pose_obj = self.model_pos('object_0')
         tip = self.tip_position()[0]
 
         """ arm_region is the region where the arm can push the Connected Component away from the path region"""
@@ -333,12 +367,11 @@ class PH_planning:
                 out_reach = arm_region_minus - self.WIDTH_ARM / 2
                 clean_direction = arm_region_plus
 
-            self.move_rel_initial(self.tip_position(), [tip, out_reach])  # move y coordinate
+            self.move_rel_tip([tip, out_reach])  # move y coordinate
 
-            self.move_rel_initial([tip, out_reach], [max_reach, out_reach])  # move x coordinate
+            self.move_rel_tip([max_reach, out_reach])  # move x coordinate
 
-            # cleaning, move y coordinate
-            self.move_rel_initial([max_reach, out_reach], [max_reach, clean_direction])
+            self.move_rel_tip([max_reach, clean_direction])  # cleaning, move y coordinate
 
             return True
 
@@ -346,36 +379,28 @@ class PH_planning:
             print("\033[34m Pushing from top to bottom \033[0m", square[0][1] -
                   arm_region_minus, "<", arm_region_plus - square[1][1])
 
-            self.move_rel_pt(self.tip_position(), [
-                             tip, square[1][1] + self.WIDTH_ARM / 2])  # move y coordinate
+            self.move_rel_tip([tip, square[1][1] + self.WIDTH_ARM / 2])  # move y coordinate
 
-            self.move_rel_pt([tip, square[1][1] + self.WIDTH_ARM / 2],
-                             [max_reach, square[1][1] + self.WIDTH_ARM / 2])
+            self.move_rel_tip([max_reach, square[1][1] + self.WIDTH_ARM / 2])
 
-            self.move_rel_pt([max_reach, square[1][1] + self.WIDTH_ARM / 2],
-                             [max_reach, arm_region_minus])
+            self.move_rel_tip([max_reach, arm_region_minus])
 
         else:
             print("\033[34m Pushing from bottom to top \033[0m",
                   square[0][1] - arm_region_minus, ">", arm_region_plus - square[1][1])
 
-            self.move_rel_pt(self.tip_position(), [
-                             tip, square[0][1] - self.WIDTH_ARM / 2])  # move y coordinate
+            self.move_rel_tip([tip, square[0][1] - self.WIDTH_ARM / 2])  # move y coordinate
 
-            self.move_rel_pt([tip, square[0][1] - self.WIDTH_ARM / 2], [max_reach,
-                                                                        square[0][1] - self.WIDTH_ARM / 2])  # move x coordinate
+            self.move_rel_tip([max_reach, square[0][1] - self.WIDTH_ARM / 2])  # move x coordinate
 
-            self.move_rel_pt([max_reach, square[0][1] - self.WIDTH_ARM / 2],
-                             [max_reach, arm_region_plus])  # cleaning, move y coordinate
+            self.move_rel_tip([max_reach, arm_region_plus])  # cleaning, move y coordinate
 
         return True
 
     def push_planning_phi(self, square, phi=0):
 
-        self.write_in_plan("actions")
-
         # # reach needed to go beyond (self.RADIUS_OBS) the center point of the obstacles
-        pose_obj = self.trans_rot(self.model_pos('objects_0')[0:2], phi)
+        pose_obj = self.trans_rot(self.model_pos('object_0')[0:2], phi)
         tip = self.trans_rot(self.tip_position(phi=phi), phi)[0]
 
         """ arm_region is the region where the arm can push the Connected Component away from the path region"""
@@ -402,36 +427,28 @@ class PH_planning:
             print("\033[34m Pushing from top to bottom \033[0m", phi)
 
             print("rotated space", [tip, square[1][1] + self.WIDTH_ARM / 2])
-            self.move_rel_pt(self.tip_position(), self.rot_trans(
+            self.move_rel_tip(self.rot_trans(
                 [tip, square[1][1] + self.WIDTH_ARM / 2], phi), phi)  # move y coordinate
 
             print("rotated space", [max_reach, square[1][1] + self.WIDTH_ARM / 2])
-            self.move_rel_pt(self.rot_trans(
-                [tip, square[1][1] + self.WIDTH_ARM / 2], phi), self.rot_trans(
+            self.move_rel_tip(self.rot_trans(
                 [max_reach, square[1][1] + self.WIDTH_ARM / 2], phi), phi)
 
             print("rotated space", [max_reach, arm_region_minus])
-            self.move_rel_pt(self.rot_trans(
-                [max_reach, square[1][1] + self.WIDTH_ARM / 2], phi), self.rot_trans([max_reach, arm_region_minus], phi), phi)
+            self.move_rel_tip(self.rot_trans([max_reach, arm_region_minus], phi), phi)
 
         else:
             print("\033[34m Pushing for -phi \033[0m", phi)
 
             print("rotated space", [tip, square[0][1] - self.WIDTH_ARM / 2])
-            self.move_rel_pt(self.tip_position(), self.rot_trans(
+            self.move_rel_tip(self.rot_trans(
                 [tip, square[0][1] - self.WIDTH_ARM / 2], phi), phi)  # move y coordinate
 
             print("rotated space", [max_reach, square[0][1] - self.WIDTH_ARM / 2])
-            self.move_rel_pt(self.rot_trans(
-                [tip, square[0][1] - self.WIDTH_ARM / 2], phi), self.rot_trans(
+            self.move_rel_tip(self.rot_trans(
                 [max_reach, square[0][1] - self.WIDTH_ARM / 2], phi), phi)
 
             print("rotated space", [max_reach, arm_region_plus])
-            self.move_rel_pt(self.rot_trans(
-                [max_reach, square[0][1] - self.WIDTH_ARM / 2], phi), self.rot_trans([max_reach, arm_region_plus], phi), phi)
+            self.move_rel_tip(self.rot_trans([max_reach, arm_region_plus], phi), phi)
 
         return True
-
-    def write_in_plan(self, row):
-        with open("plan.txt", "a") as f:
-            f.write(str(row) + "\n")

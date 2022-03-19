@@ -39,7 +39,7 @@ def position_the_arm():
     z = PH.link_pos()[2]
 
     success, plan, planning_time, error_code = planner.plan_ee_pose(
-                    [0.72, -0.3, 1.05, -pi / 2, 0, -pi / 2], group_name="right_arm")
+                    [0.72, 0.3, 1.13, -pi / 2 - phi, pi / 2, -pi / 2], group_name="right_arm")
     # print(success, planning_time, error_code)
     if not success:
         return False

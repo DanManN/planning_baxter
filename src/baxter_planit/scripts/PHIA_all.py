@@ -1,8 +1,6 @@
 # PHIA.py  2021-10-26
 # MIT LICENSE 2020 Ewerton R. Vieira
 
-# planning just first action
-
 import sys
 from math import pi
 from planit.msg import PercievedObject
@@ -51,19 +49,24 @@ def main():
         RADIUS_CC = PH.min_radius_CC(Obs)
 
         # print(Obs, closest_pt)
-        square = PH.squared_CC(Obs, closest_pt, RADIUS_CC)
-        print("square ", square, "closest_pt ", closest_pt)
-        planner_timeF = time.time()
+        while len(Obs) != 0 and time_sim < 300:
+            square = PH.squared_CC(Obs, closest_pt, RADIUS_CC)
+            print("square ", square, "closest_pt ", closest_pt)
+            planner_timeF = time.time()
 
-        PH.push_planning_phi(square, PH.phi)
+            PH.push_planning_phi(square, PH.phi)
 
-        planner_time += planner_timeF - planner_time0
+            planner_time += planner_timeF - planner_time0
 
-        planner_time0 = time.time()
+            planner_time0 = time.time()
 
-        print("how close is to the goal", PH.tip_position(phi=PH.phi)[0] -
-                PH.model_pos('object_0')[0], "Obs set ", len(Obs))
-        time_sim = time.time() - time_sim_0  # simulation time
+            Obs, closest_pt = PH.path_region_phi(phi=PH.phi)
+            RADIUS_CC = PH.min_radius_CC(Obs)
+
+            print("how close is to the goal", PH.tip_position(phi=PH.phi)[0] -
+                  PH.model_pos('object_0')[0], "Obs set ", len(Obs))
+            count_act += 1
+            time_sim = time.time() - time_sim_0  # simulation time
 
     # far from wall
     else:

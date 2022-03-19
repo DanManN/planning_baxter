@@ -72,9 +72,9 @@ def main():
 if __name__ == '__main__':
 
     ARM_LENGTH = 0.2
-    RADIUS_OBS = 0.033
+    RADIUS_OBS = 0.039
     # RADIUS_CC = 0.1  # 0.07  # 0.315
-    WIDTH_ARM = 0.12  # 0.1
+    WIDTH_ARM = 0.16  # 0.12
     BOUNDARY_N = 0.58
     BOUNDARY_S = 0.0
 
@@ -86,8 +86,8 @@ if __name__ == '__main__':
     # h = 0
 
     config_file = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__))))),
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__)))))),
         'config.txt'
     )
 

@@ -38,11 +38,11 @@ def spawn_objects():
 
     path_models = os.path.join(path_dir, '../../../models')
 
-    f = open(os.path.join(path_models, 'cylinder/model.sdf'))
+    f = open(os.path.join(path_models, 'target_cup/model.sdf'))
 
     sdff = f.read()
 
-    obs_f = open(os.path.join(path_models, 'small_cylinder/model.sdf'))
+    obs_f = open(os.path.join(path_models, 'cup/model.sdf'))
 
     obs_sdff = obs_f.read()
 
@@ -87,14 +87,14 @@ def spawn_objects():
             obj_index += 1
     # rospy.signal_shutdown("Fininshed Throwing")
     f.close()
-    obs_f.close()
+    obs_f.close
     position_file.close()
-    # offset_x = 0
-    # # rospy.wait_for_service('/gazebo/get_model_state')
-    # # model_coordinates = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
-    # pose = model_coordinates('boundaryN', 'world')
-    # offset_y = - pose.pose.position.y
-    # shift_models((offset_x, offset_y))
+    offset_x = 0
+    # rospy.wait_for_service('/gazebo/get_model_state')
+    # model_coordinates = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
+    pose = model_coordinates('boundaryN', 'world')
+    offset_y = - pose.pose.position.y
+    shift_models((offset_x, offset_y))
 
 
 def shift_models(offset):

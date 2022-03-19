@@ -113,16 +113,6 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='table'>
-        <pose>1.15 0 0 0 0 -1.5708</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose>1.1 0 0 0 0 -1.5708</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
       <light name='sun'>
         <pose>0 0 10 0 -0 0</pose>
       </light>
@@ -142,10 +132,10 @@
       <static>1</static>
       <link name='link'>
         <collision name='surface'>
-          <pose>0 0 1 0 -0 0</pose>
+          <pose>0 0 0.945 0 -0 0</pose>
           <geometry>
             <box>
-              <size>1.5 0.8 0.03</size>
+              <size>1.2 0.6 0.03</size>
             </box>
           </geometry>
           <surface>
@@ -166,7 +156,7 @@
           <max_contacts>10</max_contacts>
         </collision>
         <visual name='visual1'>
-          <pose>0 0 1 0 -0 0</pose>
+          <pose>0 0 0.945 0 -0 0</pose>
           <geometry>
             <box>
               <size>1.5 0.8 0.03</size>
@@ -180,11 +170,11 @@
           </material>
         </visual>
         <collision name='front_left_leg'>
-          <pose>0.68 0.38 0.5 0 -0 0</pose>
+          <pose>0.68 0.23 0.465 0 -0 0</pose>
           <geometry>
             <cylinder>
               <radius>0.02</radius>
-              <length>1</length>
+              <length>0.93</length>
             </cylinder>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -202,11 +192,11 @@
           </surface>
         </collision>
         <visual name='front_left_leg'>
-          <pose>0.68 0.38 0.5 0 -0 0</pose>
+          <pose>0.68 0.23 0.465 0 -0 0</pose>
           <geometry>
             <cylinder>
               <radius>0.02</radius>
-              <length>1</length>
+              <length>0.93</length>
             </cylinder>
           </geometry>
           <material>
@@ -217,11 +207,11 @@
           </material>
         </visual>
         <collision name='front_right_leg'>
-          <pose>0.68 -0.38 0.5 0 -0 0</pose>
+          <pose>0.68 -0.23 0.465 0 -0 0</pose>
           <geometry>
             <cylinder>
               <radius>0.02</radius>
-              <length>1</length>
+              <length>0.93</length>
             </cylinder>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -239,11 +229,11 @@
           </surface>
         </collision>
         <visual name='front_right_leg'>
-          <pose>0.68 -0.38 0.5 0 -0 0</pose>
+          <pose>0.68 -0.23 0.465 0 -0 0</pose>
           <geometry>
             <cylinder>
               <radius>0.02</radius>
-              <length>1</length>
+              <length>0.93</length>
             </cylinder>
           </geometry>
           <material>
@@ -254,11 +244,11 @@
           </material>
         </visual>
         <collision name='back_right_leg'>
-          <pose>-0.68 -0.38 0.5 0 -0 0</pose>
+          <pose>-0.68 -0.23 0.465 0 -0 0</pose>
           <geometry>
             <cylinder>
               <radius>0.02</radius>
-              <length>1</length>
+              <length>0.93</length>
             </cylinder>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -276,11 +266,11 @@
           </surface>
         </collision>
         <visual name='back_right_leg'>
-          <pose>-0.68 -0.38 0.5 0 -0 0</pose>
+          <pose>-0.68 -0.23 0.465 0 -0 0</pose>
           <geometry>
             <cylinder>
               <radius>0.02</radius>
-              <length>1</length>
+              <length>0.93</length>
             </cylinder>
           </geometry>
           <material>
@@ -291,11 +281,11 @@
           </material>
         </visual>
         <collision name='back_left_leg'>
-          <pose>-0.68 0.38 0.5 0 -0 0</pose>
+          <pose>-0.68 0.23 0.465 0 -0 0</pose>
           <geometry>
             <cylinder>
               <radius>0.02</radius>
-              <length>1</length>
+              <length>0.93</length>
             </cylinder>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -313,11 +303,11 @@
           </surface>
         </collision>
         <visual name='back_left_leg'>
-          <pose>-0.68 0.38 0.5 0 -0 0</pose>
+          <pose>-0.68 0.23 0.465 0 -0 0</pose>
           <geometry>
             <cylinder>
               <radius>0.02</radius>
-              <length>1</length>
+              <length>0.93</length>
             </cylinder>
           </geometry>
           <material>
@@ -331,21 +321,21 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>0.829021 1.6812 0 0 -0 0</pose>
+      <pose>1.03 -0.05 0 0 -0 -1.5708</pose>
     </model>
     <!-- shelf boundaries -->
     <model name ='boundaryW'>
-        <pose>1.31 0.3 1.12 0 0 0</pose>
+        <pose>1.225 -0.265 1.0375 0 0 0</pose>
         <link name ='link'>
           <pose>0 0 0 0 0 0</pose>
           <collision name ='collision'>
             <geometry>
-              <box><size>0.01 0.60 0.20</size></box>
+              <box><size>0.09 0.58 0.095</size></box>
             </geometry>
           </collision>
           <visual name ='visual'>
             <geometry>
-              <box><size>0.01 0.60 0.20</size></box>
+              <box><size>0.09 0.58 0.095</size></box>
             </geometry>
             <material>
                 <ambient>1 1 1 0.1</ambient>
@@ -363,17 +353,17 @@
 
 
     <model name ='boundaryS'>
-        <pose>1.03 0.61 1.12 0 0 0</pose>
+        <pose>0.975 0.07 1.0375 0 0 0</pose>
         <link name ='link'>
           <pose>0 0 0 0 0 0</pose>
           <collision name ='collision'>
             <geometry>
-              <box><size>0.55 0.01 0.20</size></box>
+              <box><size>0.59 0.09 0.095</size></box>
             </geometry>
           </collision>
           <visual name ='visual'>
             <geometry>
-              <box><size>0.55 0.01 0.20</size></box>
+              <box><size>0.59 0.09 0.095</size></box>
             </geometry>
             <material>
               <ambient>1 1 1 0.1</ambient>
@@ -390,17 +380,17 @@
     </model>
 
     <model name ='boundaryN'>
-        <pose>1.03 -0.01 1.12 0 0 0</pose>
+        <pose>0.975 -0.60 1.0375 0 0 0</pose>
         <link name ='link'>
           <pose>0 0 0 0 0 0</pose>
           <collision name ='collision'>
             <geometry>
-              <box><size>0.55 0.01 0.20</size></box>
+              <box><size>0.59 0.09 0.095</size></box>
             </geometry>
           </collision>
           <visual name ='visual'>
             <geometry>
-              <box><size>0.55 0.01 0.20</size></box>
+              <box><size>0.59 0.09 0.095</size></box>
             </geometry>
             <material>
               <ambient>1 1 1 0.1</ambient>
