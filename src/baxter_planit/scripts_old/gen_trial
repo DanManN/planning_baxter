@@ -1,0 +1,256 @@
+#!/usr/bin/env python
+""" generate experiment trials """
+
+import os
+import sys
+import copy
+import glob
+from threading import Lock
+from math import pi, tau, atan2
+import xml.etree.ElementTree as ET
+from random import uniform, choice, shuffle
+
+import trimesh
+import numpy as np
+
+import rospy
+from tf.transformations import *
+from std_srvs.srv import Empty
+# from geometry_msgs.msg import Twist
+from gazebo_msgs.msg import ModelStates, ModelState
+from moveit_commander.conversions import *
+
+rate = 300
+count = 0
+lock = Lock()
+outfile = None
+init_states_pub = None
+
+# don't mess with these objects
+ignore = {'ground_plane', 'table', 'table_box', 'baxter', 'kinect'}
+
+
+def recieved(msg):
+    global count
+    lock.acquire()
+    count -= 1
+    rospy.Rate(rate).sleep()
+    lock.release()
+
+
+def randAngle(num=8, min_angle=0, max_angle=None):
+    """ return random angle between min_angle and max_angle (up to resolution of num) """
+    if max_angle is None:
+        max_angle = (num - 1) * tau / num
+    return choice(np.linspace(min_angle, max_angle, num))
+
+
+# random orientation generator
+def randOrientations():
+    """ get randomized object orientations """
+    return {
+        '003_cracker_box_textured': [randAngle(4), randAngle(4), randAngle()],
+        '004_sugar_box_textured': [randAngle(4), randAngle(4), randAngle()],
+        '005_tomato_soup_can_textured': [randAngle(), randAngle(4), randAngle()],
+        '006_mustard_bottle_textured': [randAngle(2), randAngle(4), randAngle()],
+        '007_tuna_fish_can_textured': [randAngle(4), randAngle(4), randAngle()],
+        '008_pudding_box_textured': [randAngle(4), randAngle(4), randAngle()],
+        '009_gelatin_box_textured': [randAngle(4), randAngle(4), randAngle()],
+        '010_potted_meat_can_textured': [randAngle(4), randAngle(2), randAngle()],
+        '011_banana_textured': [randAngle(2), randAngle(2), randAngle()],
+        '021_bleach_cleanser_textured': [randAngle(4), randAngle(3, 0, pi),
+                                         randAngle()],
+        '025_mug_textured': [randAngle(4), randAngle(3, -pi, 0), randAngle()],
+        '030_fork_textured': [randAngle(2), randAngle(2), randAngle()],
+        '031_spoon_textured': [randAngle(2), randAngle(2), randAngle()],
+        '032_knife_textured': [randAngle(2), randAngle(2), randAngle()],
+        '033_spatula_textured': [randAngle(2), randAngle(2), randAngle()],
+        '035_power_drill_textured': [randAngle(2), randAngle(4), randAngle()],
+        '037_scissors_textured': [randAngle(2), randAngle(2), randAngle()],
+        '040_large_marker_textured': [randAngle(), randAngle(4), randAngle()],
+    }
+
+
+orientations = randOrientations()
+
+# randomize object positions
+positions = [
+    # table positions:
+    [.75, -.4, 1.06],
+    [.75, 0, 1.06],
+    [.75, .4, 1.06],
+    # offscreen positions:
+    [9.5, -9.5, .05],
+    [9.5, -8.5, .05],
+    [9.5, -7.5, .05],
+    [9.5, -6.5, .05],
+    [9.5, -5.5, .05],
+    [9.5, -4.5, .05],
+    [9.5, -3.5, .05],
+    [9.5, -2.5, .05],
+    [9.5, -1.5, .05],
+    [9.5, -0.5, .05],
+    [9.5, 0.5, .05],
+    [9.5, 1.5, .05],
+    [9.5, 2.5, .05],
+    [9.5, 3.5, .05],
+    [9.5, 4.5, .05],
+]
+shuffle(positions)
+
+
+def on_model_states_msg(msg):
+    """ do once when model state is sent """
+    global count
+    global outfile
+    global orientations
+    global init_states_pub
+
+    pos_ind = 0
+    for (model_name, model_pose) in zip(msg.name, msg.pose):
+        if model_name not in ignore:
+            mesh_file = 'models/' + model_name + '/textured.col.dae'
+            if False:  # os.path.exists(mesh_file):
+
+                # get mesh
+                sdf_file = 'models/' + model_name + '/model.sdf'
+                mesh = trimesh.load(mesh_file, force='mesh')
+
+                # transform mesh to inertial frame
+                tree = ET.parse(sdf_file)
+                node_col = tree.find('.//collision')
+                node_pose = node_col.find('pose')
+                ipose = [float(x) for x in node_pose.text.split()]
+                # inertia_transform = concatenate_matrices(translation_matrix(ipose[:3]), euler_matrix(*ipose[3:]))
+                inertia_transform = euler_matrix(*ipose[3:])
+                # inertia_transform = inverse_matrix(inertia_transform)
+                mesh.apply_transform(inertia_transform)
+                mesh.apply_transform(euler_matrix(0, pi / 2, 0))
+
+                # pick random stable pose
+                transforms, probs = trimesh.poses.compute_stable_poses(mesh)
+                avg_prob = 1.0 / len(probs)
+                print(model_name)
+                print(avg_prob, probs[0])
+                good_transforms = [trans for trans, prob in zip(transforms, probs) if prob > avg_prob]
+                # print(len(probs), len(test), sum(probs), probs)
+                # shuffle(good_transforms)
+                stable_transform = good_transforms[0]
+
+                # rotate to align to x-axis
+                x, y = stable_transform[:2, 0]
+                theta = -atan2(y, x)
+
+                orientation = euler_from_matrix(concatenate_matrices(euler_matrix(0, 0, theta), stable_transform))
+
+                # print(model_name)
+                # print(theta)
+                # print(orientation)
+            else:
+                orientation = orientations[model_name]
+
+            new_msg = ModelState()
+            new_msg.model_name = model_name
+            new_msg.reference_frame = "world"
+            new_msg.pose = copy.deepcopy(model_pose)
+            new_msg.pose.position.x = positions[pos_ind][0]
+            new_msg.pose.position.y = positions[pos_ind][1]
+            new_msg.pose.position.z = positions[pos_ind][2]
+
+            q = quaternion_from_euler(*orientation)
+            new_msg.pose.orientation.x = q[0]
+            new_msg.pose.orientation.y = q[1]
+            new_msg.pose.orientation.z = q[2]
+            new_msg.pose.orientation.w = q[3]
+
+            if positions[pos_ind][2] > 1:
+                if outfile is None:
+                    continue
+                print(
+                    model_name,
+                    positions[pos_ind][0],
+                    positions[pos_ind][1],
+                    positions[pos_ind][2],
+                    q[0],
+                    q[1],
+                    q[2],
+                    q[3],
+                    sep=',',
+                    file=outfile
+                )
+            pos_ind += 1
+
+            lock.acquire()
+            count += 1
+            rospy.Rate(rate).sleep()
+            lock.release()
+            init_states_pub.publish(new_msg)
+
+
+def main():
+    """ main """
+    global count
+    global outfile
+    global orientations
+    global init_states_pub
+
+    rospy.init_node('gazebo_rand_instance')
+    init_states_pub = rospy.Publisher('/gazebo/set_model_state', ModelState, queue_size=50)
+    rospy.Subscriber('/gazebo/set_model_state', ModelState, recieved)
+    image_save = rospy.ServiceProxy('/image_saver/save', Empty)
+    rospy.Rate(1 / 0.5).sleep()
+
+    try:
+        num_exp = int(sys.argv[1])
+    except (IndexError, ValueError):
+        num_exp = 1
+
+    try:
+        directory = sys.argv[2]
+    except IndexError:
+        directory = "experiments"
+
+    try:
+        first = int(sorted(glob.glob(f'{directory}/exp*.jpg')).pop()[-8:-4]) + 1
+    except (IndexError, ValueError):
+        first = 0
+
+    for i in range(first, first + num_exp):
+        print(f'exp{i:04d}:')
+        outfile = open(f"{directory}/exp{i:04d}.csv", "w")
+
+        # first orientation
+        print("object,px,py,pz,qx,qy,qz,qw", file=outfile)
+        orientations = randOrientations()
+        msg = rospy.wait_for_message('/gazebo/model_states', ModelStates)
+        on_model_states_msg(msg)
+
+        print("updating orientations...")
+        print(f"Waiting for {count} objects")
+        while count:
+            print(f"Waiting for {count} objects")
+            rospy.Rate(rate).sleep()
+        print("orientations updated.")
+
+        # wait for gravity
+        rospy.Rate(1 / 0.5).sleep()
+
+        # capture screen and data
+        old_file = rospy.get_param('/image_saver/filename_format')
+        new_file = old_file.replace('RENAME', f'exp{i:04d}')
+        # input(f"Save {new_file} ?")
+        image_save()
+        while not os.path.exists(old_file):
+            rospy.Rate(rate).sleep()
+        os.rename(old_file, new_file)
+        old_file = old_file.replace('jpg', 'ini')
+        new_file = new_file.replace('jpg', 'ini')
+        while not os.path.exists(old_file):
+            rospy.Rate(rate).sleep()
+        os.rename(old_file, new_file)
+
+        outfile.close()
+
+
+if __name__ == '__main__':
+    main()

@@ -37,16 +37,8 @@ def homogeneous2pose_msg(homogeneous):
 
 def pose_msg2homogeneous(pose):
     trans = translation_matrix((pose.position.x, pose.position.y, pose.position.z))
-    rot = quaternion_matrix(
-        (pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w)
-    )
+    rot = quaternion_matrix((pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w))
     return concatenate_matrices(trans, rot)
-
-
-def pose_msg2list(pose):
-    trans = (pose.position.x, pose.position.y, pose.position.z)
-    rot = (pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w)
-    return trans, rot
 
 
 def sgn(x):
