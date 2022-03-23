@@ -13,14 +13,8 @@ from planit import Planner
 
 
 class BaxterPlanner(Planner):
-
-    def __init__(
-        self,
-        gripper_width=0.042,
-        is_sim=False,
-        commander_args=['joint_states:=/robot/joint_states']
-    ):
-        super().__init__(gripper_width, is_sim, commander_args)
+    def __init__(self, is_sim=True, commander_args=['joint_states:=/robot/joint_states']):
+        super().__init__(is_sim, commander_args)
 
         if not is_sim:
             self.eef_pub_left = rospy.Publisher(

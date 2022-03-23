@@ -5,7 +5,7 @@
       <pose>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0 0 -0.025 0 -0 0</pose>
-        <mass>0.1</mass>
+        <mass>0.35</mass>
         <inertia>
           <ixx>0</ixx>
           <ixy>0</ixy>
@@ -45,8 +45,8 @@
         <surface>
           <friction>
             <ode>
-              <mu>0.4</mu>
-              <mu2>0.8</mu2>
+              <mu>0.033</mu>
+              <mu2>10</mu2>
               <fdir1>0 0 0</fdir1>
               <slip1>0</slip1>
               <slip2>0</slip2>
