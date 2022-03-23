@@ -2,16 +2,15 @@
   <!-- load OMPL planning pipeline, but add the CHOMP planning adapter. -->
   <include file="$(find baxter_moveit_config)/launch/ompl_planning_pipeline.launch">
     <arg name="planning_adapters" value="
-       default_planner_request_adapters/AddTimeParameterization
        default_planner_request_adapters/FixWorkspaceBounds
        default_planner_request_adapters/FixStartStateBounds
        default_planner_request_adapters/FixStartStateCollision
        default_planner_request_adapters/FixStartStatePathConstraints
-       chomp/OptimizerAdapter"
-       />
+       chomp/OptimizerAdapter
+       default_planner_request_adapters/AddTimeParameterization" />
   </include>
   <!-- load chomp config -->
-  <rosparam command="load" file="$(find baxter_moveit_config)/config/chomp_planning.yaml"/>
+  <rosparam command="load" file="$(find baxter_moveit_config)/config/chomp_planning.yaml" />
   <!-- override trajectory_initialization_method -->
-  <param name="trajectory_initialization_method" value="fillTrajectory"/>
+  <param name="trajectory_initialization_method" value="fillTrajectory" />
 </launch>

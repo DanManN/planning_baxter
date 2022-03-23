@@ -52,6 +52,9 @@ class Grasps:
         # object position and orientation
         obj_pos, obj_rot = pose_msg2list(obj.pose)
 
+        def nearOdd(n):
+            return round((n - 1) / 2) * 2 + 1
+
         # positions along shape
         grasps = []
         if shape.type == SP.BOX:
@@ -60,15 +63,12 @@ class Grasps:
             # gw = self.right_flim[1] * 2  # gripper width
             gw = self.gripper_width  # gripper width
 
-            def nearOdd(n):
-                return round((n - 1) / 2) * 2 + 1
-
             # top = [0, 0, sz / 2]
             # left = [0, -sy / 2, 0]
             # right = [0, sy / 2, 0]
             # front = [-sx / 2, 0, 0]
             if sx < gw:
-                noz = nearOdd(sz / gw)
+                noz = nearOdd(sz / (gw * 1.5))
                 for z in np.linspace(-(noz - 1) / (2 * noz), (noz - 1) / (2 * noz), noz):
                     grasps.append([[0, sy / 2, z * sz], horz[3]])  # right
                     grasps.append([[0, sy / 2, z * sz], horz[9]])  # right
@@ -89,15 +89,18 @@ class Grasps:
                     grasps.append([[x * sx, 0, sz / 2], vert[2]])  # top
         elif shape.type == SP.CYLINDER or shape.type == SP.CONE:
             h, r = shape.dimensions
-            grasps += [[(0, 0, 0), o] for o in vert]
-            grasps += [
-                [(0, 0, 0), o]
-                for o in horz[hres * ((res - 1) // 4):hres * ((res + 3) // 4)]
-            ]
-            grasps += [
-                [(0, 0, 0), o]
-                for o in horz[hres * ((-res - 1) // 4):hres * ((-res + 3) // 4)]
-            ]
+            noz = nearOdd(h / (gw))
+            for z in np.linspace(-(noz - 1) / (2 * noz), (noz - 1) / (2 * noz), noz):
+                grasps += [[(0, 0, z * h), o] for o in vert]
+                grasps += [
+                    [(0, 0, z * h), o]
+                    for o in horz[hres * ((res - 1) // 4):hres * ((res + 3) // 4)]
+                ]
+                grasps += [
+                    [(0, 0, z * h), o]
+                    for o in horz[hres * ((-res - 1) // 4):hres * ((-res + 3) // 4)]
+                ]
+                offset = (0, 0, 0)
         elif shape.type == SP.SPHERE:
             r = shape.dimensions[0]
             grasps = [[(0, 0, 0), o] for o in vert + horz]
