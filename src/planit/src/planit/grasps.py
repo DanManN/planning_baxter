@@ -51,6 +51,8 @@ class Grasps:
 
         # object position and orientation
         obj_pos, obj_rot = pose_msg2list(obj.pose)
+        # gw = self.right_flim[1] * 2  # gripper width
+        gw = self.gripper_width  # gripper width
 
         def nearOdd(n):
             return round((n - 1) / 2) * 2 + 1
@@ -59,9 +61,6 @@ class Grasps:
         grasps = []
         if shape.type == SP.BOX:
             sx, sy, sz = shape.dimensions
-
-            # gw = self.right_flim[1] * 2  # gripper width
-            gw = self.gripper_width  # gripper width
 
             # top = [0, 0, sz / 2]
             # left = [0, -sy / 2, 0]
@@ -87,6 +86,8 @@ class Grasps:
                 for x in np.linspace(-(nox - 1) / (2 * nox), (nox - 1) / (2 * nox), nox):
                     grasps.append([[x * sx, 0, sz / 2], vert[0]])  # top
                     grasps.append([[x * sx, 0, sz / 2], vert[2]])  # top
+
+            offset = (offset[0], offset[1], offset[2] + gw * 0.75)
         elif shape.type == SP.CYLINDER or shape.type == SP.CONE:
             h, r = shape.dimensions
             noz = nearOdd(h / (gw))
@@ -100,7 +101,7 @@ class Grasps:
                     [(0, 0, z * h), o]
                     for o in horz[hres * ((-res - 1) // 4):hres * ((-res + 3) // 4)]
                 ]
-                offset = (0, 0, 0)
+                offset = (offset[0], offset[1], offset[2] + r / 2)
         elif shape.type == SP.SPHERE:
             r = shape.dimensions[0]
             grasps = [[(0, 0, 0), o] for o in vert + horz]
@@ -108,7 +109,7 @@ class Grasps:
         # elif shape[2] == p.GEOM_PLANE:
 
         # adjust offset for finger width
-        offset = (offset[0], offset[1], offset[2] + self.gripper_width / 2)
+        # offset = (offset[0], offset[1], offset[2] + gw / 2)
 
         poses = []
         for pos, rot in grasps:
