@@ -61,7 +61,11 @@ def main():
 
         planner_time = planner_timeF - time.time()
 
-        PH.push_planning(square)
+        if square:
+            PH.push_planning(square)
+
+        else:
+            print("Path region empty")
 
         print("how close is to the goal", PH.tip_position()[0] -
               PH.model_pos('objects_0')[0], "Obs set ", len(Obs), "planning time", planner_time)
