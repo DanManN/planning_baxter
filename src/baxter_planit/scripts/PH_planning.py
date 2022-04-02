@@ -4,7 +4,7 @@
 import sys
 from math import pi
 
-# import tf
+import tf
 # from geometry_msgs.msg import Quaternion
 
 # from geometry_msgs.msg import *
@@ -36,7 +36,7 @@ class PH_planning:
 
         # position_file_address
         self.position_file_address = position_file_address
-        self.position_file_address = "/Users/ewerton/Dropbox/Robot/planning_baxter/src/baxter_planit/scripts/config.txt"
+        # self.position_file_address = "/Users/ewerton/Dropbox/Robot/planning_baxter/src/baxter_planit/scripts/config.txt"
 
         self.y_shift = 0.56
 
@@ -72,7 +72,7 @@ class PH_planning:
 
         positions_file.close()
 
-        # print(self.world)
+        print(self.world)
 
     def persistent_radius_CC(self, Obs):
         rips = Rips()
@@ -266,14 +266,9 @@ class PH_planning:
     def squared_CC(self, Obs, closest_pt, RADIUS_CC):
         """Return a square that contains the closest Connected Component to the tip (Circumscribed Rectangle)"""
 
-        if not Obs:  # no obstacles
-            print("no obstacles")
-            return []
-
-        N = s_neighbors(np.array(Obs), RADIUS_CC
-
-        x_values=[]
-        y_values=[]
+        N = s_neighbors(np.array(Obs), RADIUS_CC)
+        x_values = []
+        y_values = []
         for i in list(N.keys()):
             for j in N[i]:
                 if j == closest_pt:
@@ -283,13 +278,13 @@ class PH_planning:
                     return [[min(x_values), min(y_values)], [max(x_values), max(y_values)]]
 
     def move_rel_pt(self, pt_inital, pt_end, phi=0):
-        # """Move relative to pt_inital 2d"""
-        pt_inital=np.array([pt_inital[0], pt_inital[1]])
-        pt_end=np.array([pt_end[0], pt_end[1]])
+        """Move relative to pt_inital 2d"""
+        pt_inital = np.array([pt_inital[0], pt_inital[1]])
+        pt_end = np.array([pt_end[0], pt_end[1]])
         # print("\033[34m move_rel_pt: initial tip position \033[0m", tip)
 
-        length=np.linalg.norm(pt_end - pt_inital)
-        direction=(pt_end - pt_inital) / length
+        length = np.linalg.norm(pt_end - pt_inital)
+        direction = (pt_end - pt_inital) / length
 
         print("\033[34m move to point \033[0m", pt_end)
 
@@ -302,27 +297,27 @@ class PH_planning:
 
         # # reach needed to go beyond (self.RADIUS_OBS) the center point of the obstacles
 
-        pose_obj=self.model_pos('objects_0')
-        tip=self.tip_position()[0]
+        pose_obj = self.model_pos('objects_0')
+        tip = self.tip_position()[0]
 
         """ arm_region is the region where the arm can push the Connected Component away from the path region"""
-        arm_region_minus, arm_region_plus=pose_obj[1] - \
+        arm_region_minus, arm_region_plus = pose_obj[1] - \
             self.WIDTH_ARM / 2, pose_obj[1] + self.WIDTH_ARM / 2
 
         """Cannot cross the boundaries and push more than self.BOUNDARY_N - self.RADIUS_OBS (for North case, same for South)"""
-        arm_region_minus=max(arm_region_minus, self.BOUNDARY_S +
+        arm_region_minus = max(arm_region_minus, self.BOUNDARY_S +
                                2*self.RADIUS_OBS + self.WIDTH_ARM / 2)
-        arm_region_plus=min(arm_region_plus, self.BOUNDARY_N - 2 *
+        arm_region_plus = min(arm_region_plus, self.BOUNDARY_N - 2 *
                               self.RADIUS_OBS - self.WIDTH_ARM / 2)
 
         """square[0][0] might be bigger than the ARM_LENGHT, so select the min"""
         if square[1][0] - square[0][0] < self.ARM_LENGTH:
-            max_reach=square[1][0] + self.RADIUS_OBS
+            max_reach = square[1][0] + self.RADIUS_OBS
             """ + self.RADIUS_OBS, because it needs to go beyond  the center point of the last obstacle"""
         else:
-            max_reach=square[0][0] + self.ARM_LENGTH
+            max_reach = square[0][0] + self.ARM_LENGTH
 
-        max_reach=min(pose_obj[0] - 1.2 * self.RADIUS_OBS, max_reach)
+        max_reach = min(pose_obj[0] - 1.2 * self.RADIUS_OBS, max_reach)
 
         if max_reach - tip < 0.001:
             return print("Failed")
@@ -332,11 +327,11 @@ class PH_planning:
 
             """ first decide which outside region to use"""
             if pose_obj[0] < 0.3:  # < 0.3:
-                out_reach=arm_region_plus + self.WIDTH_ARM / 2  # why / 4 and not 2
-                clean_direction=arm_region_minus
+                out_reach = arm_region_plus + self.WIDTH_ARM / 2  # why / 4 and not 2
+                clean_direction = arm_region_minus
             else:
-                out_reach=arm_region_minus - self.WIDTH_ARM / 2
-                clean_direction=arm_region_plus
+                out_reach = arm_region_minus - self.WIDTH_ARM / 2
+                clean_direction = arm_region_plus
 
             self.move_rel_initial(self.tip_position(), [tip, out_reach])  # move y coordinate
 
@@ -380,25 +375,25 @@ class PH_planning:
         self.write_in_plan("actions")
 
         # # reach needed to go beyond (self.RADIUS_OBS) the center point of the obstacles
-        pose_obj=self.trans_rot(self.model_pos('objects_0')[0:2], phi)
-        tip=self.trans_rot(self.tip_position(phi=phi), phi)[0]
+        pose_obj = self.trans_rot(self.model_pos('objects_0')[0:2], phi)
+        tip = self.trans_rot(self.tip_position(phi=phi), phi)[0]
 
         """ arm_region is the region where the arm can push the Connected Component away from the path region"""
-        arm_region_minus, arm_region_plus=pose_obj[1] - \
+        arm_region_minus, arm_region_plus = pose_obj[1] - \
             self.WIDTH_ARM / 2, pose_obj[1] + self.WIDTH_ARM / 2
 
         """Cannot cross the boundaries and push more than self.BOUNDARY_N - self.RADIUS_OBS (for North case, same for South)"""
         # arm_region_minus = max(arm_region_minus, self.BOUNDARY_S + 2*self.RADIUS_OBS + self.WIDTH_ARM / 2)
-        arm_region_plus=min(arm_region_plus, self.BOUNDARY_N - 2 *
+        arm_region_plus = min(arm_region_plus, self.BOUNDARY_N - 2 *
                               self.RADIUS_OBS - self.WIDTH_ARM / 2)
 
         """square[0][0] might be bigger than the ARM_LENGHT, so select the min"""
         if square[1][0] - square[0][0] < self.ARM_LENGTH:
-            max_reach=square[1][0] + self.RADIUS_OBS
+            max_reach = square[1][0] + self.RADIUS_OBS
             # print("square[1][0] + self.RADIUS_OBS", max_reach)
             """ + self.RADIUS_OBS, because it needs to go beyond  the center point of the last obstacle"""
         else:
-            max_reach=square[0][0] + self.ARM_LENGTH
+            max_reach = square[0][0] + self.ARM_LENGTH
 
         if max_reach - tip < 0.001:
             return print("Failed")
