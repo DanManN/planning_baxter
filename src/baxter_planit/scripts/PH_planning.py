@@ -266,6 +266,9 @@ class PH_planning:
     def squared_CC(self, Obs, closest_pt, RADIUS_CC):
         """Return a square that contains the closest Connected Component to the tip (Circumscribed Rectangle)"""
 
+        if not Obs:  # no obstacles
+            print("no obstacles")
+            return []
         N = s_neighbors(np.array(Obs), RADIUS_CC)
         x_values = []
         y_values = []
