@@ -1,3 +1,4 @@
+*.zip
 src/CMakeLists.txt
 src/baxter/
 src/baxter_common/
