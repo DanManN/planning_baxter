@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+source ./devel/setup.sh
+python ./src/baxter_planit/scripts/spawn_objects.py

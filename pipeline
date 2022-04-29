@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+source ./devel/setup.sh
+export MESH_WORKSPACE_PATH=$(pwd)/models
+export GAZEBO_MODEL_PATH=$(pwd)/models
+
+MASTER=172.16.71.88
+echo $MASTER
+
+IP=$(ifconfig | grep broadcast | cut -d' ' -f10)
+echo $IP
+
+export ROS_IP=$IP
+# export ROS_HOSTNAME=$IP
+export ROS_MASTER_URI=http://$MASTER:11311
+
+python central_control.py

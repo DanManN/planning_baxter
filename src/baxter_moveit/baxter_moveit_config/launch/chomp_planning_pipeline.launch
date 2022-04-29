@@ -17,7 +17,7 @@
    <param name="request_adapters" value="$(arg planning_adapters)" />
    <param name="start_state_max_bounds_error" value="$(arg start_state_max_bounds_error)" />
 
-   <!-- <param name="collision_detector" value="Hybrid" /> -->
+   <param name="collision_detector" value="Hybrid" />
 
    <rosparam command="load" file="$(find baxter_moveit_config)/config/kinematics.yaml" />
    <rosparam command="load" file="$(find baxter_moveit_config)/config/chomp_planning.yaml" />

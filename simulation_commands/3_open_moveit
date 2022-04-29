@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+source ./devel/setup.sh
+roslaunch src/baxter_moveit/baxter_moveit/launch/planning_real.launch

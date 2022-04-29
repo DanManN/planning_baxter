@@ -19,7 +19,7 @@
       </inertial>
       <collision name ='collision'>
         <geometry>
-          <cylinder><radius>0.033</radius><length>0.1206</length></cylinder>
+          <cylinder><radius>0.038</radius><length>0.235</length></cylinder>
         </geometry>
         <surface>
           <friction>
@@ -32,7 +32,7 @@
       </collision>
       <visual name='visual'>
         <geometry>
-          <cylinder><radius>0.033</radius><length>0.1206</length></cylinder>
+          <cylinder><radius>0.038</radius><length>0.235</length></cylinder>
         </geometry>
         <!-- <material>
             <ambient>0 0 0.5 1</ambient>

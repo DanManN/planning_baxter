@@ -18,7 +18,7 @@ a = {0: 1, 2: 3}
 list(a.keys())
 
 
-def main():
+def main(PH):
 
     f = open("plan.txt", "w")
 
@@ -61,16 +61,18 @@ def main():
 
         planner_time = planner_timeF - time.time()
 
-        PH.push_planning(square)
+        if square:
+            PH.push_planning(square)
+
+        else:
+            print("Path region empty")
 
         print("how close is to the goal", PH.tip_position()[0] -
               PH.model_pos('objects_0')[0], "Obs set ", len(Obs), "planning time", planner_time)
 
     f.close()
 
-
-if __name__ == '__main__':
-
+def PHIA_pipeline():
     ARM_LENGTH = 0.2
     RADIUS_OBS = 0.039
     # RADIUS_CC = 0.1  # 0.07  # 0.315
@@ -94,4 +96,9 @@ if __name__ == '__main__':
     PH = PH_planning.PH_planning(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
                                  BOUNDARY_S, TABLE, nu, h, position_file_address=config_file)
 
-    main()
+    main(PH)
+
+
+if __name__ == '__main__':
+
+    PHIA_pipeline()
