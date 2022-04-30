@@ -87,9 +87,10 @@ def PHIA_pipeline():
     # nu = 0
     # h = 0
 
+
     config_file = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__)))))),
+        os.path.dirname(os.path.dirname(os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__))))),
         'config.txt'
     )
 
