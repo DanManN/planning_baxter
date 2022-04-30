@@ -59,7 +59,7 @@ class Stick_Simulation:
         in account the orientation"""
         # sign = -np.sign(link_state(link, model).link_state.pose.orientation.x) # not working I need to understand orientation
         sign = 1
-        lengh_gripper2elbow = 0.4027  # length of the left finger
+        lengh_gripper2elbow = 0.3575  # length of the left finger
         # print("orientation", sign)
         # x, y = self.PH.model_pos("stick")[0:2]
         model_state_stick = self.model_state('stick', "world")
