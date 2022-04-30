@@ -97,6 +97,7 @@ def write_plan(action_list):
 
     f = open("plan.txt", "w")
     for action in action_list:
+        f.write("actions\n")
         for j in range(3):
             f.write(points2direction(action[j], action[j+1]) + "\n")
     f.close()
