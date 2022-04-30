@@ -44,7 +44,7 @@
         </material>
       </visual>
       <collision name="left_wrist">
-        <pose>0 0 -0.1325 0 0 0</pose>
+        <pose>0 0 -0.115 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.06</radius>
@@ -54,11 +54,11 @@
       </collision>
 
       <visual name="left_hand">
-        <pose>0 0 -0.235 0 0 0</pose>
+        <pose>0 0 -0.2213 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.04</radius>
-            <length>0.11</length>
+            <length>0.082</length>
           </cylinder>
         </geometry>
         <material>
@@ -69,20 +69,20 @@
         </material>
       </visual>
       <collision name="left_hand">
-        <pose>0 0 -0.2382 0 0 0</pose>
+        <pose>0 0 -0.2213 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.04</radius>
-            <length>0.11</length>
+            <length>0.082</length>
           </cylinder>
         </geometry>
       </collision>
 
       <visual name="left_gripper">
-        <pose>0 0 -0.34635 0 0 0</pose>
+        <pose>0 0 -0.31 0 0 0</pose>
         <geometry>
           <box>
-            <size>0.04 0.025 0.1127</size>
+            <size>0.04 0.025 0.095</size>
           </box>
         </geometry>
         <material>
@@ -93,10 +93,10 @@
         </material>
       </visual>
       <collision name="left_gripper">
-        <pose>0 0 -0.31775 0 0 0</pose>
+        <pose>0 0 -0.31 0 0 0</pose>
         <geometry>
           <box>
-            <size>0.04 0.025 0.1127</size>
+            <size>0.04 0.025 0.095</size>
           </box>
         </geometry>
       </collision>
