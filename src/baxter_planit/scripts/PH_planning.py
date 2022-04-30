@@ -27,7 +27,6 @@ class PH_planning:
 
         self.ARM_LENGTH = ARM_LENGTH
         self.RADIUS_OBS = RADIUS_OBS
-        self.RADIUS_CC = 0.08   # 0.15  # 0.315
         self.WIDTH_ARM = WIDTH_ARM  # 0.12  # diameter of the cylinder for the wrist
         self.BOUNDARY_N = BOUNDARY_N
         self.BOUNDARY_S = BOUNDARY_S
@@ -50,9 +49,8 @@ class PH_planning:
         self.update()
         print(f"CC_nu = {self.CC_nu}")
 
-
     def update(self):
-        #compute Connected Components and persistent radii
+        # compute Connected Components and persistent radii
         self.path_region, self.closest_pt = self.compute_path_region()
         print(f"self.path_region = {self.path_region}")
         if self.path_region:  # compute PH for nonempty set
@@ -62,9 +60,6 @@ class PH_planning:
             self.CC_nu = dict()
             self.radii = None
             self.radii = None
-
-
-
 
     def read_world(self, world):
 
@@ -109,36 +104,11 @@ class PH_planning:
 
         return CC_nu, radius_diagram
 
-    # def persistent_radius_CC(self, Obs): # delete me
-    #     rips = Rips()
-    #     # print("Obs", Obs)
-    #     Obs = np.array(Obs)
-    #     diagrams = rips.fit_transform(Obs)
-    #     # print("Obs", Obs)
-    #     B, radius_diagram = persistent_CC_r(Obs, diagrams[0], self.nu)
-    #     # print(radius_diagram)
-    #     return radius_diagram
-
-    # def min_radius_CC(self, Obs):
-    #     if not Obs:
-    #         return self.WIDTH_ARM
-    #
-    #     radius_diagram = self.persistent_radius_CC(Obs)
-    #     for i in radius_diagram:
-    #         if i > self.h:
-    #             return i
-    #
-    #     return self.WIDTH_ARM
-
     def min_radius_CC(self):
-        # if not Obs:
-        #     return self.WIDTH_ARM
-        #
-        # radius_diagram = self.persistent_radius_CC(Obs)
-        # for i in radius_diagram:
-        #     if i > self.h:
-        #         return i
-        return min(self.radii)
+        if self.radii:
+            return min(self.radii)
+        else:
+            return 0
 
     def persistent_radii(self):
         """return persistent radii > self.h """
@@ -155,13 +125,9 @@ class PH_planning:
         for i in list(self.CC_nu.keys()):
             if i < radius:
                 number = len(self.CC_nu[i].keys())
-            else: break
+            else:
+                break
         return number
-
-
-
-
-
 
     def write_data(self, count_act, planner_time, time_sim, checker, alg):
         with open("stats" + "_" + alg + ".txt", 'a') as file:
@@ -419,14 +385,13 @@ class PH_planning:
                 clean_direction = arm_region_plus
 
             self.action_performed = self.action(self.tip_position(), [tip, out_reach], [
-                        max_reach, out_reach], [max_reach, clean_direction])
+                max_reach, out_reach], [max_reach, clean_direction])
 
             return True
 
         if square[0][1] - arm_region_minus < arm_region_plus - square[1][1]:
             print("\033[34m Pushing from top to bottom \033[0m", square[0][1] -
                   arm_region_minus, "<", arm_region_plus - square[1][1])
-
 
             self.action_performed = self.action(self.tip_position(), [
                 tip, square[1][1] + self.WIDTH_ARM / 2], [max_reach, square[1][1] + self.WIDTH_ARM / 2],
@@ -437,7 +402,7 @@ class PH_planning:
                   square[0][1] - arm_region_minus, ">", arm_region_plus - square[1][1])
 
             self.action_performed = self.action(self.tip_position(), [tip, square[0][1] - self.WIDTH_ARM / 2], [max_reach, square[0][1] - self.WIDTH_ARM / 2],
-                        [max_reach, arm_region_plus])
+                                                [max_reach, arm_region_plus])
 
         return self.action_performed
 
