@@ -73,6 +73,8 @@ def main():
 
         print(planner.action_list)
 
+        write_plan(planner.action_list)
+
         planner_time = time.time() - t0
 
         print("how close is to the goal", PH.tip_position()[0] -
@@ -81,6 +83,23 @@ def main():
         time.sleep(1)
 
         Stick.set_config(source_config)
+
+
+def points2direction(pt_inital, pt_end):
+    pt_inital = np.array([pt_inital[0], pt_inital[1]])
+    pt_end = np.array([pt_end[0], pt_end[1]])
+    length = np.linalg.norm(pt_end - pt_inital)
+    direction = (pt_end - pt_inital) / length
+    return str([direction[0], direction[1], 0])+", " + str(length)
+
+
+def write_plan(action_list):
+
+    f = open("plan.txt", "w")
+    for action in action_list:
+        for j in range(3):
+            f.write(points2direction(action[j], action[j+1]) + "\n")
+    f.close()
 
 
 def basic_move():
@@ -128,10 +147,10 @@ if __name__ == '__main__':
     h = 0.08
 
     # testing theoretical example
-    RADIUS_OBS = 0.0049
-    nu = 0.00115
-    h = 0.00138
-    ARM_LENGTH = 0.05
+    # RADIUS_OBS = 0.0049
+    # nu = 0.00115
+    # h = 0.00138
+    # ARM_LENGTH = 0.05
 
     Stick = Stick_Simulation.Stick_Simulation(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
                                               BOUNDARY_S, TABLE, nu, h)
