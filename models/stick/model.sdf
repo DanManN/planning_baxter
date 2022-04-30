@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<sdf version="1.5">
+  <model name="stick">
+    <static>false</static>
+    <link name="left_lower_forearm">
+    <gravity>0</gravity>
+    <kinematic>1</kinematic>
+
+      <visual  name="left_lower_forearm">
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <cylinder>
+            <radius>0.06</radius>
+            <length>0.10</length>
+          </cylinder>
+        </geometry>
+        <material name="darkred">
+          <color rgba=".5 .1 .1 1"/>
+        </material>
+      </visual>
+      <collision  name="left_lower_forearm">
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <cylinder>
+            <radius>0.06</radius>
+            <length>0.10</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+      <visual name="left_wrist">
+        <pose>0 0 -0.115 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.06</radius>
+            <length>0.13</length>
+          </cylinder>
+        </geometry>
+        <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+        </material>
+      </visual>
+      <collision name="left_wrist">
+        <pose>0 0 -0.1325 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.06</radius>
+            <length>0.13</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+      <visual name="left_hand">
+        <pose>0 0 -0.235 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.04</radius>
+            <length>0.11</length>
+          </cylinder>
+        </geometry>
+        <material>
+            <ambient>1 0 1 1</ambient>
+            <diffuse>1 0 1 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+        </material>
+      </visual>
+      <collision name="left_hand">
+        <pose>0 0 -0.2382 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.04</radius>
+            <length>0.11</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+      <visual name="left_gripper">
+        <pose>0 0 -0.34635 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.04 0.025 0.1127</size>
+          </box>
+        </geometry>
+        <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+        </material>
+      </visual>
+      <collision name="left_gripper">
+        <pose>0 0 -0.31775 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.04 0.025 0.1127</size>
+          </box>
+        </geometry>
+      </collision>
+
+    </link>
+  </model>
+</sdf>
