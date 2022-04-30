@@ -1,5 +1,5 @@
-# PH_planning.py  2021-10-26
-# MIT LICENSE 2020 Ewerton R. Vieira
+# PH_planning.py  2022-30-04
+# MIT LICENSE 2022 Ewerton R. Vieira
 
 import sys
 from math import pi
