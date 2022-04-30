@@ -14,9 +14,6 @@ import PH_planning
 import numpy as np
 
 
-a = {0: 1, 2: 3}
-list(a.keys())
-
 
 def main(PH):
 
@@ -53,13 +50,8 @@ def main(PH):
 
         planner_timeF = time.time()
 
-        Obs, closest_pt = PH.path_region()
-        RADIUS_CC = PH.min_radius_CC(Obs)
-
-        square = PH.squared_CC(Obs, closest_pt, RADIUS_CC)
-        print("square ", square, "closest_pt ", closest_pt)
-
-        planner_time = planner_timeF - time.time()
+        square = PH.squared_CC(PH.path_region, PH.closest_pt, PH.min_radius_CC())
+        print("square ", square, "closest_pt ", PH.closest_pt)
 
         if square:
             PH.push_planning(square)
@@ -67,8 +59,10 @@ def main(PH):
         else:
             print("Path region empty")
 
+        planner_time = planner_timeF - time.time()
+
         print("how close is to the goal", PH.tip_position()[0] -
-              PH.model_pos('objects_0')[0], "Obs set ", len(Obs), "planning time", planner_time)
+              PH.model_pos('object_0')[0], "Obs set ", len(PH.path_region), "planning time", planner_time)
 
     f.close()
 
