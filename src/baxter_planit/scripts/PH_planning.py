@@ -5,7 +5,7 @@ import sys
 from math import pi
 
 import tf
-# from geometry_msgs.msg import Quaternion
+from geometry_msgs.msg import Quaternion
 
 # from geometry_msgs.msg import *
 import time
@@ -36,7 +36,7 @@ class PH_planning:
 
         # position_file_address
         self.position_file_address = position_file_address
-        # self.position_file_address = "/Users/ewerton/Dropbox/Robot/planning_baxter/src/baxter_planit/scripts/config.txt"
+        self.position_file_address = "/Users/ewerton/Dropbox/Robot/planning_baxter/src/baxter_planit/scripts/config.txt"
 
         self.y_shift = 0.56
 
@@ -72,7 +72,7 @@ class PH_planning:
 
         positions_file.close()
 
-        print(self.world)
+        # print(self.world)
 
     def persistent_radius_CC(self, Obs):
         rips = Rips()
@@ -274,7 +274,6 @@ class PH_planning:
         N = s_neighbors(np.array(Obs), RADIUS_CC)
 
         print("N", N)
-        N = s_neighbors(np.array(Obs), RADIUS_CC)
         x_values = []
         y_values = []
         for i in list(N.keys()):
@@ -308,7 +307,7 @@ class PH_planning:
         pose_obj = self.model_pos('objects_0')
         tip = self.tip_position()[0]
 
-        """ arm_region is the region where the arm can push the Connected Component away from the path region"""
+        """arm_region is the region where the arm can push the Connected Component away from the path region"""
         arm_region_minus, arm_region_plus = pose_obj[1] - \
             self.WIDTH_ARM / 2, pose_obj[1] + self.WIDTH_ARM / 2
 
