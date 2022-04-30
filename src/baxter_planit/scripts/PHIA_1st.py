@@ -89,7 +89,7 @@ def PHIA_pipeline():
     )
 
     PH = PH_planning.PH_planning(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
-                                 BOUNDARY_S, TABLE, nu, h, position_file_address=config_file)
+                                 BOUNDARY_S, TABLE, nu, h, world=config_file)
 
     main(PH)
 
