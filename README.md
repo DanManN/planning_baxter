@@ -40,11 +40,11 @@ source real_robot_commands/move_arm
 ## Set up workspace
 Set up stages.\
 Set up table board.\
-Set up bricks so that tag 108 is under the finger tip.\
+Set up bricks and move the table so that tag 108 is toughly under the finger tip.
 <pre>
-108              107\
-|                  |\
-105--------------109\
+108              107
+|                  |
+105--------------109
 </pre>
 Move tip above tag 105.\
 terminal 4
@@ -52,7 +52,7 @@ terminal 4
 source real_robot_commands/get_arm_position
 ```
 Copy the output x,y numbers to Aggregation/constants.py.\
-Repeat for tag 109 107.
+Repeat for tag 109, 107, and 108(get more accuarate location of 108).
 
 ## Set up camera
 Insert camera cable at USB 3.0
