@@ -20,6 +20,32 @@ import numpy as np
 
 
 def main():
+
+    ARM_LENGTH = 0.2
+    RADIUS_OBS = 0.039
+    # RADIUS_CC = 0.1  # 0.07  # 0.315
+    WIDTH_ARM = 0.16  # 0.12
+    BOUNDARY_N = 0.58
+    BOUNDARY_S = 0.0
+
+    TABLE = 0.68  # x
+    nu = 0.015
+    h = 0.08
+
+    # testing theoretical example
+    # RADIUS_OBS = 0.0049
+    # nu = 0.00115
+    # h = 0.00138
+    # ARM_LENGTH = 0.05
+
+    Stick = Stick_Simulation.Stick_Simulation(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
+                                              BOUNDARY_S, TABLE, nu, h)
+
+    PH = PH_planning.PH_planning(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
+                                 BOUNDARY_S, TABLE, nu, h, world=Stick.world())
+
+    # override so it doesn't create a txt file and it actually moves
+    PH.move_rel_pt = Stick.move_rel_tip
     #
     # # obj_pos_y = model_pos('object_0')[1]
     # time_sim_0 = time.time()  # start timer
@@ -73,7 +99,7 @@ def main():
 
         print(planner.action_list)
 
-        write_plan(planner.action_list)
+        # write_plan(planner.action_list)
 
         planner_time = time.time() - t0
 
@@ -135,32 +161,6 @@ def first_action():
 
 
 if __name__ == '__main__':
-
-    ARM_LENGTH = 0.2
-    RADIUS_OBS = 0.039
-    # RADIUS_CC = 0.1  # 0.07  # 0.315
-    WIDTH_ARM = 0.16  # 0.12
-    BOUNDARY_N = 0.58
-    BOUNDARY_S = 0.0
-
-    TABLE = 0.68  # x
-    nu = 0.015
-    h = 0.08
-
-    # testing theoretical example
-    # RADIUS_OBS = 0.0049
-    # nu = 0.00115
-    # h = 0.00138
-    # ARM_LENGTH = 0.05
-
-    Stick = Stick_Simulation.Stick_Simulation(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
-                                              BOUNDARY_S, TABLE, nu, h)
-
-    PH = PH_planning.PH_planning(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
-                                 BOUNDARY_S, TABLE, nu, h, world=Stick.world())
-
-    # override so it doesn't create a txt file and it actually moves
-    PH.move_rel_pt = Stick.move_rel_tip
 
     # first_action()
     # basic_move()

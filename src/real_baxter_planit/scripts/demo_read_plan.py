@@ -89,11 +89,11 @@ def demo_real_plan():
                 print('length', length)
                 if length <= 0.03:
                     redundant_vector = np.array(direction)*length
-                    input("stop")
+                    # input("stop")
                 else:
                     redundant_vector = np.array([0,0,0])
                     print('execute')                    
-                    input("stop")
+                    # input("stop")
                     straight_movement(direction=direction, length=length)
                     
                 

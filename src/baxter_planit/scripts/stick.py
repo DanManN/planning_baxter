@@ -6,8 +6,8 @@ import os
 from math import pi
 import tf
 
-if __name__ == '__main__':
-    rospy.init_node('spawn_objects')
+def spawning():
+    # rospy.init_node('spawn_objects')
     rospy.wait_for_service('/gazebo/spawn_sdf_model')
     spawn_model = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
 
@@ -20,7 +20,8 @@ if __name__ == '__main__':
 
     # path_dir = "~/Dropbox/Robot/planning_baxter"
 
-    f = open(os.path.join(path_dir, '../../../' , 'models', 'stick', 'model.sdf'))
+    f = open('/home/pracsys/retrieval/Kai/Aggregation/models/stick/model.sdf')
+    # f = open(os.path.join(path_dir, '../../../' , 'models', 'stick', 'model.sdf'))
     #
     # print(q_from_e(pi / 2, -pi / 2, -pi / 2))
     # a, b, c, d = q_from_e(pi / 2, -pi / 2, -pi / 2)
@@ -37,3 +38,7 @@ if __name__ == '__main__':
                 Pose(Point(x=x, y=y, z=z), orient), "world")
 
     f.close()
+
+
+if __name__ == '__main__':
+    spawning()

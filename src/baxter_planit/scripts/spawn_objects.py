@@ -53,6 +53,10 @@ def spawn_objects(name_file):
     # bw_y = 0.3  # y coodinate of the center of the workspace
 
     position_file_address = os.path.join(path_dir, 'Examples', name_file)
+    position_file_address = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
+        name_file
+    )
     position_file = open(position_file_address, 'r')
     obj_index = 0
     obs_index = 0
@@ -60,16 +64,16 @@ def spawn_objects(name_file):
     ws_x, ws_y, ws_z = get_workspace_center()
     for line in position_file.readlines():
         print(line)
-        if (line == "objects\n"):
+        if (line == "object\n"):
             continue
-        elif (line == "obstacles\n"):
+        elif (line == "obstacle\n"):
             Isobstacle = True
             continue
         elif Isobstacle:
             pos = line.split()
             print("throwing obstacles %d" % (obs_index))
             x = float(pos[0])
-            y = ws_y + float(pos[1])
+            y = float(pos[1])
             z = ws_z+0.2
             spawn_model('obstacle_'+str(obs_index), obs_sdff, "",
                         Pose(Point(x=x, y=y, z=z), orient), "world")
@@ -78,7 +82,7 @@ def spawn_objects(name_file):
             pos = line.split()
             print("throwing obj %d" % (obj_index))
             x = float(pos[0])
-            y = ws_y + float(pos[1])
+            y = float(pos[1])
             z = ws_z+0.2
             spawn_model('object_'+str(obj_index), sdff, "",
                         Pose(Point(x=x, y=y, z=z), orient), "world")
@@ -111,7 +115,9 @@ def shift_models(offset):
         set_model_coordinates(ModelState(name, new_pose, pose.twist, 'world'))
     unpause_physics_client()
 
+def main():
+    name_file = "config.txt"
+    spawn_objects(name_file)
 
 if __name__ == '__main__':
-    name_file = "experiment1.txt"
-    spawn_objects(name_file)
+    main()

@@ -14,6 +14,9 @@ from src.real_baxter_planit.scripts.position_the_arm import position_the_arm as 
 from src.real_baxter_planit.scripts.get_arm_position import get_arm_position as real_get_arm_position
 from src.real_baxter_planit.scripts.demo_read_plan import demo_real_plan as real_execute
 from src.baxter_planit.scripts.PHIA_1st import PHIA_pipeline as sim_get_plan
+from src.baxter_planit.scripts.stick import spawning
+from src.baxter_planit.scripts.spawn_objects import main as spawning_object
+from src.baxter_planit.scripts.PHIM import main as PHIM 
 
 
 def sim_spawn_objects():
@@ -24,8 +27,8 @@ def sim_spawn_objects():
     # delete current objects
     sim_delete_models()
 
-    # position the arm
-    sim_position_the_arm()
+    # # position the arm
+    # sim_position_the_arm()
 
     # rospy.init_node('spawn_objects')
     rospy.wait_for_service('/gazebo/spawn_sdf_model')
@@ -61,9 +64,9 @@ def sim_spawn_objects():
     ws_x, ws_y, ws_z = get_workspace_center()
     for line in position_file.readlines():
         print(line)
-        if (line == "objects\n"):
+        if (line == "object\n"):
             continue
-        elif (line == "obstacles\n"):
+        elif (line == "obstacle\n"):
             Isobstacle = True
             continue
         elif Isobstacle:
@@ -103,7 +106,7 @@ def sim_delete_models():
         if name[:6] == 'object':
             delete_model(name)
             print('deleting', name)
-        elif name[:14] == 'small_obstacle':
+        elif name[:8] == 'obstacle':
             delete_model(name)
             print('deleting', name)
 
@@ -199,10 +202,17 @@ def pipeline():
         
 
 if __name__ == '__main__':
-    pipeline()
-    # real_perception()
+    # pipeline()
+    # P = real_calibration()
+    # real_perception(P)
     # real_get_arm_position()
     # real_execute()
     # sim_get_plan()
     # test()
     # real_position_the_arm()
+    # sim_spawn_objects()
+    # spawning()
+    # sim_delete_models()
+    # spawning_object()
+    PHIM()
+    

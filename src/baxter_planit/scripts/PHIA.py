@@ -25,6 +25,20 @@ import numpy as np
 
 def main():
 
+    ARM_LENGTH = 0.2
+    RADIUS_OBS = 0.033
+    # RADIUS_CC = 0.1  # 0.07  # 0.315
+    WIDTH_ARM = 0.12  # 0.1
+    BOUNDARY_N = 0.58
+    BOUNDARY_S = 0.0
+
+    TABLE = 0.68  # x 
+    nu = 0.015
+    h = 0.08
+
+    PH = PH_planning.PH_planning(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
+                                 BOUNDARY_S, TABLE, nu, h)
+
     current_path = os.path.dirname(os.path.abspath(__file__))
 
     f = open(os.path.join(current_path , "../../../../plan.txt"),"w")
