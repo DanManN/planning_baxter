@@ -41,9 +41,11 @@ source real_robot_commands/move_arm
 Set up stages.\
 Set up table board.\
 Set up bricks so that tag 108 is under the finger tip.\
+<pre>
 108              107\
 |                  |\
 105--------------109\
+</pre>
 Move tip above tag 105.\
 terminal 4
 ``` consule
