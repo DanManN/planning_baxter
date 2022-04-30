@@ -70,6 +70,7 @@ def demo_real_plan():
     start = time.time()
     # restore actions to reverse the path
     plan_path = '/home/pracsys/retrieval/Kai/Aggregation/plan.txt'
+    redundant_vector = np.array([0,0,0])
     with open(plan_path, 'r') as f:
         for line in f.readlines():
             if line[0] == 'a':
@@ -83,9 +84,19 @@ def demo_real_plan():
                 direction = direction_str.split(sep=',')
                 direction = [float(s) for s in direction]
                 length = float(words[1])
+                direction, length = combine_actions(direction, length, redundant_vector)
                 print('direction', direction)
                 print('length', length)
-                straight_movement(direction=direction, length=length)
+                if length <= 0.03:
+                    redundant_vector = np.array(direction)*length
+                    input("stop")
+                else:
+                    redundant_vector = np.array([0,0,0])
+                    print('execute')                    
+                    input("stop")
+                    straight_movement(direction=direction, length=length)
+                    
+                
     print("execution time:", time.time()-start)
     # plan = planner.withdraw(group_name=chirality + "_arm")
     # planner.execute(plan, group_name=chirality + "_arm")
@@ -130,3 +141,11 @@ def demo_real_plan():
     #     sys.exit()
     # planner.execute(plan, v_scale=0.125, group_name=chirality + '_arm')
     # print("PostPlaced", fraction)
+
+
+def combine_actions(d1, l1, redundant_vector):
+    ''' combine two straight line actions '''
+    new_direction = np.array(d1)*l1 + np.array(redundant_vector)
+    new_length = np.linalg.norm(new_direction)
+    new_direction /= new_length
+    return list(new_direction), new_length

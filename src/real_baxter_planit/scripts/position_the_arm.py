@@ -73,7 +73,7 @@ def position_the_arm():
     #     list_to_pose([tip_x, tip_y+offset_y, 1.24, -pi / 2, 0, -pi / 2]), group_name=chirality + '_arm'
     # )
     success, plan, planning_time, error_code = planner.plan_ee_pose(
-        list_to_pose([tip_x, tip_y+offset_y, 1.07, -pi / 2, 0, -pi / 2]), group_name=chirality + '_arm'
+        list_to_pose([tip_x, tip_y+offset_y, 1.06, -pi / 2, 0, -pi / 2]), group_name=chirality + '_arm'
     )
     if  success: 
         planner.execute(plan, group_name=chirality + "_arm")

@@ -3,11 +3,11 @@
 # tag
 cali_tags = [105, 107, 108, 109]
 target_tag = 106
-obstacle_tags = [111, 113,114]
+obstacle_tags = [111, 113,114, 129, 128, 127]
 
 # tag locations
 tag_loc_robot = {
-    105: (929.5 / 1000, -662 / 1000),
+    105: (929.5 / 1000, -657.1 / 1000),
     107: (723 / 1000, 49.5 / 1000),
     108: (665 / 1000, -643 / 1000),
     109: (969.6 / 1000, 38.8 / 1000)
@@ -23,3 +23,7 @@ tag_loc_robot_height = {
 # real robot movements
 real_robot_x = 0.661
 real_robot_y = -0.646
+
+#test
+# real_robot_x = 0.9406416035710848
+# real_robot_y = 0.0205601581505998

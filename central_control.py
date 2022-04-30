@@ -147,7 +147,11 @@ def pipeline():
     start = time.time()
     real_position_the_arm()
     print('real_withdraw time' , time.time()-start)
-    input('Enter')
+    res = input('Enter')
+    if res != "":
+        print(res)
+        print('stopped')
+        return 
     need_cali  = True
     while 1:
         start = time.time()
@@ -187,7 +191,11 @@ def pipeline():
         print('task planning ', time_task_planning)
         print('motion planning and execution: ', time_motion_planning)
 
-        input('Enter')
+        res = input('Enter')
+        if res != "":
+            print(res)
+            print('stopped')
+            return
         
 
 if __name__ == '__main__':
@@ -197,3 +205,4 @@ if __name__ == '__main__':
     # real_execute()
     # sim_get_plan()
     # test()
+    # real_position_the_arm()
