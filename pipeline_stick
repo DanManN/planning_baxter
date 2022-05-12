@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+source ./devel/setup.sh
+export MESH_WORKSPACE_PATH=$(pwd)/models
+export GAZEBO_MODEL_PATH=$(pwd)/models
+
+
+python ./src/baxter_planit/scripts/stick.py

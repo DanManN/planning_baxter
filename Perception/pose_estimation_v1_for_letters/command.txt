@@ -1,0 +1,26 @@
+movel(get_inverse_kin(p[0.10009708819995194,-0.6000524095169428,0.22, 0,3.14,0]),v=0.1)
+joints = get_joint_positions()
+movej([joints[0], joints[1], joints[2], joints[3], joints[4], -0.2618], v=0.7)
+pose_wrt_tool = p[0,0,-0.03838970724762317,0,0,0]
+pose_wrt_base = pose_add(get_forward_kin(), pose_wrt_tool)
+movel( pose_wrt_base , a=0.25,v=0.1)
+vg10_grip(0,60,10,False,0)
+pose_wrt_tool = p[0,0,0.03838970724762317,0,0,0]
+pose_wrt_base = pose_add(get_forward_kin(), pose_wrt_tool)
+movel( pose_wrt_base , a=0.25,v=0.1)
+joints = get_joint_positions()
+movej([joints[0], joints[1], joints[2], joints[3], joints[4],-0.2618], v=0.7)
+pose_wrt_tool = p[-9.708819995193907e-05,5.240951694282514e-05,0,0,0,0]
+pose_wrt_base = pose_add(get_forward_kin(), pose_wrt_tool)
+movel( pose_wrt_base , a=0.25,v=0.1)
+pose_wrt_tool = p[0,0,-0.038390165000000004,0,0,0]
+pose_wrt_base = pose_add(get_forward_kin(), pose_wrt_tool)
+movel( pose_wrt_base , a=0.25,v=0.1)
+vg10_release(0,1,False,0)
+pose_wrt_tool = p[0,0,0.038390165000000004,0,0,0]
+pose_wrt_base = pose_add(get_forward_kin(), pose_wrt_tool)
+movel( pose_wrt_base , a=0.25,v=0.1)
+joints = get_joint_positions()
+newjoint = joints[5]/2.0
+movej([joints[0], joints[1], joints[2], joints[3], joints[4], newjoint])
+movel(p[-0.0,-0.35,0.22, 0,3.14,0], a=0.25,v=0.1)

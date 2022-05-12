@@ -1,5 +1,6 @@
-#/usr/share/env bash
-source source_me
+source ./devel/setup.sh
+export MESH_WORKSPACE_PATH=$(pwd)/models
+export GAZEBO_MODEL_PATH=$(pwd)/models
 
 MASTER=172.16.71.88
 echo $MASTER

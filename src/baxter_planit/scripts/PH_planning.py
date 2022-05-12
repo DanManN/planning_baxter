@@ -1,5 +1,5 @@
-# PH_planning.py  2021-10-26
-# MIT LICENSE 2020 Ewerton R. Vieira
+# PH_planning.py  2022-30-04
+# MIT LICENSE 2022 Ewerton R. Vieira
 
 import sys
 from math import pi
@@ -20,13 +20,13 @@ from ripser import ripser, Rips
 class PH_planning:
 
     def __init__(self, ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
-                 BOUNDARY_S, TABLE, nu, h, position_file_address="config.txt"):
+                 BOUNDARY_S, TABLE, nu, h, world="config.txt"):
+        """world can be either a file or a dict()"""
 
         balls_arr = []
 
         self.ARM_LENGTH = ARM_LENGTH
         self.RADIUS_OBS = RADIUS_OBS
-        self.RADIUS_CC = 0.08   # 0.15  # 0.315
         self.WIDTH_ARM = WIDTH_ARM  # 0.12  # diameter of the cylinder for the wrist
         self.BOUNDARY_N = BOUNDARY_N
         self.BOUNDARY_S = BOUNDARY_S
@@ -34,30 +34,46 @@ class PH_planning:
         self.h = h
         self.TABLE = TABLE  # x distance of the table to the (0,0)
 
-        # position_file_address
-        self.position_file_address = position_file_address
-        # self.position_file_address = "/Users/ewerton/Dropbox/Robot/planning_baxter/src/baxter_planit/scripts/config.txt"
-
         self.y_shift = 0.56
 
-        self.world = dict()
+        self.world = world
+        self.write = False
 
         # self.phi = self.angle_phi()
 
-        self.read_world()
+        if type(world) == type("string"):
+            self.write = True
+            self.world = self.read_world(world)
 
-    def read_world(self):
+        # compute: path region, closest_pt, Connected Components and persistent radii
+        self.update()
+        print(f"CC_nu = {self.CC_nu}")
 
-        positions_file = open(self.position_file_address, 'r')
+    def update(self):
+        # compute Connected Components and persistent radii
+        self.path_region, self.closest_pt = self.compute_path_region()
+        print(f"self.path_region = {self.path_region}")
+        if self.path_region:  # compute PH for nonempty set
+            self.CC_nu, self.radii_ = self.persistent_radii_CC(self.path_region)
+            self.radii = self.persistent_radii()
+        else:
+            self.CC_nu = dict()
+            self.radii = None
+            self.radii = None
+
+    def read_world(self, world):
+
+        positions_file = open(world, 'r')
+        w = dict()
         obj_index = 0
         obs_index = 0
         for line in positions_file.readlines():
             print(line)
-            if (line == "objects\n"):
+            if (line == "object\n"):
                 name = line[0:-1]
                 index = 0
 
-            elif (line == "obstacles\n"):
+            elif (line == "obstacle\n"):
                 name = line[0:-1]
                 index = 0
 
@@ -67,33 +83,51 @@ class PH_planning:
 
             else:
                 pos = line.split()
-                self.world[name+"_"+str(index)] = [float(pos[0]), float(pos[1]) + self.y_shift]
+                w[name+"_"+str(index)] = [float(pos[0]), float(pos[1]) + self.y_shift]
                 index += 1
 
         positions_file.close()
 
-        print(self.world)
+        return w
 
-    def persistent_radius_CC(self, Obs):
+    def persistent_radii_CC(self, Obs):
         rips = Rips()
         # print("Obs", Obs)
         Obs = np.array(Obs)
         diagrams = rips.fit_transform(Obs)
         # print("Obs", Obs)
-        B, radius_diagram = persistent_CC_r(Obs, diagrams[0], self.nu)
+        CC_nu_, radius_diagram = persistent_CC_r(Obs, diagrams[0], self.nu)
         # print(radius_diagram)
-        return radius_diagram
+        CC_nu = dict()
+        for k, radius in enumerate(radius_diagram):  # change from list to dict
+            CC_nu[radius] = CC_nu_[k]
 
-    def min_radius_CC(self, Obs):
-        if not Obs:
-            return self.WIDTH_ARM
+        return CC_nu, radius_diagram
 
-        radius_diagram = self.persistent_radius_CC(Obs)
-        for i in radius_diagram:
+    def min_radius_CC(self):
+        if self.radii:
+            return min(self.radii)
+        else:
+            return 0
+
+    def persistent_radii(self):
+        """return persistent radii > self.h """
+        radii = []
+        for i in self.radii_:
             if i > self.h:
-                return i
+                radii.append(i)
 
-        return self.WIDTH_ARM
+        return radii if radii else [self.WIDTH_ARM]
+
+    def number_CC(self, radius):
+        """Return the number of connected componnets for a given persistent radius"""
+        number = len(self.path_region)
+        for i in list(self.CC_nu.keys()):
+            if i < radius:
+                number = len(self.CC_nu[i].keys())
+            else:
+                break
+        return number
 
     def write_data(self, count_act, planner_time, time_sim, checker, alg):
         with open("stats" + "_" + alg + ".txt", 'a') as file:
@@ -155,7 +189,7 @@ class PH_planning:
         """Return position of the model"""
         return self.world[i]
 
-    def is_close_to_wall(self, target='objects_0'):
+    def is_close_to_wall(self, target='object_0'):
         if self.WIDTH_ARM <= self.model_pos(target)[1] <= self.BOUNDARY_N - self.WIDTH_ARM:
             return False
         else:
@@ -168,8 +202,8 @@ class PH_planning:
             return 0
 
         # -self.TABLE since the table is self.TABLE far from the axis x
-        x = self.model_pos('objects_0')[0] - self.TABLE
-        y = self.model_pos('objects_0')[1]
+        x = self.model_pos('object_0')[0] - self.TABLE
+        y = self.model_pos('object_0')[1]
 
         # target closer to north wall ( higher value for y)
         if y > self.BOUNDARY_N - self.WIDTH_ARM:
@@ -189,15 +223,15 @@ class PH_planning:
         print(list(self.world.keys()))
 
         for i in list(self.world.keys()):
-            if i[0:9] != "obstacles":
+            if i[0:8] != "obstacle":
                 continue
             x, y = self.model_pos(i)
             all_obstacles.append([x, y])
         return all_obstacles
 
-    def path_region(self):
+    def compute_path_region(self):
         """Return all obstacle in the path region, also the closest point (in the path region) to the tip"""
-        pose_obj = self.model_pos('objects_0')  # target object position
+        pose_obj = self.model_pos('object_0')  # target object position
         # path region x axis, - self.TABLE * self.RADIUS_OBS since we can consider paralell obstacles to the target
         arm_reach = pose_obj[0] - self.TABLE * self.RADIUS_OBS
         arm_region_minus, arm_region_plus = pose_obj[1] - self.WIDTH_ARM / \
@@ -226,7 +260,7 @@ class PH_planning:
 
     def path_region_phi(self, phi=0):
         """Return all obstacle in the path region with phi inclination, also the closest point (in the path region) to the tip"""
-        pos_obj = self.model_pos('objects_0')  # target object position
+        pos_obj = self.model_pos('object_0')  # target object position
         R = self.rot(-phi)
         arm_region_minus,  arm_region_plus = 0, 2 * self.WIDTH_ARM
         c, s, t = np.cos(phi), np.sin(phi), np.tan(phi)
@@ -266,6 +300,14 @@ class PH_planning:
     def squared_CC(self, Obs, closest_pt, RADIUS_CC):
         """Return a square that contains the closest Connected Component to the tip (Circumscribed Rectangle)"""
 
+        print("Obs", Obs)
+        if not Obs:  # no obstacles
+            print("no obstacles")
+            return []
+
+        N = s_neighbors(np.array(Obs), RADIUS_CC)
+
+        print("N", N)
         N = s_neighbors(np.array(Obs), RADIUS_CC)
         x_values = []
         y_values = []
@@ -291,13 +333,22 @@ class PH_planning:
         # print("\033[34m move_rel_pt: final tip position \033[0m", np.array(self.tip_position(phi = phi)))
         self.write_in_plan(str([direction[0], direction[1], 0])+", " + str(length))
 
+    def action(self, a, b, c, d):
+        """one action 3 moviments"""
+        if self.write:
+            self.write_in_plan("actions")
+
+        self.move_rel_pt(a, b)  # move y coordinate
+        self.move_rel_pt(b, c)  # move x coordinate
+        # cleaning, move y coordinate
+        self.move_rel_pt(c, d)
+
+        return [a, b, c, d]
+
     def push_planning(self, square):
-
-        self.write_in_plan("actions")
-
         # # reach needed to go beyond (self.RADIUS_OBS) the center point of the obstacles
 
-        pose_obj = self.model_pos('objects_0')
+        pose_obj = self.model_pos('object_0')
         tip = self.tip_position()[0]
 
         """ arm_region is the region where the arm can push the Connected Component away from the path region"""
@@ -333,12 +384,8 @@ class PH_planning:
                 out_reach = arm_region_minus - self.WIDTH_ARM / 2
                 clean_direction = arm_region_plus
 
-            self.move_rel_initial(self.tip_position(), [tip, out_reach])  # move y coordinate
-
-            self.move_rel_initial([tip, out_reach], [max_reach, out_reach])  # move x coordinate
-
-            # cleaning, move y coordinate
-            self.move_rel_initial([max_reach, out_reach], [max_reach, clean_direction])
+            self.action_performed = self.action(self.tip_position(), [tip, out_reach], [
+                max_reach, out_reach], [max_reach, clean_direction])
 
             return True
 
@@ -346,36 +393,25 @@ class PH_planning:
             print("\033[34m Pushing from top to bottom \033[0m", square[0][1] -
                   arm_region_minus, "<", arm_region_plus - square[1][1])
 
-            self.move_rel_pt(self.tip_position(), [
-                             tip, square[1][1] + self.WIDTH_ARM / 2])  # move y coordinate
-
-            self.move_rel_pt([tip, square[1][1] + self.WIDTH_ARM / 2],
-                             [max_reach, square[1][1] + self.WIDTH_ARM / 2])
-
-            self.move_rel_pt([max_reach, square[1][1] + self.WIDTH_ARM / 2],
-                             [max_reach, arm_region_minus])
+            self.action_performed = self.action(self.tip_position(), [
+                tip, square[1][1] + self.WIDTH_ARM / 2], [max_reach, square[1][1] + self.WIDTH_ARM / 2],
+                [max_reach, arm_region_minus])
 
         else:
             print("\033[34m Pushing from bottom to top \033[0m",
                   square[0][1] - arm_region_minus, ">", arm_region_plus - square[1][1])
 
-            self.move_rel_pt(self.tip_position(), [
-                             tip, square[0][1] - self.WIDTH_ARM / 2])  # move y coordinate
+            self.action_performed = self.action(self.tip_position(), [tip, square[0][1] - self.WIDTH_ARM / 2], [max_reach, square[0][1] - self.WIDTH_ARM / 2],
+                                                [max_reach, arm_region_plus])
 
-            self.move_rel_pt([tip, square[0][1] - self.WIDTH_ARM / 2], [max_reach,
-                                                                        square[0][1] - self.WIDTH_ARM / 2])  # move x coordinate
-
-            self.move_rel_pt([max_reach, square[0][1] - self.WIDTH_ARM / 2],
-                             [max_reach, arm_region_plus])  # cleaning, move y coordinate
-
-        return True
+        return self.action_performed
 
     def push_planning_phi(self, square, phi=0):
 
         self.write_in_plan("actions")
 
         # # reach needed to go beyond (self.RADIUS_OBS) the center point of the obstacles
-        pose_obj = self.trans_rot(self.model_pos('objects_0')[0:2], phi)
+        pose_obj = self.trans_rot(self.model_pos('object_0')[0:2], phi)
         tip = self.trans_rot(self.tip_position(phi=phi), phi)[0]
 
         """ arm_region is the region where the arm can push the Connected Component away from the path region"""

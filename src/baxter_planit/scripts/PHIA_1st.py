@@ -14,11 +14,8 @@ import PH_planning
 import numpy as np
 
 
-a = {0: 1, 2: 3}
-list(a.keys())
 
-
-def main():
+def main(PH):
 
     f = open("plan.txt", "w")
 
@@ -53,24 +50,23 @@ def main():
 
         planner_timeF = time.time()
 
-        Obs, closest_pt = PH.path_region()
-        RADIUS_CC = PH.min_radius_CC(Obs)
+        square = PH.squared_CC(PH.path_region, PH.closest_pt, PH.min_radius_CC())
+        print("square ", square, "closest_pt ", PH.closest_pt)
 
-        square = PH.squared_CC(Obs, closest_pt, RADIUS_CC)
-        print("square ", square, "closest_pt ", closest_pt)
+        if square:
+            PH.push_planning(square)
+
+        else:
+            print("Path region empty")
 
         planner_time = planner_timeF - time.time()
 
-        PH.push_planning(square)
-
         print("how close is to the goal", PH.tip_position()[0] -
-              PH.model_pos('objects_0')[0], "Obs set ", len(Obs), "planning time", planner_time)
+              PH.model_pos('object_0')[0], "Obs set ", len(PH.path_region), "planning time", planner_time)
 
     f.close()
 
-
-if __name__ == '__main__':
-
+def PHIA_pipeline():
     ARM_LENGTH = 0.2
     RADIUS_OBS = 0.039
     # RADIUS_CC = 0.1  # 0.07  # 0.315
@@ -85,13 +81,19 @@ if __name__ == '__main__':
     # nu = 0
     # h = 0
 
+
     config_file = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__)))))),
+        os.path.dirname(os.path.dirname(os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__))))),
         'config.txt'
     )
 
     PH = PH_planning.PH_planning(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
-                                 BOUNDARY_S, TABLE, nu, h, position_file_address=config_file)
+                                 BOUNDARY_S, TABLE, nu, h, world=config_file)
 
-    main()
+    main(PH)
+
+
+if __name__ == '__main__':
+
+    PHIA_pipeline()

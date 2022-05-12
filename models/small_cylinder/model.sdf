@@ -6,7 +6,7 @@
       <pose>0 0 0 0 0 0</pose>
       <inertial>
       <pose>0 0 -0.025 0 0 0</pose>
-        <mass>1</mass>
+        <mass>330</mass>
         <inertia> <!-- inertias are tricky to compute -->
           <!-- http://gazebosim.org/tutorials?tut=inertia&cat=build_robot -->
           <ixx>0.0</ixx>       <!-- for a box: ixx = 0.083 * mass * (y*y + z*z) -->
@@ -19,20 +19,20 @@
       </inertial>
       <collision name ='collision'>
         <geometry>
-          <cylinder><radius>0.033</radius><length>0.1206</length></cylinder>
+          <cylinder><radius>0.039</radius><length>0.235</length></cylinder>
         </geometry>
         <surface>
           <friction>
             <ode>
-              <mu>0.4</mu>
-              <mu2>0.8</mu2>
+              <mu>1.4</mu>
+              <mu2>1.8</mu2>
             </ode>
           </friction>
         </surface>
       </collision>
       <visual name='visual'>
         <geometry>
-          <cylinder><radius>0.033</radius><length>0.1206</length></cylinder>
+          <cylinder><radius>0.039</radius><length>0.235</length></cylinder>
         </geometry>
         <!-- <material>
             <ambient>0 0 0.5 1</ambient>

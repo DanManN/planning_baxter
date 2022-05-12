@@ -5,7 +5,7 @@
       <pose>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0 0 -0.025 0 -0 0</pose>
-        <mass>1</mass>
+        <mass>355</mass>
         <inertia>
           <ixx>0</ixx>
           <ixy>0</ixy>
@@ -21,8 +21,8 @@
       <visual name='visual'>
         <geometry>
           <cylinder>
-            <radius>0.033</radius>
-            <length>0.12</length>
+            <radius>0.039</radius>
+            <length>0.235</length>
           </cylinder>
         </geometry>
         <material>
@@ -41,8 +41,8 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <cylinder>
-            <radius>0.033</radius>
-            <length>0.1206</length>
+            <radius>0.039</radius>
+            <length>0.235</length>
           </cylinder>
         </geometry>
         <surface>
