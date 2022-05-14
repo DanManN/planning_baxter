@@ -115,6 +115,7 @@ class Perception():
                 break
             else:
                 print(' Failed perception, will try again.')
+                # time.sleep(0.3)
             print('##################')
             
 

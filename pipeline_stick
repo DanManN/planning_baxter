@@ -4,7 +4,8 @@ source ./devel/setup.sh
 export MESH_WORKSPACE_PATH=$(pwd)/models
 export GAZEBO_MODEL_PATH=$(pwd)/models
 
-roslaunch $(pwd)/src/baxter_moveit/baxter_moveit/launch/execution_stick.launch
+# roslaunch $(pwd)/src/baxter_moveit/baxter_moveit/launch/execution_stick.launch
 
 python $(pwd)/Persistent_Homology/stick.py
 python $(pwd)/Persistent_Homology/spawn_objects.py
+python $(pwd)/Persistent_Homology/PHIM.py

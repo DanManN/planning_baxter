@@ -21,6 +21,17 @@ import numpy as np
 
 def main():
 
+    ARM_LENGTH = 0.2
+    RADIUS_OBS = 0.039
+    # RADIUS_CC = 0.1  # 0.07  # 0.315
+    WIDTH_ARM = 0.16  # 0.12
+    BOUNDARY_N = 0.58
+    BOUNDARY_S = 0.0
+
+    TABLE = 0.68  # x
+    nu = 0.015
+    h = 0.08
+
 
 
     Stick = Stick_Simulation.Stick_Simulation(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
@@ -82,6 +93,10 @@ def main():
 
         planner = MCTS.MCTS(source_config, PH.path_region, PH.radii, PH, Stick)
 
+        for action in planner.action_list:
+            for j in range(3):
+                action[j+1] = [action[j+1][0], action[j+1][1] + Stick.y_shift]
+
         print(planner.action_list)
 
         write_plan(planner.action_list)
@@ -136,7 +151,6 @@ def basic_move():
 def execute_plan(Stick, action_list):
     for action in action_list:
         for j in range(3):
-            action[j+1] = [action[j+1][0], action[j+1][1] + Stick.y_shift]
             Stick.move_rel_tip(Stick.tip_position(), action[j+1])
 
 def first_action():
@@ -167,16 +181,16 @@ def first_action():
 
 if __name__ == '__main__':
 
-    ARM_LENGTH = 0.2
-    RADIUS_OBS = 0.039
-    # RADIUS_CC = 0.1  # 0.07  # 0.315
-    WIDTH_ARM = 0.16  # 0.12
-    BOUNDARY_N = 0.58
-    BOUNDARY_S = 0.0
+    # ARM_LENGTH = 0.2
+    # RADIUS_OBS = 0.039
+    # # RADIUS_CC = 0.1  # 0.07  # 0.315
+    # WIDTH_ARM = 0.16  # 0.12
+    # BOUNDARY_N = 0.58
+    # BOUNDARY_S = 0.0
 
-    TABLE = 0.68  # x
-    nu = 0.015
-    h = 0.08
+    # TABLE = 0.68  # x
+    # nu = 0.015
+    # h = 0.08
 
     # testing theoretical example
     # RADIUS_OBS = 0.0049

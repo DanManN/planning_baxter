@@ -1,0 +1,1 @@
+python $(pwd)/pose_estimation_v1_for_letters/range-detector.py

@@ -2,7 +2,7 @@ import os
 import time
 import numpy as np
 import sys
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src', 'baxter_planit', 'scripts'))
+# sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src', 'baxter_planit', 'scripts'))
 import rospy
 from gazebo_msgs.srv import DeleteModel, SpawnModel, SetModelState, GetModelState, GetWorldProperties
 from gazebo_msgs.msg import ModelState, ModelStates
@@ -13,10 +13,11 @@ from Perception.pose_estimation_v1_for_letters.get_tags import Perception
 from src.real_baxter_planit.scripts.position_the_arm import position_the_arm as real_position_the_arm
 from src.real_baxter_planit.scripts.get_arm_position import get_arm_position as real_get_arm_position
 from src.real_baxter_planit.scripts.demo_read_plan import demo_real_plan as real_execute
-from src.baxter_planit.scripts.PHIA_1st import PHIA_pipeline as sim_get_plan
-from src.baxter_planit.scripts.stick import spawning
-from src.baxter_planit.scripts.spawn_objects import main as spawning_object
-from src.baxter_planit.scripts.PHIM import main as PHIM 
+# from src.baxter_planit.scripts.PHIA_1st import PHIA_pipeline as sim_get_plan
+# from Persistent_Homology.PHIM import main as PHIM_get_plan
+# from src.baxter_planit.scripts.stick import spawning
+# from src.baxter_planit.scripts.spawn_objects import main as spawning_object
+# from src.baxter_planit.scripts.PHIM import main as PHIM 
 
 
 def sim_spawn_objects():
@@ -141,7 +142,7 @@ def get_workspace_center():
     print("x,y,z", x,y,z)
     return x,y,z
 
-def pipeline():
+def pipeline(type_of_plan):
     time_perception = 0
     time_get_arm_current_position = 0
     time_task_planning = 0
@@ -173,7 +174,7 @@ def pipeline():
         real_get_arm_position()
         time_get_arm_current_position = time.time()-start
         start = time.time()
-        sim_get_plan()
+        type_of_plan()
         time_task_planning = time.time()-start
         print('perception: ', time_perception)
         print('check arm: ', time_get_arm_current_position)
@@ -202,11 +203,16 @@ def pipeline():
         
 
 if __name__ == '__main__':
-    # pipeline()
+
+    # type_of_plan = sim_get_plan
+    # type_of_plan = PHIM_get_plan
+    # pipeline(type_of_plan)
+
+
     # P = real_calibration()
     # real_perception(P)
     # real_get_arm_position()
-    # real_execute()
+    real_execute()
     # sim_get_plan()
     # test()
     # real_position_the_arm()
@@ -214,5 +220,4 @@ if __name__ == '__main__':
     # spawning()
     # sim_delete_models()
     # spawning_object()
-    PHIM()
-    
+    # PHIM()
