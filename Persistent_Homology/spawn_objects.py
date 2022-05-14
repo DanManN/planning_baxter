@@ -27,7 +27,7 @@ def get_workspace_center():
     return x, y, z
 
 
-def spawn_objects(name_file):
+def spawn_objects(position_file_address):
     # rospy.init_node('spawn_objects')
     rospy.wait_for_service('/gazebo/spawn_sdf_model')
     spawn_model = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
@@ -52,11 +52,10 @@ def spawn_objects(name_file):
 
     # bw_y = 0.3  # y coodinate of the center of the workspace
 
-    position_file_address = os.path.join(path_dir, 'Examples', name_file)
-    position_file_address = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-        name_file
-    )
+    # position_file_address = os.path.join(
+    #     os.path.dirname(os.path.dirname((os.path.abspath(__file__))),
+    #     name_file
+    # )
     position_file = open(position_file_address, 'r')
     obj_index = 0
     obs_index = 0
@@ -115,9 +114,15 @@ def shift_models(offset):
         set_model_coordinates(ModelState(name, new_pose, pose.twist, 'world'))
     unpause_physics_client()
 
+
 def main():
-    name_file = "config.txt"
-    spawn_objects(name_file)
+
+    position_file_address = os.path.join(
+        os.path.dirname(os.path.dirname((os.path.abspath(__file__))),
+        "config.txt"
+    )
+    # name_file="config.txt"
+    spawn_objects(position_file_address)
 
 if __name__ == '__main__':
     main()
