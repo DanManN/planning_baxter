@@ -1,0 +1,150 @@
+# Stick_Simulation.py  2022-30-04
+# MIT LICENSE 2022 Ewerton R. Vieira
+
+import sys
+from math import pi
+
+
+import rospy
+import tf
+import threading
+from gazebo_msgs.srv import DeleteModel, SpawnModel, SetModelState, GetModelState, GetWorldProperties, GetLinkState
+from gazebo_msgs.msg import ModelState, ModelStates
+from geometry_msgs.msg import Quaternion, Twist, Vector3, Point, Pose
+# from geometry_msgs.msg import *
+import time
+import os
+import random
+import rospkg
+# from Connected_Comp import *
+# import PH_planning
+
+import numpy as np
+
+
+class Stick_Simulation:
+
+    def __init__(self, ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
+                 BOUNDARY_S, TABLE, nu, h):
+
+        # self.PH = PH_planning.PH_planning(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
+        #              BOUNDARY_S, TABLE, nu, h)
+
+        rospy.wait_for_service('/gazebo/set_model_state')
+        rospy.wait_for_service('/gazebo/get_model_state')
+        rospy.wait_for_service('/gazebo/get_link_state')
+        self.set_model_state = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
+        self.model_state = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
+        self.link_state = rospy.ServiceProxy('/gazebo/get_link_state', GetLinkState)
+        self.world_properties = rospy.ServiceProxy(
+            '/gazebo/get_world_properties', GetWorldProperties)
+        # orient = Quaternion(0, 0, 1, 1)
+
+        self.ARM_LENGTH = ARM_LENGTH
+        self.RADIUS_OBS = RADIUS_OBS
+        self.RADIUS_CC = 0.08   # 0.15  # 0.315
+        self.WIDTH_ARM = WIDTH_ARM  # 0.12  # diameter of the cylinder for the wrist
+        self.BOUNDARY_N = BOUNDARY_N
+        self.BOUNDARY_S = BOUNDARY_S
+        self.nu = nu
+        self.h = h
+        self.TABLE = TABLE  # x distance of the table to the (0,0)
+
+        self.y_shift = 0.56
+
+        # self.phi = self.PH.angle_phi()
+
+    def tip_position(self, model="stick", phi=0):
+        """Return the position of the tip of the gripper taking
+        in account the orientation"""
+        # sign = -np.sign(link_state(link, model).link_state.pose.orientation.x) # not working I need to understand orientation
+        sign = 1
+        lengh_gripper2elbow = 0.3575  # length of the left finger
+        # print("orientation", sign)
+        # x, y = self.PH.model_pos("stick")[0:2]
+        model_state_stick = self.model_state('stick', "world")
+        x, y = model_state_stick.pose.position.x, model_state_stick.pose.position.y
+
+        return [x + np.cos(phi) * lengh_gripper2elbow, y +
+                np.sin(phi) * lengh_gripper2elbow]
+
+    def world(self):
+        world_positions = dict()
+
+        for i in self.world_properties().model_names:
+            # if i[0:5] != "small":
+            #     continue
+            position = self.model_state(i, "world").pose.position
+            world_positions[i] = [position.x, position.y + self.y_shift]
+        tip_position = self.tip_position()
+        world_positions["tip_gripper_0"] = [tip_position[0], tip_position[1] + self.y_shift]
+        return world_positions
+
+    def set_config(self, config):
+        # set first stick than all other objects
+        self.set_model_state(ModelState("stick", config["stick"],
+                                        Twist(Vector3(0.0, 0, 0), Vector3(0, 0, 0)),
+                                        "world"))
+        for i in self.world_properties().model_names:
+            if not any([i[0:6] == "object", i[0:8] == "obstacle"]):
+                continue
+
+            self.set_model_state(ModelState(i, config[i],
+                                            Twist(Vector3(0.0, 0, 0), Vector3(0, 0, 0)),
+                                            "world"))
+
+        self.set_model_state(ModelState("stick", config["stick"],
+                                        Twist(Vector3(0.0, 0, 0), Vector3(0, 0, 0)),
+                                        "world"))
+
+    def read_config(self):
+        config = dict()
+        for i in self.world_properties().model_names:
+            # position = self.model_state(i, "world").pose.position
+            # config[i] = [position.x, position.y, position.z]
+            config[i] = self.model_state(i, "world").pose
+        return config
+
+    def straight_movement_stick(self, goal_pose, phi=0, speed=0.1):
+        error = 0.01
+        goal_pose[1] = goal_pose[1] - self.y_shift
+        tip_pose = np.array(self.tip_position(model="stick", phi=0))
+        start = time.time()
+        while (np.linalg.norm(tip_pose - goal_pose, 2) >= error) and (time.time()-start < 10.0):
+            vel = goal_pose - tip_pose
+            vel = vel * speed / np.linalg.norm(vel, 2)
+            vx, vy = vel
+            current_state = self.model_state('stick', "world")
+            self.set_model_state(ModelState('stick', current_state.pose,
+                                            Twist(Vector3(vx, vy, 0), Vector3(0, 0, 0)),
+                                            "world")) # move by velocity
+            # find position of the tip
+            tip_pose = np.array(self.tip_position(model="stick", phi=0))
+
+        # to correct the position
+        current_state = self.model_state('stick', "world")
+        self.set_model_state(ModelState('stick', current_state.pose,
+                                        Twist(Vector3(0, 0, 0), Vector3(0, 0, 0)),
+                                        "world"))
+        tip_pose = np.array(self.tip_position(model="stick", phi=0))
+
+        # success &= self.wait_static()
+
+        return np.linalg.norm(tip_pose - goal_pose, 2) < error
+
+    def move_rel_tip(self, tip_position, point, phi=0):
+        """Move relative to tip 2d, by default tip_position is not needed"""
+        # tip = np.array(tip_position(phi=phi))
+        # point = np.array([point[0], point[1]])
+        # # print("\033[34m move_rel_tip: initial tip position \033[0m", tip)
+        #
+        # length = np.linalg.norm(point - tip)
+        # direction = (point - tip) / length
+
+        print("\033[34m move to point \033[0m", point)
+        # if length > 0.03:  # fail to move tiny lengh
+        success = False
+        start = time.time()
+        while (not success) and (time.time()-start < 50.0):
+            success = self.straight_movement_stick(point)
+        # print("\033[34m move_rel_tip: final tip position \033[0m", np.array(tip_position(phi = phi)))
