@@ -118,11 +118,12 @@ def shift_models(offset):
 def main():
 
     position_file_address = os.path.join(
-        os.path.dirname(os.path.dirname((os.path.abspath(__file__))),
+        os.path.dirname(os.path.dirname((os.path.abspath(__file__)))),
         "config.txt"
     )
     # name_file="config.txt"
     spawn_objects(position_file_address)
+
 
 if __name__ == '__main__':
     main()
