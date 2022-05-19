@@ -21,6 +21,10 @@ import rospkg
 
 import numpy as np
 
+from std_srvs.srv import Empty
+pause_physics_client = rospy.ServiceProxy('/gazebo/pause_physics', Empty)
+unpause_physics_client = rospy.ServiceProxy('/gazebo/unpause_physics', Empty)
+
 
 class Stick_Simulation:
 
@@ -85,24 +89,29 @@ class Stick_Simulation:
         self.set_model_state(ModelState("stick", config["stick"],
                                         Twist(Vector3(0.0, 0, 0), Vector3(0, 0, 0)),
                                         "world"))
+        pause_physics_client()
         for i in self.world_properties().model_names:
-            if not any([i[0:6] == "object", i[0:8] == "obstacle"]):
+            if not any([i[0:6] == "object", i[0:8] == "obstacle", i[:5] == 'sitck']):
                 continue
 
             self.set_model_state(ModelState(i, config[i],
                                             Twist(Vector3(0.0, 0, 0), Vector3(0, 0, 0)),
                                             "world"))
 
-        self.set_model_state(ModelState("stick", config["stick"],
-                                        Twist(Vector3(0.0, 0, 0), Vector3(0, 0, 0)),
-                                        "world"))
+        # self.set_model_state(ModelState("stick", config["stick"],
+        #                                 Twist(Vector3(0.0, 0, 0), Vector3(0, 0, 0)),
+        #                                 "world"))
+        unpause_physics_client()
 
     def read_config(self):
         config = dict()
+        pause_physics_client()
         for i in self.world_properties().model_names:
             # position = self.model_state(i, "world").pose.position
             # config[i] = [position.x, position.y, position.z]
             config[i] = self.model_state(i, "world").pose
+
+        unpause_physics_client()
         return config
 
     def straight_movement_stick(self, goal_pose, phi=0, speed=0.1):
@@ -141,10 +150,34 @@ class Stick_Simulation:
         # length = np.linalg.norm(point - tip)
         # direction = (point - tip) / length
 
-        print("\033[34m move to point \033[0m", point)
+        # print("\033[34m move to point \033[0m", point)
+
         # if length > 0.03:  # fail to move tiny lengh
         success = False
         start = time.time()
         while (not success) and (time.time()-start < 50.0):
             success = self.straight_movement_stick(point)
         # print("\033[34m move_rel_tip: final tip position \033[0m", np.array(tip_position(phi = phi)))
+
+
+    def points2direction(self, pt_inital, pt_end):
+        pt_inital = np.array([pt_inital[0], pt_inital[1]])
+        pt_end = np.array([pt_end[0], pt_end[1]])
+        length = np.linalg.norm(pt_end - pt_inital)
+        direction = (pt_end - pt_inital) / length
+        return str([direction[0], direction[1], 0])+", " + str(length)
+
+
+    def write_plan(self, action_list):
+
+        f = open("plan.txt", "w")
+        for action in action_list:
+            f.write("actions\n")
+            for j in range(3):
+                f.write(self.points2direction(action[j], action[j+1]) + "\n")
+        f.close()
+
+    def execute_plan(self, action_list):
+        for action in action_list:
+            for j in range(3):
+                self.move_rel_tip(self.tip_position(), action[j+1])

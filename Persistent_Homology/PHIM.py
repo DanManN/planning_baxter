@@ -11,10 +11,10 @@ import time
 import os
 
 import rospkg
-from src.Connected_Comp import *
-import src.PH_planning as PH_planning
-import src.Stick_Simulation as Stick_Simulation
-import src.MCTS as MCTS
+from util.Connected_Comp import *
+import util.PH_planning as PH_planning
+import util.Stick_Simulation as Stick_Simulation
+import util.MCTS as MCTS
 
 import numpy as np
 
@@ -54,7 +54,7 @@ def main():
     t0 = time.time()
 
     # close to wall
-    print(PH.is_close_to_wall())
+    # print("Is close to wall", PH.is_close_to_wall())
     if PH.is_close_to_wall():
 
         print("too close to wall")
@@ -93,13 +93,9 @@ def main():
 
         planner = MCTS.MCTS(source_config, PH.path_region, PH.radii, PH, Stick)
 
-        for action in planner.action_list:
-            for j in range(3):
-                action[j+1] = [action[j+1][0], action[j+1][1] + Stick.y_shift]
-
         print(planner.action_list)
 
-        write_plan(planner.action_list)
+        Stick.write_plan(planner.action_list)
 
         planner_time = time.time() - t0
 
@@ -116,27 +112,12 @@ def main():
 
         input("press enter to execute")
 
-        execute_plan(Stick, planner.action_list)
+        Stick.execute_plan(planner.action_list)
 
         Stick.set_config(source_config)
 
 
-def points2direction(pt_inital, pt_end):
-    pt_inital = np.array([pt_inital[0], pt_inital[1]])
-    pt_end = np.array([pt_end[0], pt_end[1]])
-    length = np.linalg.norm(pt_end - pt_inital)
-    direction = (pt_end - pt_inital) / length
-    return str([direction[0], direction[1], 0])+", " + str(length)
 
-
-def write_plan(action_list):
-
-    f = open("plan.txt", "w")
-    for action in action_list:
-        f.write("actions\n")
-        for j in range(3):
-            f.write(points2direction(action[j], action[j+1]) + "\n")
-    f.close()
 
 
 def basic_move():
@@ -148,49 +129,9 @@ def basic_move():
     while not success:
         success = Stick.straight_movement_stick([0, 3])
 
-def execute_plan(Stick, action_list):
-    for action in action_list:
-        for j in range(3):
-            Stick.move_rel_tip(Stick.tip_position(), action[j+1])
-
-def first_action():
-
-    config = Stick.read_config()
-
-    planner_timeF = time.time()
-
-    square = PH.squared_CC(PH.path_region, PH.closest_pt, PH.min_radius_CC())
-    print("square ", square, "closest_pt ", PH.closest_pt)
-
-    if square:
-        PH.push_planning(square)
-
-    else:
-        print("Path region empty")
-
-    # print(f"Stick.read_config() = {Stick.read_config()} \n self.PH.world  = {PH.world } \n self.Stick.world() = {Stick.world()}")
-
-    planner_time = planner_timeF - time.time()
-
-    print("how close is to the goal", PH.tip_position()[0] -
-          PH.model_pos('object_0')[0], "Obs set ", len(PH.path_region), "planning time", planner_time)
-
-    time.sleep(1)
-    Stick.set_config(config)
 
 
 if __name__ == '__main__':
-
-    # ARM_LENGTH = 0.2
-    # RADIUS_OBS = 0.039
-    # # RADIUS_CC = 0.1  # 0.07  # 0.315
-    # WIDTH_ARM = 0.16  # 0.12
-    # BOUNDARY_N = 0.58
-    # BOUNDARY_S = 0.0
-
-    # TABLE = 0.68  # x
-    # nu = 0.015
-    # h = 0.08
 
     # testing theoretical example
     # RADIUS_OBS = 0.0049
@@ -198,6 +139,6 @@ if __name__ == '__main__':
     # h = 0.00138
     # ARM_LENGTH = 0.05
 
-    # first_action()
+
     # basic_move()
     main()

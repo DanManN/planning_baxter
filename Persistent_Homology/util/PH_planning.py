@@ -7,6 +7,8 @@ from math import pi
 import tf
 # from geometry_msgs.msg import Quaternion
 
+import warnings
+
 # from geometry_msgs.msg import *
 import time
 import os
@@ -92,11 +94,15 @@ class PH_planning:
         return w
 
     def persistent_radii_CC(self, Obs):
-        rips = Rips()
+        rips = Rips(verbose=False)
         # print("Obs", Obs)
         Obs = np.array(Obs)
-        diagrams = rips.fit_transform(Obs)
-        # print("Obs", Obs)
+        # print(Obs, "\n", Obs.shape)
+
+        with warnings.catch_warnings():  # remove warinig for one point data cloud
+            warnings.simplefilter("ignore")
+            diagrams = rips.fit_transform(Obs)
+
         CC_nu_, radius_diagram = persistent_CC_r(Obs, diagrams[0], self.nu)
         # print(radius_diagram)
         CC_nu = dict()
@@ -228,35 +234,79 @@ class PH_planning:
             all_obstacles.append([x, y])
         return all_obstacles
 
+
+
+    # def compute_path_region(self):
+    #     """Return all obstacle in the path region, also the closest point (in the path region) to the tip"""
+    #     pose_obj = self.model_pos('object_0')  # target object position
+    #
+    #
+    #     # path region x axis, - self.TABLE * self.RADIUS_OBS since we can consider paralell obstacles to the target
+    #     # arm_reach = pose_obj[0] - self.TABLE * self.RADIUS_OBS error
+    #
+    #     tip = self.tip_position()[0]
+    #
+    #     arm_reach = min(pose_obj[0] - self.paralell * self.RADIUS_OBS, tip + 2.5 * self.ARM_LENGTH) # add self.paralell% to able to push obstacles close to the target
+    #     arm_region_minus, arm_region_plus = pose_obj[1] - self.WIDTH_ARM / \
+    #         2, pose_obj[1] + self.WIDTH_ARM / 2  # path region y axis
+    #     Obs_in_path_region = []
+    #     Poses = self.pos_obstacles()
+    #
+    #     # index  in which Poses[closest_point_index] is the closest point to the tip
+    #     closest_point_index = 0
+    #     flag = True
+    #     count = 0
+    #     j = 0  # index in which Obs_in_path_region[j] is the closest point to the tip
+    #     for i in range(len(Poses)):
+    #         x, y = Poses[i]
+    #         if arm_region_minus <= y <= arm_region_plus and tip < x < arm_reach:
+    #             Obs_in_path_region.append([x, y])
+    #             if flag:
+    #                 closest_point_index = i
+    #                 flag = False
+    #             else:
+    #                 count += 1
+    #                 if 0 < x - tip < Poses[closest_point_index][0] - tip:
+    #                     closest_point_index = i
+    #                     j = count
+    #
+    #     return Obs_in_path_region, j
+
+
     def compute_path_region(self):
         """Return all obstacle in the path region, also the closest point (in the path region) to the tip"""
         pose_obj = self.model_pos('object_0')  # target object position
-        # path region x axis, - self.TABLE * self.RADIUS_OBS since we can consider paralell obstacles to the target
-        # arm_reach = pose_obj[0] - self.TABLE * self.RADIUS_OBS error
-        arm_reach = pose_obj[0] - self.paralell * self.RADIUS_OBS  # add self.paralell% to able to push obstacles close to the target
+        tip = self.tip_position()[0]
+
+        arm_reach = pose_obj[0] - self.paralell * self.RADIUS_OBS # add self.paralell% to able to push obstacles close to the target
         arm_region_minus, arm_region_plus = pose_obj[1] - self.WIDTH_ARM / \
             2, pose_obj[1] + self.WIDTH_ARM / 2  # path region y axis
+
         Obs_in_path_region = []
-        Poses = self.pos_obstacles()
-        tip = self.tip_position()[0]
-        # index  in which Poses[closest_point_index] is the closest point to the tip
-        closest_point_index = 0
-        flag = True
-        count = 0
-        j = 0  # index in which Obs_in_path_region[j] is the closest point to the tip
-        for i in range(len(Poses)):
-            x, y = Poses[i]
+        for i in list(self.world.keys()):
+            if i[0:8] != "obstacle":
+                continue
+            x, y = self.model_pos(i)
             if arm_region_minus <= y <= arm_region_plus and tip < x < arm_reach:
                 Obs_in_path_region.append([x, y])
-                if flag:
-                    closest_point_index = i
-                    flag = False
-                else:
-                    count += 1
-                    if 0 < x - tip < Poses[closest_point_index][0] - tip:
-                        closest_point_index = i
-                        j = count
-        return Obs_in_path_region, j
+        Obs_in_path_region = np.array(Obs_in_path_region)
+
+        Obs_in_path_region.sort(axis=0)
+
+        size = len(Obs_in_path_region)
+
+        if size:
+            sub_range = min(arm_reach, Obs_in_path_region[0,0] + 2*self.ARM_LENGTH)
+
+        count = size
+        for i in reversed(range(size)):
+            if Obs_in_path_region[i, 0] > sub_range:
+                count -=1
+            else:
+                break
+
+        return Obs_in_path_region.tolist()[:count], 0
+
 
     def path_region_phi(self, phi=0):
         """Return all obstacle in the path region with phi inclination, also the closest point (in the path region) to the tip"""
@@ -400,6 +450,9 @@ class PH_planning:
 
             self.action_performed = self.action(self.tip_position(), [tip, square[0][1] - self.WIDTH_ARM / 2], [max_reach, square[0][1] - self.WIDTH_ARM / 2],
                                                 [max_reach, arm_region_plus])
+
+        for j in range(3):
+            self.action_performed[j+1] = [self.action_performed[j+1][0], self.action_performed[j+1][1] + self.y_shift]
 
         return self.action_performed
 

@@ -41,7 +41,7 @@
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot
     adjust baxter height? //-z 0.93
   -->
-  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-param robot_description -urdf -model baxter 
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-param robot_description -urdf -model baxter
         -J baxter::right_s0 -0.272659
         -J baxter::right_s1 1.04701
         -J baxter::right_e0 -0.00123203

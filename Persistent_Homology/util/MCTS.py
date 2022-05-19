@@ -36,11 +36,15 @@ class MCTS(object):
                 break
             action, new_config, new_path_region, new_radii, radius = current_node.expansion()
 
+            print(f"\033[96m node {current_node.nodeID}: visited_radii = {radius} \033[0m")
+
             if new_config == current_node.current_config:
                 print("same config")
 
             new_node = Node(num_iter, new_config, new_path_region,
                             new_radii, current_node, current_node.depth + 1, self.PH, self.Stick)
+
+            print(f"\033[95m node {current_node.nodeID} -> node {new_node.nodeID} \033[0m by visited_radii = {radius}")
 
             new_node.radius_from_parent = radius
             new_node.action_from_parent = action
@@ -86,7 +90,8 @@ class MCTS(object):
             current_node = current_node.UCB()
             if not current_node:  # will return None if there is no more options
                 break
-
+        if current_node:
+            print(f"node {current_node.nodeID}: unvisited_radii = {current_node.unvisited_radii} / length {len(current_node.unvisited_radii)}")
         return current_node
 
     def reward_detection(self, node):
