@@ -46,12 +46,15 @@ except:
         import pyassimp
     except:
         pyassimp = False
-        print("Failed to import pyassimp, see https://github.com/ros-planning/moveit/issues/86 for more info")
+        print(
+            "Failed to import pyassimp, see https://github.com/ros-planning/moveit/issues/86 for more info"
+        )
 
 from planit.msg import PercievedObject
 
 
 class StreamedSceneInterface(PlanningSceneInterface):
+
     def __init__(self, ns="", synchronous=False, service_timeout=5.0):
         super().__init__(ns, synchronous, service_timeout)
 
@@ -64,32 +67,34 @@ class StreamedSceneInterface(PlanningSceneInterface):
         co = CollisionObject()
         co.id = msg.name
         co.header = msg.header
-        if msg.type == PercievedObject.MESH:
-            # print("MESH")
-            co.meshes = [msg.mesh]
-            co.mesh_poses = [msg.pose]
-        elif msg.type == PercievedObject.SOLID_PRIMITIVE:
-            # print("SOLID")
-            solid = SolidPrimitive()
-            if msg.solid.type == SolidPrimitive.BOX:
-                solid.type = SolidPrimitive.BOX
-            elif msg.solid.type == SolidPrimitive.SPHERE:
-                solid.type = SolidPrimitive.SPHERE
-            elif msg.solid.type == SolidPrimitive.CYLINDER:
-                solid.type = SolidPrimitive.CYLINDER
-            else:
-                return False
-            solid.dimensions = list(msg.solid.dimensions).copy()
-            co.primitives = [solid]
-            co.primitive_poses = [msg.pose]
-        # elif msg.type == PercievedObject.POSE:
-        else:
-            return False
 
         if msg.name in super().get_known_object_names():
             co.operation = CollisionObject.MOVE
+            co.pose = msg.pose
         else:
             co.operation = CollisionObject.APPEND
+            if msg.type == PercievedObject.MESH:
+                # print("MESH")
+                co.meshes = [msg.mesh]
+                co.mesh_poses = [msg.pose]
+            elif msg.type == PercievedObject.SOLID_PRIMITIVE:
+                # print("SOLID")
+                solid = SolidPrimitive()
+                if msg.solid.type == SolidPrimitive.BOX:
+                    solid.type = SolidPrimitive.BOX
+                elif msg.solid.type == SolidPrimitive.SPHERE:
+                    solid.type = SolidPrimitive.SPHERE
+                elif msg.solid.type == SolidPrimitive.CYLINDER:
+                    solid.type = SolidPrimitive.CYLINDER
+                else:
+                    return False
+                solid.dimensions = list(msg.solid.dimensions).copy()
+                co.primitives = [solid]
+                co.primitive_poses = [msg.pose]
+            # elif msg.type == PercievedObject.POSE:
+            else:
+                return False
+
         self.add_object(co)
         return True
 
@@ -102,7 +107,9 @@ class StreamedSceneInterface(PlanningSceneInterface):
         co = self.__mesh_from_msg(name, pose, mesh, size)
         self.__submit(co, attach=False)
 
-    def attach_mesh(self, link, name, pose=None, mesh=None, size=(1, 1, 1), touch_links=[]):
+    def attach_mesh(
+        self, link, name, pose=None, mesh=None, size=(1, 1, 1), touch_links=[]
+    ):
         if mesh is not None and type(mesh) is not Mesh:
             super().attach_mesh(link, name, pose, mesh, size, touch_links)
             return

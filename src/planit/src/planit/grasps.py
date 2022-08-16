@@ -68,22 +68,26 @@ class Grasps:
             # front = [-sx / 2, 0, 0]
             if sx < gw:
                 noz = nearOdd(sz / (gw * 1.5))
-                for z in np.linspace(-(noz - 1) / (2 * noz), (noz - 1) / (2 * noz), noz):
+                # for z in np.linspace(-(noz - 1) / (2 * noz), (noz - 1) / (2 * noz), noz):
+                for z in np.linspace(-0.4, 0.4, res):
                     grasps.append([[0, sy / 2, z * sz], horz[3]])  # right
                     grasps.append([[0, sy / 2, z * sz], horz[9]])  # right
                     grasps.append([[0, -sy / 2, z * sz], horz[5]])  # left
                     grasps.append([[0, -sy / 2, z * sz], horz[11]])  # left
                 noy = nearOdd(sy / gw)
-                for y in np.linspace(-(noy - 1) / (2 * noy), (noy - 1) / (2 * noy), noy):
+                # for y in np.linspace(-(noy - 1) / (2 * noy), (noy - 1) / (2 * noy), noy):
+                for y in np.linspace(-0.4, 0.4, res):
                     grasps.append([[0, y * sy, sz / 2], vert[1]])  # top
                     grasps.append([[0, y * sy, sz / 2], vert[3]])  # top
             if sy < gw:
                 noz = nearOdd(sz / gw)
-                for z in np.linspace(-(noz - 1) / (2 * noz), (noz - 1) / (2 * noz), noz):
+                # for z in np.linspace(-(noz - 1) / (2 * noz), (noz - 1) / (2 * noz), noz):
+                for z in np.linspace(-0.4, 0.4, res):
                     grasps.append([[-sx / 2, 0, z * sz], horz[4]])  # front
                     grasps.append([[-sx / 2, 0, z * sz], horz[10]])  # front
                 nox = nearOdd(sx / gw)
-                for x in np.linspace(-(nox - 1) / (2 * nox), (nox - 1) / (2 * nox), nox):
+                # for x in np.linspace(-(nox - 1) / (2 * nox), (nox - 1) / (2 * nox), nox):
+                for x in np.linspace(-0.4, 0.4, res):
                     grasps.append([[x * sx, 0, sz / 2], vert[0]])  # top
                     grasps.append([[x * sx, 0, sz / 2], vert[2]])  # top
 
@@ -91,7 +95,8 @@ class Grasps:
         elif shape.type == SP.CYLINDER or shape.type == SP.CONE:
             h, r = shape.dimensions
             noz = nearOdd(h / (gw))
-            for z in np.linspace(-(noz - 1) / (2 * noz), (noz - 1) / (2 * noz), noz):
+            # for z in np.linspace(-(noz - 1) / (2 * noz), (noz - 1) / (2 * noz), noz):
+            for z in np.linspace(-0.4, 0.4, res):
                 grasps += [[(0, 0, z * h), o] for o in vert]
                 grasps += [
                     [(0, 0, z * h), o]
@@ -117,7 +122,7 @@ class Grasps:
             off, roff = p.multiplyTransforms((0, 0, 0), rot, offset, rot_inv)
             n_pos, n_rot = p.multiplyTransforms(off, roff, pos, rot)
             tpos, trot = p.multiplyTransforms(obj_pos, obj_rot, n_pos, n_rot)
-            pose = [tpos, trot]
+            pose = list(tpos) + list(trot)
             poses.append(pose)
 
         return poses
