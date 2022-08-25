@@ -8,11 +8,13 @@ import numpy as np
 import pybullet as p
 
 import rospy
+import std_msgs
 import moveit_commander
-from planit.msg import PercievedObject
+from geometry_msgs.msg import PoseStamped
 from moveit_commander.conversions import *
 
 from planit.utils import *
+from planit.msg import PercievedObject
 from baxter_planit import BaxterPlanner
 
 
@@ -22,12 +24,12 @@ def grasp_cylinder(
     radius,
     position,
     orientation=[0, 0, 0, 1],
-    offset=(0, 0, 0),
+    offset=(0.0, 0.0, 0.01),
     gripper_width=0.042,
     resolution=8,
-    pre_disp_dist=0.05,
+    pre_disp_dist=0.1,
     post_disp_dir=(0, 0, 1),
-    post_disp_dist=0.05,
+    post_disp_dist=0.2,
     eef_step=0.005,
     jump_threshold=0.0,
     v_scale=0.25,
@@ -38,6 +40,7 @@ def grasp_cylinder(
     """
     resolution must be even
     """
+
     res = resolution + 1
     hres = (res // 2) + 1
 
@@ -77,7 +80,7 @@ def grasp_cylinder(
             [(0, 0, z * h), o]
             for o in horz[hres * ((-res - 1) // 4):hres * ((-res + 3) // 4)]
         ]
-        offset = (offset[0], offset[1], offset[2] + r / 2)
+    offset = (offset[0], offset[1], offset[2] + r / 2 - pre_disp_dist)
 
     poses = []
     for pos, rot in grasps:
@@ -179,16 +182,16 @@ if __name__ == '__main__':
         print("Error:", sys.argv[0], "specifiy position! <x> <y> <z>")
         sys.exit(-1)
     rospy.init_node("baxter_planit", anonymous=False)
-    planner = BaxterPlanner(True)
+    planner = BaxterPlanner(is_sim=False)
     perception_sub = rospy.Subscriber(
         '/perception', PercievedObject, planner.scene.updatePerception
     )
     time.sleep(2)
 
     position = [float(sys.argv[i]) for i in range(1, 4)]
-    chirality = sys.argv[4] if len(sys.argv) > 4 else 'left'
-    height = float(sys.argv[5]) if len(sys.argv) > 5 else 0.04
-    radius = float(sys.argv[6]) if len(sys.argv) > 6 else 0.04
+    chirality = sys.argv[4] if len(sys.argv) > 4 else 'right'
+    height = float(sys.argv[5]) if len(sys.argv) > 5 else 0.235
+    radius = float(sys.argv[6]) if len(sys.argv) > 6 else 0.025
     input("Start?")
     grasp_cylinder(
         planner,

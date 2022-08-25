@@ -20,7 +20,7 @@ class BaxterPlanner(Planner):
         is_sim=False,
         commander_args=['joint_states:=/robot/joint_states']
     ):
-        super().__init__(is_sim, commander_args)
+        super().__init__(gripper_width, is_sim, commander_args)
 
         if not is_sim:
             self.eef_pub_left = rospy.Publisher(
