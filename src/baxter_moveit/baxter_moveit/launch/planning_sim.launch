@@ -51,10 +51,12 @@
     <arg name="planner" value="$(arg planner)" />
   </include>
 
-  <include file="$(find baxter_moveit_config)/launch/moveit_rviz.launch">
-    <arg name="config" value="$(arg config)" />
-    <arg name="rviz_config" value="$(arg rviz_config)" />
-  </include>
+  <group if="$(arg use_gui)">
+    <include file="$(find baxter_moveit_config)/launch/moveit_rviz.launch">
+      <arg name="config" value="$(arg config)" />
+      <arg name="rviz_config" value="$(arg rviz_config)" />
+    </include>
+  </group>
 
   <!--<include file="$(find baxter_moveit_config)/launch/default_warehouse_db.launch" />-->
 </launch>

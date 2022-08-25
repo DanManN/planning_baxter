@@ -5,6 +5,7 @@ from .perception import StreamedSceneInterface
 
 
 class Grasps:
+
     def __init__(self, planning_scene_interface, filename=None):
         self.subframes = {}
         self.scene = planning_scene_interface
@@ -21,21 +22,110 @@ class Grasps:
         frame_name = name if subframe is None else name + '/' + subframe
         if subframe:
             obj = scene.get_objects([name])[name]
-            absolute = pose_msg2homogeneous(obj.subframe_poses[obj.subframe_names.index(subframe)])
+            absolute = pose_msg2homogeneous(
+                obj.subframe_poses[obj.subframe_names.index(subframe)]
+            )
         else:
             absolute = pose_msg2homogeneous(self.scene.get_object_poses([name])[name])
 
-        obj_off = translation_matrix((0, 0, -off_dist))
-        tab_off = translation_matrix(abs_off)
+        shape = obj.primitives[0]
+        res = 5 if shape.type == SP.BOX else resolution + 1
+        hres = (res // 2) + 1
+
+        # grasp orientations
+        # vertical
+        vert = []
+        x = 0
+        y = pi
+        # rotate along gripper axis:
+        for z in np.linspace(-pi, pi, res):
+            vert.append(p.getQuaternionFromEuler((x, y, z)))
+
+        # horizontal
+        horz = []
+        x = -pi / 2
+        # rotate along gripper axis:
+        for y in np.linspace(-pi, pi, res):
+            # rotate along horizontal axis:
+            for z in np.linspace(-pi, 0, hres):
+                horz.append(p.getQuaternionFromEuler((x, y, z)))
+
+        # object position and orientation
+        obj_pos, obj_rot = pose_msg2list(obj.pose)
+        # gw = self.right_flim[1] * 2  # gripper width
+        gw = self.gripper_width  # gripper width
+
+        def nearOdd(n):
+            return round((n - 1) / 2) * 2 + 1
+
+        # positions along shape
+        grasps = []
+        if shape.type == SP.BOX:
+            sx, sy, sz = shape.dimensions
+
+            # top = [0, 0, sz / 2]
+            # left = [0, -sy / 2, 0]
+            # right = [0, sy / 2, 0]
+            # front = [-sx / 2, 0, 0]
+            if sx < gw:
+                noz = nearOdd(sz / (gw * 1.5))
+                # for z in np.linspace(-(noz - 1) / (2 * noz), (noz - 1) / (2 * noz), noz):
+                for z in np.linspace(-0.1, 0.3, res):
+                    grasps.append([[0, sy / 2, z * sz], horz[3]])  # right
+                    grasps.append([[0, sy / 2, z * sz], horz[9]])  # right
+                    grasps.append([[0, -sy / 2, z * sz], horz[5]])  # left
+                    grasps.append([[0, -sy / 2, z * sz], horz[11]])  # left
+                noy = nearOdd(sy / gw)
+                # for y in np.linspace(-(noy - 1) / (2 * noy), (noy - 1) / (2 * noy), noy):
+                for y in np.linspace(-0.2, 0.2, res):
+                    grasps.append([[0, y * sy, sz / 2], vert[1]])  # top
+                    grasps.append([[0, y * sy, sz / 2], vert[3]])  # top
+            if sy < gw:
+                noz = nearOdd(sz / gw)
+                # for z in np.linspace(-(noz - 1) / (2 * noz), (noz - 1) / (2 * noz), noz):
+                for z in np.linspace(-0.1, 0.3, res):
+                    grasps.append([[-sx / 2, 0, z * sz], horz[4]])  # front
+                    grasps.append([[-sx / 2, 0, z * sz], horz[10]])  # front
+                nox = nearOdd(sx / gw)
+                # for x in np.linspace(-(nox - 1) / (2 * nox), (nox - 1) / (2 * nox), nox):
+                for x in np.linspace(-0.2, 0.2, res):
+                    grasps.append([[x * sx, 0, sz / 2], vert[0]])  # top
+                    grasps.append([[x * sx, 0, sz / 2], vert[2]])  # top
+
+            offset = (offset[0], offset[1], offset[2] + gw * 0.75)
+        elif shape.type == SP.CYLINDER or shape.type == SP.CONE:
+            h, r = shape.dimensions
+            noz = nearOdd(h / (gw))
+            # for z in np.linspace(-(noz - 1) / (2 * noz), (noz - 1) / (2 * noz), noz):
+            for z in np.linspace(0.0, 0.3, hres):
+                grasps += [[(0, 0, z * h), o] for o in vert]
+            for z in np.linspace(-0.1, 0.3, hres):
+                grasps += [
+                    [(0, 0, z * h), o]
+                    for o in horz[hres * ((res - 1) // 4):hres * ((res + 3) // 4)]
+                ]
+                grasps += [
+                    [(0, 0, z * h), o]
+                    for o in horz[hres * ((-res - 1) // 4):hres * ((-res + 3) // 4)]
+                ]
+                offset = (offset[0], offset[1], offset[2] + r / 2)
+        elif shape.type == SP.SPHERE:
+            r = shape.dimensions[0]
+            grasps = [[(0, 0, 0), o] for o in vert + horz]
+        # elif shape[2] == p.GEOM_MESH:
+        # elif shape[2] == p.GEOM_PLANE:
+
+        # adjust offset for finger width
+        # offset = (offset[0], offset[1], offset[2] + gw / 2)
 
         poses = []
-        angles = (-tau / 4, 0, tau / 4, tau / 2)
-        for x in angles[::2]:
-            for y in angles[::2]:
-                for z in angles:
-                    relative = euler_matrix(x, y, z)
-                    trans, rot = homogeneous2translation_rpy(concatenate_matrices(absolute, tab_off, relative, obj_off))
-                    poses.append(trans + rot)
+        for pos, rot in grasps:
+            pos_inv, rot_inv = p.invertTransform(pos, rot)
+            off, roff = p.multiplyTransforms((0, 0, 0), rot, offset, rot_inv)
+            n_pos, n_rot = p.multiplyTransforms(off, roff, pos, rot)
+            tpos, trot = p.multiplyTransforms(obj_pos, obj_rot, n_pos, n_rot)
+            pose = list(tpos) + list(trot)
+            poses.append(pose)
 
         return poses
 
@@ -44,9 +134,13 @@ class Grasps:
             if '/' in frame_name:
                 name, frame = frame_name.split('/')[0]
                 obj = scene.get_objects([name])[name]
-                base = pose_msg2homogeneous(obj.subframe_poses[obj.subframe_names.index(frame)])
+                base = pose_msg2homogeneous(
+                    obj.subframe_poses[obj.subframe_names.index(frame)]
+                )
             else:
-                base = pose_msg2homogeneous(self.scene.get_object_poses([frame_name])[name])
+                base = pose_msg2homogeneous(
+                    self.scene.get_object_poses([frame_name])[name]
+                )
             absolute = concatenate_matrices(base, translation_matrix(pose))
         else:
             absolute = translation_matrix(pose)
@@ -62,7 +156,9 @@ class Grasps:
             for y in angles:
                 for z in angles:
                     relative = euler_matrix(x, y, z)
-                    trans, rot = homogeneous2translation_rpy(concatenate_matrices(absolute, offset, relative))
+                    trans, rot = homogeneous2translation_rpy(
+                        concatenate_matrices(absolute, offset, relative)
+                    )
                     poses.append(trans + rot)
 
         return poses
