@@ -99,7 +99,18 @@ class Node(object):
         return self.PH.action_performed, self.Stick.read_config(), self.PH.path_region, self.PH.radii, radius
 
 
+###  For PHIS
+    def select_child(self):  #select the first available child
+        assert len(self.unvisited_radii) == 0, f" \033[93m error: nonempty unvisited_radii \033[0m"
+        selected_child = False
+        for radius, child in self.children.items():
+            if child.iscomplete:
+                continue
+            else:
+                return child
 
+        self.iscomplete = True
+        return self.parent
 
 
     #
