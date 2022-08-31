@@ -5,7 +5,7 @@ import copy
 from math import pi, tau, dist
 
 import numpy as np
-# import pybullet as p
+import pybullet as p
 
 import rospy
 import std_msgs
@@ -62,6 +62,19 @@ def grasp_cylinder(
         for z in np.linspace(-pi, 0, hres):
             horz.append(p.getQuaternionFromEuler((x, y, z)))
 
+    # set up planner for move_group
+    move_group = moveit_commander.MoveGroupCommander(group_name)
+    move_group.set_num_planning_attempts(25)
+    move_group.set_planning_time(10.0)
+
+    cpose = move_group.get_current_pose().pose
+    quat = (
+        cpose.orientation.x,
+        cpose.orientation.y,
+        cpose.orientation.z,
+        cpose.orientation.w,
+    )
+
     # object position and orientation
     obj_pos, obj_rot = position, orientation
     gw = gripper_width  # gripper width
@@ -72,14 +85,15 @@ def grasp_cylinder(
     # for z in np.linspace(0.0, 0.3, hres):
     #     grasps += [[(0, 0, z * h), o] for o in vert]
     for z in np.linspace(-0.1, 0.3, hres):
-        grasps += [
-            [(0, 0, z * h), o]
-            for o in horz[hres * ((res - 1) // 4):hres * ((res + 3) // 4)]
-        ]
-        grasps += [
-            [(0, 0, z * h), o]
-            for o in horz[hres * ((-res - 1) // 4):hres * ((-res + 3) // 4)]
-        ]
+        # grasps += [
+        #     [(0, 0, z * h), o]
+        #     for o in horz[hres * ((res - 1) // 4):hres * ((res + 3) // 4)]
+        # ]
+        # grasps += [
+        #     [(0, 0, z * h), o]
+        #     for o in horz[hres * ((-res - 1) // 4):hres * ((-res + 3) // 4)]
+        # ]
+        grasps += [[(0, 0, z * h), quat]]
     offset = (offset[0], offset[1], offset[2] + r / 2 - pre_disp_dist)
 
     poses = []
@@ -90,11 +104,6 @@ def grasp_cylinder(
         tpos, trot = p.multiplyTransforms(obj_pos, obj_rot, n_pos, n_rot)
         pose = list(tpos) + list(trot)
         poses.append(pose)
-
-    # set up planner for move_group
-    move_group = moveit_commander.MoveGroupCommander(group_name)
-    move_group.set_num_planning_attempts(25)
-    move_group.set_planning_time(10.0)
 
     # open gripper
     planner.do_end_effector('open', group_name=grasping_group)
