@@ -178,14 +178,23 @@ def grasp_cylinder(
 
 
 if __name__ == '__main__':
+    offset_x = 0
+    offset_y = 0.56
+
     if len(sys.argv) <= 3:
         print("Error:", sys.argv[0], "specifiy position! <x> <y> <z>")
         sys.exit(-1)
     rospy.init_node("baxter_planit", anonymous=False)
     planner = BaxterPlanner(is_sim=False)
-    perception_sub = rospy.Subscriber(
-        '/perception', PercievedObject, planner.scene.updatePerception
-    )
+    planner.scene.add_box('table_base', list_to_pose_stamped([0.9525 + offset_x, -0.23 + offset_y, 0.3825, 0, 0, 0], 'world'), (0.81, 1.2, 0.765))
+    planner.scene.add_box('table', list_to_pose_stamped([0.98 + offset_x, -0.23 + offset_y, 0.8275, 0, 0, 0], 'world'), (0.6, 1.2, 0.205))
+    planner.scene.add_box('shelf_top', list_to_pose_stamped([0.98 + offset_x, -0.23 + offset_y, 0.5+0.8275, 0, 0, 0], 'world'), (0.6, 1.2, 0.205))
+    planner.scene.add_box('boundaryW', list_to_pose_stamped([1.225 + offset_x, -0.265 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.09, 0.58, 0.175))
+    planner.scene.add_box('boundaryS', list_to_pose_stamped([0.975 + offset_x, 0.07 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.59, 0.09, 0.175))
+    planner.scene.add_box('boundaryN', list_to_pose_stamped([0.975 + offset_x, -0.60 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.59, 0.09, 0.175))
+    # perception_sub = rospy.Subscriber(
+    #     '/perception', PercievedObject, planner.scene.updatePerception
+    # )
     time.sleep(2)
 
     position = [float(sys.argv[i]) for i in range(1, 4)]
