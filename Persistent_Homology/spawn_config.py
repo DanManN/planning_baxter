@@ -176,10 +176,10 @@ def main():
         "config.txt"
     )
 
-    position_file_address = os.path.join(
-        os.path.dirname(os.path.dirname((os.path.abspath(__file__)))), "Persistent_Homology/examples/"
-        "config_lenghty.txt"
-    )
+    # position_file_address = os.path.join(
+    #     os.path.dirname(os.path.dirname((os.path.abspath(__file__)))), "Persistent_Homology/examples/"
+    #     "config_lenghty.txt"
+    # )
     # name_file="config.txt"
 
     delete_model()

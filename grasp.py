@@ -5,7 +5,7 @@ import copy
 from math import pi, tau, dist
 
 import numpy as np
-import pybullet as p
+# import pybullet as p
 
 import rospy
 import std_msgs

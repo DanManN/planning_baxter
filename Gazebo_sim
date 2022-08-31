@@ -2,14 +2,14 @@
 
 gnome-terminal --tab -- roscore
 
-sleep 2s
+sleep 4s
 
 gnome-terminal --tab --command="bash -c 'source $(pwd)/devel/setup.sh;
 export MESH_WORKSPACE_PATH=$(pwd)/models;
 export GAZEBO_MODEL_PATH=$(pwd)/models;
 roslaunch $(pwd)/src/baxter_moveit/baxter_moveit/launch/execution_stick.launch; $SHELL'"
 
-sleep 2s
+sleep 4s
 
 gnome-terminal --tab --command="bash -c 'source $(pwd)/devel/setup.sh
 export MESH_WORKSPACE_PATH=$(pwd)/models
