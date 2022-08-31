@@ -32,8 +32,6 @@ def main():
     nu = 0.015
     h = 0.08
 
-
-
     Stick = Stick_Simulation.Stick_Simulation(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
                                               BOUNDARY_S, TABLE, nu, h)
 
@@ -117,9 +115,6 @@ def main():
         Stick.set_config(source_config)
 
 
-
-
-
 def basic_move():
 
     Stick = Stick_Simulation.Stick_Simulation(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
@@ -130,7 +125,6 @@ def basic_move():
         success = Stick.straight_movement_stick([0, 3])
 
 
-
 if __name__ == '__main__':
 
     # testing theoretical example
@@ -138,7 +132,6 @@ if __name__ == '__main__':
     # nu = 0.00115
     # h = 0.00138
     # ARM_LENGTH = 0.05
-
 
     # basic_move()
     main()

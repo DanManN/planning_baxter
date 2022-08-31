@@ -9,7 +9,9 @@ from util.Connected_Comp import *
 import util.PH_planning as PH_planning
 import util.Stick_Simulation as Stick_Simulation
 import numpy as np
+from PHIA.py import main as main
 
+""" Delete asap
 
 def main():
 
@@ -21,14 +23,9 @@ def main():
     BOUNDARY_S = 0.0
 
     TABLE = 0.68  # x
-    nu = 0.015
-    h = 0.08
-
-
 
     Stick = Stick_Simulation.Stick_Simulation(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
                                               BOUNDARY_S, TABLE, nu, h)
-
 
     PH = PH_planning.PH_planning(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
                                  BOUNDARY_S, TABLE, nu, h, world=Stick.world())
@@ -105,7 +102,6 @@ def main():
 
             count_act += 1
 
-
     Stick.write_plan(action_list)
     print("Number of actions = ", count_act, "\n", planner_time, "\n")
 
@@ -125,16 +121,12 @@ def first_action():
 
     TABLE = 0.68  # x
 
-    """ The choice of parameteres (nu=0 and h=-0.1) are equivalent to compute
-    the distance of all obstacles to the gripper and select
-    the closest obstacle to be moved"""
+
     nu = 0
     h = -0.1
 
-
     Stick = Stick_Simulation.Stick_Simulation(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
                                               BOUNDARY_S, TABLE, nu, h)
-
 
     PH = PH_planning.PH_planning(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
                                  BOUNDARY_S, TABLE, nu, h, world=Stick.world())
@@ -167,16 +159,15 @@ def first_action():
     print("how close is to the goal", PH.tip_position()[0] -
           PH.model_pos('object_0')[0], "Obs set ", len(PH.path_region), "planning time", planner_time)
 
-    # time.sleep(1)
-    # Stick.set_config(source_config)
+    time.sleep(1)
+    Stick.set_config(source_config)
 
     return True
-
-
+"""
 
 if __name__ == '__main__':
 
-    perform_action = True
-    while perform_action:
-        perform_action = first_action()
-    # main()
+    main(nu=0, h=-0.1)
+    """ The choice of parameteres (nu=0 and h=-0.1) are equivalent to compute
+    the distance of all obstacles to the gripper and select
+    the closest obstacle to be pushed"""
