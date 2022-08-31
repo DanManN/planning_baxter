@@ -258,12 +258,14 @@ def run_grasp(target):
     chirality = target[4] if len(target) > 4 else 'right'
     height = float(target[5]) if len(target) > 5 else 0.235
     radius = float(target[6]) if len(target) > 6 else 0.025
+    orientation = [-0.5169396533473932, 0.4994474561516194, -0.5531325099525974, 0.4211532497491772]
     input("Start?")
     grasp_cylinder(
         planner,
         height,
         radius,
         position,
+        orientation,
         grasping_group=chirality + "_hand",
         group_name=chirality + "_arm",
     )
@@ -461,6 +463,8 @@ if __name__ == '__main__':
     # real_perception(P)
     # real_get_arm_position()
 
+    # real_position_the_arm()
+
     # type_of_plan = sim_get_plan
     # type_of_plan = PHIA
     # pipeline(type_of_plan)
@@ -470,13 +474,13 @@ if __name__ == '__main__':
     #         os.path.dirname(os.path.abspath(__file__))),
     #     'config.txt')
 
-    target = [0.754, -0.479, 1.445]
+    target = [0.762, -0.244 + 0.56, 1.05]
     run_grasp(target)
 
     # real_execute()
     # sim_get_plan()
     # test()
-    # real_position_the_arm()
+
     # sim_spawn_objects()
     # spawning()
     # sim_delete_models()
