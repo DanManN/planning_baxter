@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 
-# python $(pwd)/Persistent_Homology/spawn_config.py
+python $(pwd)/Persistent_Homology/spawn_config.py
 
-python $(pwd)/Persistent_Homology/PHIM.py
+# python $(pwd)/Persistent_Homology/PHIM.py
 
 python $(pwd)/Persistent_Homology/PHIA.py
 
-python $(pwd)/Persistent_Homology/PHIS.py
+# python $(pwd)/Persistent_Homology/PHIS.py
 
-python $(pwd)/Persistent_Homology/OOA.py
+# python $(pwd)/Persistent_Homology/OOA.py

@@ -12,6 +12,26 @@ import os
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 from position_the_arm import position_the_arm
 
+
+def straight_movement(direction=[1, 0, 0], length=0.4):
+
+    planner = BaxterPlanner(False)
+    chirality = "right"
+    start = time.time()
+    planner.do_end_effector('close', group_name=chirality + '_hand')
+    # print("\033[34m straight move: direction length \033[0m", direction, length)
+    plan, planning_time = planner.plan_line_traj(direction, length, group_name=chirality + "_arm",jump_threshold=5.0)
+    print("planning time", time.time()-start)
+    
+    res = input('Enter')
+    if res != "":
+        print(res)
+        print('stopped')
+        return
+    planner.execute(plan, group_name=chirality + "_arm", v_scale=0.1)
+    print("all", time.time()-start)
+
+
 def demo_real_plan():
 
     offset_x = 0
@@ -39,20 +59,20 @@ def demo_real_plan():
     chirality = 'right'
 
 
-    def straight_movement(direction=[1, 0, 0], length=0.4):
-        start = time.time()
-        planner.do_end_effector('close', group_name=chirality + '_hand')
-        # print("\033[34m straight move: direction length \033[0m", direction, length)
-        plan, planning_time = planner.plan_line_traj(direction, length, group_name=chirality + "_arm")
-        print("planning time", time.time()-start)
+    # def straight_movement(direction=[1, 0, 0], length=0.4):
+    #     start = time.time()
+    #     planner.do_end_effector('close', group_name=chirality + '_hand')
+    #     # print("\033[34m straight move: direction length \033[0m", direction, length)
+    #     plan, planning_time = planner.plan_line_traj(direction, length, group_name=chirality + "_arm",jump_threshold=5.0)
+    #     print("planning time", time.time()-start)
         
-        res = input('Enter')
-        if res != "":
-            print(res)
-            print('stopped')
-            return
-        planner.execute(plan, group_name=chirality + "_arm", v_scale=0.1)
-        print("all", time.time()-start)
+    #     res = input('Enter')
+    #     if res != "":
+    #         print(res)
+    #         print('stopped')
+    #         return
+    #     planner.execute(plan, group_name=chirality + "_arm", v_scale=0.1)
+    #     print("all", time.time()-start)
 
 
     # the arm can reach

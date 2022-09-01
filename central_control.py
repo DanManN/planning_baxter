@@ -13,6 +13,7 @@ from Perception.pose_estimation_v1_for_letters.get_tags import Perception
 from src.real_baxter_planit.scripts.position_the_arm import position_the_arm as real_position_the_arm
 from src.real_baxter_planit.scripts.get_arm_position import get_arm_position as real_get_arm_position
 from src.real_baxter_planit.scripts.demo_read_plan import demo_real_plan as real_execute
+from src.real_baxter_planit.scripts.demo_read_plan import straight_movement as straight_movement
 from src.real_baxter_planit.scripts.grasp_simple import grasp_simple as grasp_simple
 # from src.baxter_planit.scripts.position_the_arm import position_the_arm as sim_position_the_arm
 
@@ -47,6 +48,8 @@ import std_msgs
 import moveit_commander
 from geometry_msgs.msg import PoseStamped
 from moveit_commander.conversions import *
+import baxter_interface
+from baxter_interface import CHECK_VERSION
 
 """ functions that require all imported modules"""
 
@@ -59,12 +62,12 @@ def grasp_cylinder(
     radius,
     position,
     orientation=[0, 0, 0, 1],
-    offset=(0.0, 0.0, 0.01),
+    offset=(0.0, 0.0, 0.0),
     gripper_width=0.042,
-    resolution=8,
-    pre_disp_dist=0.1,
+    resolution=4,
+    pre_disp_dist=0.08,
     post_disp_dir=(0, 0, 1),
-    post_disp_dist=0.2,
+    post_disp_dist=0.05,
     eef_step=0.005,
     jump_threshold=0.0,
     v_scale=0.25,
@@ -78,6 +81,10 @@ def grasp_cylinder(
 
     res = resolution + 1
     hres = (res // 2) + 1
+
+    right = baxter_interface.Gripper('right', CHECK_VERSION)
+    #right.calibrate()
+    right.close()
 
     # grasp orientations
     # vertical
@@ -97,6 +104,19 @@ def grasp_cylinder(
         for z in np.linspace(-pi, 0, hres):
             horz.append(p.getQuaternionFromEuler((x, y, z)))
 
+    # set up planner for move_group
+    move_group = moveit_commander.MoveGroupCommander(group_name)
+    move_group.set_num_planning_attempts(25)
+    move_group.set_planning_time(10.0)
+
+    cpose = move_group.get_current_pose().pose
+    quat = (
+        cpose.orientation.x,
+        cpose.orientation.y,
+        cpose.orientation.z,
+        cpose.orientation.w,
+    )
+
     # object position and orientation
     obj_pos, obj_rot = position, orientation
     gw = gripper_width  # gripper width
@@ -107,14 +127,15 @@ def grasp_cylinder(
     # for z in np.linspace(0.0, 0.3, hres):
     #     grasps += [[(0, 0, z * h), o] for o in vert]
     for z in np.linspace(-0.1, 0.3, hres):
-        grasps += [
-            [(0, 0, z * h), o]
-            for o in horz[hres * ((res - 1) // 4):hres * ((res + 3) // 4)]
-        ]
-        grasps += [
-            [(0, 0, z * h), o]
-            for o in horz[hres * ((-res - 1) // 4):hres * ((-res + 3) // 4)]
-        ]
+        # grasps += [
+        #     [(0, 0, z * h), o]
+        #     for o in horz[hres * ((res - 1) // 4):hres * ((res + 3) // 4)]
+        # ]
+        # grasps += [
+        #     [(0, 0, z * h), o]
+        #     for o in horz[hres * ((-res - 1) // 4):hres * ((-res + 3) // 4)]
+        # ]
+        grasps += [[(0, 0, z * h), quat]]
     offset = (offset[0], offset[1], offset[2] + r / 2 - pre_disp_dist)
 
     poses = []
@@ -126,13 +147,8 @@ def grasp_cylinder(
         pose = list(tpos) + list(trot)
         poses.append(pose)
 
-    # set up planner for move_group
-    move_group = moveit_commander.MoveGroupCommander(group_name)
-    move_group.set_num_planning_attempts(25)
-    move_group.set_planning_time(10.0)
-
     # open gripper
-    planner.do_end_effector('open', group_name=grasping_group)
+    # planner.do_end_effector('open', group_name=grasping_group)
 
     # plan to pre goal poses
     move_group.set_pose_targets(poses)
@@ -160,6 +176,8 @@ def grasp_cylinder(
 
     move_group.execute(plan, wait=True)
     move_group.stop()
+
+    right.open()
 
     # slide to goal
     cpose = pose_msg2homogeneous(move_group.get_current_pose().pose)
@@ -192,7 +210,13 @@ def grasp_cylinder(
     print("Approached cylinder.")
 
     # close gripper
-    planner.do_end_effector('close', group_name=grasping_group)
+    # planner.do_end_effector('close', group_name=grasping_group)
+
+    time.sleep(2)
+
+    right.close()
+
+    time.sleep(2)
 
     # attach to robot chain
     # success = planner.attach(obj_name, grasping_group=grasping_group, group_name=group_name)
@@ -244,14 +268,18 @@ def run_grasp(target):
     planner = BaxterPlanner(is_sim=False)
 
     planner.scene.add_box('table_base', list_to_pose_stamped([0.9525 + offset_x, -0.23 + offset_y, 0.3825, 0, 0, 0], 'world'), (0.81, 1.2, 0.765))
-    planner.scene.add_box('table', list_to_pose_stamped([0.98 + offset_x, -0.23 + offset_y, 0.8275, 0, 0, 0], 'world'), (0.6, 1.2, 0.205))
+    planner.scene.add_box('table', list_to_pose_stamped([0.98 + offset_x, -0.23 + offset_y, 0.9, 0, 0, 0], 'world'), (0.6, 1.2, 0.205))
     # planner.scene.add_box('shelf_top', list_to_pose_stamped([0.98 + offset_x, -0.23 + offset_y, 0.5+0.8275, 0, 0, 0], 'world'), (0.6, 1.2, 0.205))
     planner.scene.add_box('boundaryW', list_to_pose_stamped([1.225 + offset_x, -0.265 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.09, 0.58, 0.175))
-    planner.scene.add_box('boundaryS', list_to_pose_stamped([0.975 + offset_x, 0.07 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.59, 0.09, 0.175))
-    planner.scene.add_box('boundaryN', list_to_pose_stamped([0.975 + offset_x, -0.60 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.59, 0.09, 0.175))
+    planner.scene.add_box('boundaryS', list_to_pose_stamped([0.975 + offset_x, 0.07 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.65, 0.1, 0.275))
+    planner.scene.add_box('boundaryN', list_to_pose_stamped([0.975 + offset_x, -0.60 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.65, 0.1, 0.275))
     # perception_sub = rospy.Subscriber(
     #     '/perception', PercievedObject, planner.scene.updatePerception
     # )
+
+
+
+
 
     time.sleep(2)
 
@@ -259,14 +287,16 @@ def run_grasp(target):
     chirality = target[4] if len(target) > 4 else 'right'
     height = float(target[5]) if len(target) > 5 else 0.235
     radius = float(target[6]) if len(target) > 6 else 0.025
-    orientation = [-0.5169396533473932, 0.4994474561516194, -0.5531325099525974, 0.4211532497491772]
+    
+
+    straight_movement(direction=[-1, 0, 0], length=0.02)  # retrieve a bit before grasping
+
     input("Start?")
     grasp_cylinder(
         planner,
         height,
         radius,
         position,
-        orientation,
         grasping_group=chirality + "_hand",
         group_name=chirality + "_arm",
     )
@@ -458,28 +488,46 @@ def pipeline(type_of_plan):
             return
 
 
+
+
+
+
 if __name__ == '__main__':
 
-    # P = real_calibration()
-    # real_perception(P)
-    # real_get_arm_position()
+    P = real_calibration()
+    real_perception(P)
+    real_get_arm_position()
 
+    right = baxter_interface.Gripper('right', CHECK_VERSION)
+    right.calibrate()
+    right.close()
 
     # real_position_the_arm()
 
-    # grasp_simple()
 
-    # type_of_plan = sim_get_plan
-    type_of_plan = PHIA
-    pipeline(type_of_plan)
+    # type_of_plan = PHIA
+    # pipeline(type_of_plan)
 
-    # config_file = os.path.join(
-    #     os.path.dirname(
-    #         os.path.dirname(os.path.abspath(__file__))),
-    #     'config.txt')
 
-    # target = [0.762, -0.244 + 0.56, 1.05]
+    print(P.update_locations())
+    target = P.update_locations()[106]
+    #target = [target[0], target[1] + 0.56 - 0.27374944 + 0.296, 1.1]
+    target = [target[0], target[1] + 0.56, 1.1]
+
+    # print(target)
+
+    grasp_simple(real_get_arm_position())
+
+
     # run_grasp(target)
+
+
+
+
+
+
+
+
 
     # real_execute()
     # sim_get_plan()

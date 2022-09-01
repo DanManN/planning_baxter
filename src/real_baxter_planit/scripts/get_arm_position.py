@@ -55,7 +55,7 @@ def get_arm_position():
             )
     
 
-
+    return wpose.position.x, wpose.position.y-offset_y, wpose.position.z
     
 
 if __name__ == '__main__':

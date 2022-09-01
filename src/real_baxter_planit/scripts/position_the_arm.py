@@ -13,6 +13,7 @@ from moveit_commander.conversions import *
 def position_the_arm():
     offset_x = 0
     offset_y = 0.56
+    avoid_x = -0.1 # avoid gripper hitting table
     print('init pos')
     rospy.init_node("baxter_planit", anonymous=False)
 
@@ -32,7 +33,7 @@ def position_the_arm():
     # planner.scene.add_box('table1', list_to_pose_stamped([0.0, 0.65, -0.43, 0, 0, 0], 'world'), (1.15, 0.5, 0.5))
     # planner.scene.add_box('block', list_to_pose_stamped([1.0, -0.5, -0.05, 0, 0, 0], 'world'), (0.05, 0.05, 0.26))
     planner.scene.add_box('table_base', list_to_pose_stamped([0.9525 + offset_x, -0.23 + offset_y, 0.3825, 0, 0, 0], 'world'), (0.81, 1.2, 0.765))
-    planner.scene.add_box('table', list_to_pose_stamped([0.98 + offset_x, -0.23 + offset_y, 0.8275, 0, 0, 0], 'world'), (0.6, 1.2, 0.205))
+    planner.scene.add_box('table', list_to_pose_stamped([0.98 + offset_x +avoid_x, -0.23 + offset_y, 0.8275, 0, 0, 0], 'world'), (0.6, 1.2, 0.205))
     # planner.scene.add_box('boundaryW', list_to_pose_stamped([1.225 + offset_x, -0.265 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.09, 0.58, 0.175))
     # planner.scene.add_box('boundaryS', list_to_pose_stamped([0.975 + offset_x, 0.07 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.59, 0.09, 0.175))
     # planner.scene.add_box('boundaryN', list_to_pose_stamped([0.975 + offset_x, -0.60 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.59, 0.09, 0.175))
@@ -94,7 +95,7 @@ def position_the_arm():
 
     # orientation = [-pi / 2, -pi/2, -pi / 2] # orientation to grasp
     orientation = [-pi / 2, 0, -pi / 2] # original orientation
-    tip_z = 1.1 #1.06
+    tip_z = 1.06 #1.1 #1.06
 
     # success, plan, planning_time, error_code = planner.plan_ee_pose(
     #     list_to_pose([tip_x, tip_y+offset_y, 1.06, -pi / 2, 0, -pi / 2]), group_name=chirality + '_arm'

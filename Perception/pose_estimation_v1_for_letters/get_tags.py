@@ -117,6 +117,8 @@ class Perception():
                 print(' Failed perception, will try again.')
                 # time.sleep(0.3)
             print('##################')
+
+        
             
 
 
@@ -132,6 +134,7 @@ class Perception():
                 else:
                     f.write(str(robot_coor[k][0])+' '+str(robot_coor[k][1])+'\n')
 
+        return robot_coor
     # if __name__ == '__main__':
     #     # perception(need_cali)
     #     perception()
