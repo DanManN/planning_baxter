@@ -13,6 +13,7 @@ from Perception.pose_estimation_v1_for_letters.get_tags import Perception
 from src.real_baxter_planit.scripts.position_the_arm import position_the_arm as real_position_the_arm
 from src.real_baxter_planit.scripts.get_arm_position import get_arm_position as real_get_arm_position
 from src.real_baxter_planit.scripts.demo_read_plan import demo_real_plan as real_execute
+from src.real_baxter_planit.scripts.grasp_simple import grasp_simple as grasp_simple
 # from src.baxter_planit.scripts.position_the_arm import position_the_arm as sim_position_the_arm
 
 """Persistent_Homology actions"""
@@ -463,7 +464,10 @@ if __name__ == '__main__':
     # real_perception(P)
     # real_get_arm_position()
 
+
     # real_position_the_arm()
+
+    grasp_simple()
 
     # type_of_plan = sim_get_plan
     # type_of_plan = PHIA
@@ -474,8 +478,8 @@ if __name__ == '__main__':
     #         os.path.dirname(os.path.abspath(__file__))),
     #     'config.txt')
 
-    target = [0.762, -0.244 + 0.56, 1.05]
-    run_grasp(target)
+    # target = [0.762, -0.244 + 0.56, 1.05]
+    # run_grasp(target)
 
     # real_execute()
     # sim_get_plan()
