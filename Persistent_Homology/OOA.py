@@ -9,7 +9,7 @@ from util.Connected_Comp import *
 import util.PH_planning as PH_planning
 import util.Stick_Simulation as Stick_Simulation
 import numpy as np
-from PHIA.py import main as main
+from PHIA import main as main
 
 """ Delete asap
 

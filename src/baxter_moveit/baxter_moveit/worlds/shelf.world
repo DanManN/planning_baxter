@@ -325,7 +325,7 @@
     </model>
     <!-- shelf boundaries -->
     <model name ='boundaryW'>
-        <pose>1.225 -0.265 1.0375 0 0 0</pose>
+        <pose>1.255 -0.265 1.0375 0 0 0</pose>
         <link name ='link'>
           <pose>0 0 0 0 0 0</pose>
           <collision name ='collision'>

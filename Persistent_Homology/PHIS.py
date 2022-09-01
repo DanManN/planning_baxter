@@ -19,20 +19,20 @@ import util.Tree as Tree
 import numpy as np
 
 
-def main(arm_length=0.2
-         radius_obs=0.039
-         width_arm=0.16
-         boundary_N=0.58
-         boundary_S=0.0
-         table=0.68
-         nu=0.015
+def main(arm_length=0.2,
+         radius_obs=0.039,
+         width_arm=0.16,
+         boundary_N=0.58,
+         boundary_S=0.0,
+         table=0.68,
+         nu=0.015,
          h=0.08):
 
-    Stick = Stick_Simulation.Stick_Simulation(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
-                                              BOUNDARY_S, TABLE, nu, h)
+    Stick = Stick_Simulation.Stick_Simulation(arm_length, radius_obs, width_arm, boundary_N,
+                                              boundary_S, table, nu, h)
 
-    PH = PH_planning.PH_planning(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
-                                 BOUNDARY_S, TABLE, nu, h, world=Stick.world())
+    PH = PH_planning.PH_planning(arm_length, radius_obs, width_arm, boundary_N,
+                                 boundary_S, table, nu, h, world=Stick.world())
 
     # override so it doesn't create a txt file and it actually moves
     PH.move_rel_pt = Stick.move_rel_tip
@@ -113,8 +113,8 @@ def main(arm_length=0.2
 
 def basic_move():
 
-    Stick = Stick_Simulation.Stick_Simulation(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
-                                              BOUNDARY_S, TABLE, nu, h)
+    Stick = Stick_Simulation.Stick_Simulation(arm_length, radius_obs, width_arm, boundary_N,
+                                              boundary_S, table, nu, h)
 
     success = False
     while not success:

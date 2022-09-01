@@ -467,11 +467,11 @@ if __name__ == '__main__':
 
     # real_position_the_arm()
 
-    grasp_simple()
+    # grasp_simple()
 
     # type_of_plan = sim_get_plan
-    # type_of_plan = PHIA
-    # pipeline(type_of_plan)
+    type_of_plan = PHIA
+    pipeline(type_of_plan)
 
     # config_file = os.path.join(
     #     os.path.dirname(

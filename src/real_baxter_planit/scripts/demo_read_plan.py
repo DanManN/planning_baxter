@@ -45,6 +45,12 @@ def demo_real_plan():
         # print("\033[34m straight move: direction length \033[0m", direction, length)
         plan, planning_time = planner.plan_line_traj(direction, length, group_name=chirality + "_arm")
         print("planning time", time.time()-start)
+        
+        res = input('Enter')
+        if res != "":
+            print(res)
+            print('stopped')
+            return
         planner.execute(plan, group_name=chirality + "_arm", v_scale=0.1)
         print("all", time.time()-start)
 

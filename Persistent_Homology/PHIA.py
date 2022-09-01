@@ -11,13 +11,13 @@ import util.Stick_Simulation as Stick_Simulation
 import numpy as np
 
 
-def main(arm_length=0.2
-         radius_obs=0.039
-         width_arm=0.16
-         boundary_N=0.58
-         boundary_S=0.0
-         table=0.68
-         nu=0.015
+def main(arm_length=0.2,
+         radius_obs=0.039,
+         width_arm=0.16,
+         boundary_N=0.58,
+         boundary_S=0.0,
+         table=0.68,
+         nu=0.015,
          h=0.08):
 
     Stick = Stick_Simulation.Stick_Simulation(arm_length, radius_obs, width_arm, boundary_N,
@@ -110,13 +110,13 @@ def main(arm_length=0.2
     Stick.set_config(source_config)
 
 
-def first_action(arm_length=0.2
-                 radius_obs=0.039
-                 width_arm=0.16
-                 boundary_N=0.58
-                 boundary_S=0.0
-                 table=0.68
-                 nu=0.015
+def first_action(arm_length=0.2,
+                 radius_obs=0.039,
+                 width_arm=0.16,
+                 boundary_N=0.58,
+                 boundary_S=0.0,
+                 table=0.68,
+                 nu=0.015,
                  h=0.08):
 
     Stick = Stick_Simulation.Stick_Simulation(arm_length, radius_obs, width_arm, boundary_N,
@@ -170,5 +170,5 @@ if __name__ == '__main__':
     NU = 0.015
     H = 0.08
 
-    first_action()
-    # main()
+    # first_action()
+    main()
