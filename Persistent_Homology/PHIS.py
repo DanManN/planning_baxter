@@ -19,20 +19,14 @@ import util.Tree as Tree
 import numpy as np
 
 
-def main():
-
-    ARM_LENGTH = 0.2
-    RADIUS_OBS = 0.039
-    # RADIUS_CC = 0.1  # 0.07  # 0.315
-    WIDTH_ARM = 0.16  # 0.12
-    BOUNDARY_N = 0.58
-    BOUNDARY_S = 0.0
-
-    TABLE = 0.68  # x
-    nu = 0.015
-    h = 0.08
-
-
+def main(arm_length=0.2
+         radius_obs=0.039
+         width_arm=0.16
+         boundary_N=0.58
+         boundary_S=0.0
+         table=0.68
+         nu=0.015
+         h=0.08):
 
     Stick = Stick_Simulation.Stick_Simulation(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
                                               BOUNDARY_S, TABLE, nu, h)
@@ -117,9 +111,6 @@ def main():
         Stick.set_config(source_config)
 
 
-
-
-
 def basic_move():
 
     Stick = Stick_Simulation.Stick_Simulation(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
@@ -130,7 +121,6 @@ def basic_move():
         success = Stick.straight_movement_stick([0, 3])
 
 
-
 if __name__ == '__main__':
 
     # testing theoretical example
@@ -138,7 +128,6 @@ if __name__ == '__main__':
     # nu = 0.00115
     # h = 0.00138
     # ARM_LENGTH = 0.05
-
 
     # basic_move()
     main()

@@ -234,8 +234,6 @@ class PH_planning:
             all_obstacles.append([x, y])
         return all_obstacles
 
-
-
     # def compute_path_region(self):
     #     """Return all obstacle in the path region, also the closest point (in the path region) to the tip"""
     #     pose_obj = self.model_pos('object_0')  # target object position
@@ -272,13 +270,13 @@ class PH_planning:
     #
     #     return Obs_in_path_region, j
 
-
     def compute_path_region(self):
         """Return all obstacle in the path region, also the closest point (in the path region) to the tip"""
         pose_obj = self.model_pos('object_0')  # target object position
         tip = self.tip_position()[0]
 
-        arm_reach = pose_obj[0] - self.paralell * self.RADIUS_OBS # add self.paralell% to able to push obstacles close to the target
+        # add self.paralell% to able to push obstacles close to the target
+        arm_reach = pose_obj[0] - self.paralell * self.RADIUS_OBS
         arm_region_minus, arm_region_plus = pose_obj[1] - self.WIDTH_ARM / \
             2, pose_obj[1] + self.WIDTH_ARM / 2  # path region y axis
 
@@ -296,17 +294,16 @@ class PH_planning:
         size = len(Obs_in_path_region)
 
         if size:
-            sub_range = min(arm_reach, Obs_in_path_region[0,0] + 2*self.ARM_LENGTH)
+            sub_range = min(arm_reach, Obs_in_path_region[0, 0] + 2*self.ARM_LENGTH)
 
         count = size
         for i in reversed(range(size)):
             if Obs_in_path_region[i, 0] > sub_range:
-                count -=1
+                count -= 1
             else:
                 break
 
         return Obs_in_path_region.tolist()[:count], 0
-
 
     def path_region_phi(self, phi=0):
         """Return all obstacle in the path region with phi inclination, also the closest point (in the path region) to the tip"""
@@ -415,7 +412,8 @@ class PH_planning:
             # print(f"\033[99m XXX square[0][0] + self.ARM_LENGTH = {square[0][0]} + {self.ARM_LENGTH}   < square[1][0] = {square[1][0]} \033[0m")
             max_reach = square[0][0] + self.ARM_LENGTH
 
-        max_reach = min(pose_obj[0] - self.paralell * self.RADIUS_OBS, max_reach)  # add self.paralell to be able to push obstacles close to the target
+        # add self.paralell to be able to push obstacles close to the target
+        max_reach = min(pose_obj[0] - self.paralell * self.RADIUS_OBS, max_reach)
 
         if max_reach - tip < 0.001:
             return print("Failed")
@@ -452,7 +450,8 @@ class PH_planning:
                                                 [max_reach, arm_region_plus])
 
         for j in range(3):
-            self.action_performed[j+1] = [self.action_performed[j+1][0], self.action_performed[j+1][1] + self.y_shift]
+            self.action_performed[j+1] = [self.action_performed[j+1]
+                                          [0], self.action_performed[j+1][1] + self.y_shift]
 
         return self.action_performed
 
