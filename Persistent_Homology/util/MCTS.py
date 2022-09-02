@@ -18,9 +18,8 @@ class MCTS(object):
 
         # outputs
         self.action_list = []
-        self.isfeasible = False
 
-        Max_iter = 50#1e6
+        Max_iter = 50  # 1e6
         num_iter = 0
 
         if path_region:
@@ -31,7 +30,8 @@ class MCTS(object):
         while (num_iter < Max_iter):
             num_iter += 1
             current_node = self.selection()
-            if not current_node:  # break if it selects parent of root (happens when all nodes are completed)
+            # break if it selects parent of root (happens when all nodes are completed)
+            if not current_node:
                 print("\033[93m all nodes explored and expanded\033[0m")
                 break
             action, new_config, new_path_region, new_radii, radius = current_node.expansion()
@@ -44,7 +44,8 @@ class MCTS(object):
             new_node = Node(num_iter, new_config, new_path_region,
                             new_radii, current_node, current_node.depth + 1, self.PH, self.Stick)
 
-            print(f"\033[95m node {current_node.nodeID} -> node {new_node.nodeID} \033[0m by visited_radii = {radius}")
+            print(
+                f"\033[95m node {current_node.nodeID} -> node {new_node.nodeID} \033[0m by visited_radii = {radius}")
 
             new_node.radius_from_parent = radius
             new_node.action_from_parent = action
@@ -67,8 +68,7 @@ class MCTS(object):
 
         print(num_iter)
 
-        if best_node:  # fix
-            self.isfeasible = True
+        if best_node:
             self.construct_plan(best_node)
         else:
             print(f"no solution found after {num_iter} iterations")
@@ -91,7 +91,8 @@ class MCTS(object):
             if not current_node:  # will return None if there is no more options
                 break
         if current_node:
-            print(f"node {current_node.nodeID}: unvisited_radii = {current_node.unvisited_radii} / length {len(current_node.unvisited_radii)}")
+            print(
+                f"node {current_node.nodeID}: unvisited_radii = {current_node.unvisited_radii} / length {len(current_node.unvisited_radii)}")
         return current_node
 
     def reward_detection(self, node):

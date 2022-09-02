@@ -18,10 +18,9 @@ class Node(object):
         self.PH = PH
         self.Stick = Stick
 
+        self.isfeasible = True
 
-        self.number_CC = PH.number_CC  #"Number of Connected Components of the current Path Region"
-
-
+        self.number_CC = PH.number_CC  # "Number of Connected Components of the current Path Region"
 
         if radii:
             self.unvisited_radii = set(radii)
@@ -85,9 +84,11 @@ class Node(object):
         time.sleep(0.5)
 
         square = self.PH.squared_CC(self.PH.path_region, self.PH.closest_pt, radius)
+        isfeasible = True
 
         if square:
             self.PH.push_planning(square)
+            isfeasible = self.Stick.is_feasible()
         else:
             self.PH.action_performed = None
 
@@ -96,11 +97,18 @@ class Node(object):
         self.PH.update()  # update all varibles that depends on the new positions
 
         time.sleep(0.5)
-        return self.PH.action_performed, self.Stick.read_config(), self.PH.path_region, self.PH.radii, radius
+
+        if isfeasible:
+            radii = self.PH.radii
+        else:
+            radii = set()  # if not feasible then dont compute radii
+
+        return self.PH.action_performed, self.Stick.read_config(), self.PH.path_region, radii, radius
 
 
-###  For PHIS
-    def select_child(self):  #select the first available child
+# For PHIS
+
+    def select_child(self):  # select the first available child
         assert len(self.unvisited_radii) == 0, f" \033[93m error: nonempty unvisited_radii \033[0m"
         selected_child = False
         for radius, child in self.children.items():
@@ -111,7 +119,6 @@ class Node(object):
 
         self.iscomplete = True
         return self.parent
-
 
     #
     #

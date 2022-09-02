@@ -26,6 +26,7 @@ def main(arm_length=0.2,
     PH = PH_planning.PH_planning(arm_length, radius_obs, width_arm, boundary_N,
                                  boundary_S, table, nu, h, world=Stick.world())
 
+    success = True
     # override so it doesn't create a txt file and it actually moves
     PH.move_rel_pt = Stick.move_rel_tip
 
@@ -88,6 +89,10 @@ def main(arm_length=0.2,
 
             PH.push_planning(square)
 
+            if not Stick.is_feasible():
+                success = False
+                break
+
             action_list.append(PH.action_performed)
 
             PH.world = Stick.world()
@@ -102,8 +107,12 @@ def main(arm_length=0.2,
 
             count_act += 1
 
-    Stick.write_plan(action_list)
-    print("Number of actions = ", count_act, "\n", planner_time, "\n")
+    if success:
+        Stick.write_plan(action_list)
+        print("Number of actions = ", count_act, "\n", planner_time, "\n")
+
+    else:
+        print("PLAN FAILED")
 
     time.sleep(1)
 

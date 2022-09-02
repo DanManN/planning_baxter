@@ -56,7 +56,14 @@ class Stick_Simulation:
 
         self.y_shift = 0.56
 
+        self.read_initial_position()
+
         # self.phi = self.PH.angle_phi()
+
+    def read_initial_position(self):
+        self.initial_position = dict()
+        for i in self.world_properties().model_names:
+            self.initial_position[i] = self.model_state(i, "world").pose.position
 
     def tip_position(self, model="stick", phi=0):
         """Return the position of the tip of the gripper taking
@@ -160,6 +167,7 @@ class Stick_Simulation:
             success = self.straight_movement_stick(point)
         # print("\033[34m move_rel_tip: final tip position \033[0m", np.array(tip_position(phi = phi)))
 
+        # success *= self.is_feasible()  # already checking this after group of 3 pushes
         return success
 
     def points2direction(self, pt_inital, pt_end):
@@ -183,18 +191,34 @@ class Stick_Simulation:
             for j in range(3):
                 self.move_rel_tip(self.tip_position(), action[j+1])
 
-    def move_near_to_target(self, error=0.1, target = "object_0"):
+    def is_feasible(self, error_objects=0.05, error_boundary=0.1):
+        """return true if no object is being toppled
+        and walls are not being displaced"""
+
+        for i in self.world_properties().model_names:
+            if i[0:2] == "ob":
+                z = self.model_state(i, "world").pose.position.z
+                if np.alglin.norm(self.initial_position[i].z - z) < error_objects:
+                    return False
+            elif i[0:8] == "boundary":
+                p = self.initial_position[i]
+                p = np.array([p.x, p.y, p.z])
+                q = self.model_state(i, "world").pose.position
+                q = np.array([q.x, q.y, q.z])
+                if np.alglin.norm(q-p) < error_boundary = 0.1:
+                    return False
+        return True
+
+    def move_near_to_target(self, error=0.1, target="object_0"):
         """Return true if gripper is near to the target in simulation"""
         position = self.model_state(target, "world").pose.position
         position = [position.x, position.y]
-        position_closer = [position[0]- 1.2*self.RADIUS_OBS, position[1] + self.y_shift]
+        position_closer = [position[0] - 1.2*self.RADIUS_OBS, position[1] + self.y_shift]
 
         print(self.tip_position(), position_closer)
 
-
         self.move_rel_tip(self.tip_position(), position_closer)
 
+        distance = np.linalg.norm(np.array(self.tip_position()) - np.array(position))
 
-        distance = np.linalg.norm( np.array(self.tip_position()) - np.array(position))
-
-        return  distance < error
+        return distance < error
