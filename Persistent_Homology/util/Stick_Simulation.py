@@ -126,7 +126,7 @@ class Stick_Simulation:
             current_state = self.model_state('stick', "world")
             self.set_model_state(ModelState('stick', current_state.pose,
                                             Twist(Vector3(vx, vy, 0), Vector3(0, 0, 0)),
-                                            "world")) # move by velocity
+                                            "world"))  # move by velocity
             # find position of the tip
             tip_pose = np.array(self.tip_position(model="stick", phi=0))
 
@@ -159,6 +159,7 @@ class Stick_Simulation:
             success = self.straight_movement_stick(point)
         # print("\033[34m move_rel_tip: final tip position \033[0m", np.array(tip_position(phi = phi)))
 
+        return success
 
     def points2direction(self, pt_inital, pt_end):
         pt_inital = np.array([pt_inital[0], pt_inital[1]])
@@ -167,13 +168,12 @@ class Stick_Simulation:
         direction = (pt_end - pt_inital) / length
         return str([direction[0], direction[1], 0])+", " + str(length)
 
-
-    def write_plan(self, action_list):
+    def write_plan(self, action_list, number_of_acts=3):
 
         f = open("plan.txt", "w")
         for action in action_list:
             f.write("actions\n")
-            for j in range(3):
+            for j in range(number_of_acts):
                 f.write(self.points2direction(action[j], action[j+1]) + "\n")
         f.close()
 

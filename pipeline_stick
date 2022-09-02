@@ -1,12 +1,32 @@
 #!/usr/bin/env bash
 
+case $2 in
+    1)
+    echo "spawn_config"
+    python $(pwd)/Persistent_Homology/spawn_config.py;;
+    \?)
+    echo "not spawnning";;
+esac
 
-python $(pwd)/Persistent_Homology/spawn_config.py
-
-# python $(pwd)/Persistent_Homology/PHIM.py
-
-python $(pwd)/Persistent_Homology/PHIA.py
-
-# python $(pwd)/Persistent_Homology/PHIS.py
-
-# python $(pwd)/Persistent_Homology/OOA.py
+case $1 in
+    1)
+    echo "PHIA"
+    python $(pwd)/Persistent_Homology/PHIA.py
+        ;;
+    2)
+    echo "PHIS"
+    python $(pwd)/Persistent_Homology/PHIS.py
+        ;;
+    3)
+    echo "PHIM"
+    python $(pwd)/Persistent_Homology/PHIM.py
+        ;;
+    4)
+    echo "OOA"
+    python $(pwd)/Persistent_Homology/OOA.py
+        ;;
+    5)
+    echo "GRTC_Heur"
+    python $(pwd)/Persistent_Homology/GRTC_Heur.py
+        ;;
+esac

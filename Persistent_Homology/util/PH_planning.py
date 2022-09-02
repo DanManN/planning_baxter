@@ -270,8 +270,10 @@ class PH_planning:
     #
     #     return Obs_in_path_region, j
 
-    def compute_path_region(self):
-        """Return all obstacle in the path region, also the closest point (in the path region) to the tip"""
+    def path_region_boundary(self):
+        """Return the boundary values of the region delimited by the path_region,
+        a rectangle delimited by: x: (tip, arm_reach), y: (arm_region_minus, arm_region_plus)"""
+
         pose_obj = self.model_pos('object_0')  # target object position
         tip = self.tip_position()[0]
 
@@ -279,6 +281,23 @@ class PH_planning:
         arm_reach = pose_obj[0] - self.paralell * self.RADIUS_OBS
         arm_region_minus, arm_region_plus = pose_obj[1] - self.WIDTH_ARM / \
             2, pose_obj[1] + self.WIDTH_ARM / 2  # path region y axis
+
+        return tip, arm_reach, arm_region_minus, arm_region_plus
+
+    def is_in_path_region(self, point):
+        """Return True if point is in the path region"""
+
+        tip, arm_reach, arm_region_minus, arm_region_plus = self.path_region_boundary()
+        if tip < point[0] < arm_reach and arm_region_minus <= point[1] <= arm_region_plus:
+            return True
+        else:
+            return False
+
+    def compute_path_region(self):
+        """Return all obstacle in the path region, and
+        the index of closest point (in the path region) to the tip"""
+
+        tip, arm_reach, arm_region_minus, arm_region_plus = self.path_region_boundary()
 
         Obs_in_path_region = []
         for i in list(self.world.keys()):
