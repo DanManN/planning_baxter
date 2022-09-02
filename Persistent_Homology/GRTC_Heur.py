@@ -16,12 +16,14 @@ def points_out_PR(PH):
     """sample points outsite path region"""
 
     x_o, y_o = PH.path_region[PH.closest_pt]
-    x_g, y_g, _ = PH.model_pos('object_0')
+    x_g, y_g = PH.model_pos('object_0')
 
     all_obj = PH.pos_obstacles()
 
-    x = np.linspace(PH.TABLE + PH.RADIUS_OBS, x_g, int((x_g - (PH.TABLE + PH.RADIUS_OBS))/0.03))
-    y = np.linspace(PH.RADIUS_OBS, 0.58 - PH.RADIUS_OBS, int((0.58 - 2*PH.RADIUS_OBS)/0.03))
+    tip, arm_reach, arm_region_minus, arm_region_plus = PH.path_region_boundary()
+
+    x = np.linspace(PH.TABLE + 2*PH.RADIUS_OBS, x_g, int((x_g - (PH.TABLE + PH.RADIUS_OBS))/0.03))
+    y = np.linspace(2.5*PH.RADIUS_OBS + 2.5*PH.WIDTH_ARM + PH.BOUNDARY_S, PH.BOUNDARY_N - 2*PH.WIDTH_ARM- 2*PH.RADIUS_OBS, int((0.58 - 4*PH.RADIUS_OBS)/0.03))
     # print("x", x)
     # print("y", y)
 
@@ -55,33 +57,44 @@ def points_out_PR(PH):
 
 def move_relative_tip(Stick, point):
     tip = Stick.tip_position()
-    success = Stick.move_rel_tip([tip, point])
-    return success, Stick.points2direction([tip, point])
+    point[1] -= Stick.y_shift
+    # print("G", tip, " ->", point)
+    point[1] += Stick.y_shift
+    success = Stick.move_rel_tip(tip, point)
+    # time.sleep(1)
+    return success, [tip, point]
 
 
-def action(PH, Stick):
+def action(PH, Stick, point):
 
     x_o, y_o = PH.path_region[PH.closest_pt]
-    tip = Stick.tip_position()
+    point[1] += Stick.y_shift
 
-    success, act1 = move_relative_tip(Stick, [tip[0], y_o + sign * 1.2 * PH.RADIUS_OBS]])
+    tip = Stick.tip_position()
+    tip_y = tip[1] + Stick.y_shift
+
+    sign = np.sign(-(point[1]-y_o))
+
+    success, act1 = move_relative_tip(Stick, [tip[0], y_o + sign * 2.1 * PH.RADIUS_OBS])
     if not success:
         return False
     tip= Stick.tip_position()
-    success, act2= move_relative_tip(Stick, [x_o, tip[1]]])
+    # print(f"tip_y = {tip[1]} ")
+    tip_y = tip[1] + Stick.y_shift
+    success, act2= move_relative_tip(Stick, [x_o, 1.1*tip_y])
     if not success:
         return False
     tip= Stick.tip_position()
-    success, act3= move_relative_tip(Stick, point])
+    tip_y = tip[1] + Stick.y_shift
+    
+    success, act3= move_relative_tip(Stick, point)
     if not success:
         return False
-    tip= Stick.tip_position()
+
     success, act4= move_relative_tip(Stick, [x_o, y_o])
     if not success:
         return False
-
     return act1+act2+act3+act4
-
 
 
 def try_actions(PH, Stick):
@@ -92,7 +105,10 @@ def try_actions(PH, Stick):
 
     while len(List) != 0:
         point = List[0]
+        point[1] -= Stick.y_shift
+        print(f"point selected = {point}")
         read_action= action(PH, Stick, point)
+        # return True  # delete
         if read_action:
             break
         List.pop(0)
@@ -121,6 +137,8 @@ def main(arm_length=0.2,
     Stick = Stick_Simulation.Stick_Simulation(arm_length, radius_obs, width_arm, boundary_N,
                                               boundary_S, table, nu, h)
 
+    # return Stick.is_tip_near_target()
+
     PH = PH_planning.PH_planning(arm_length, radius_obs, width_arm, boundary_N,
                                  boundary_S, table, nu, h, world=Stick.world())
 
@@ -144,6 +162,7 @@ def main(arm_length=0.2,
         planner_timeF = time.time()
 
         read_action= try_actions(PH, Stick)
+        # break  # delete
         if not read_action:
             print("Plan Failure")
             break
@@ -168,7 +187,22 @@ def main(arm_length=0.2,
 
     time.sleep(1)
 
+    
+    success = False
+    if Stick.move_near_to_target():
+        print("SUCCESS")
+        success = True
+
+    else:
+        print("PLAN FAILED")
+
+
     Stick.set_config(source_config)
+
+    return success
+
+
+
 
 
 if __name__ == '__main__':

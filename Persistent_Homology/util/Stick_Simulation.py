@@ -118,6 +118,7 @@ class Stick_Simulation:
         error = 0.01
         goal_pose[1] = goal_pose[1] - self.y_shift
         tip_pose = np.array(self.tip_position(model="stick", phi=0))
+        # print(tip_pose, " ->", goal_pose)
         start = time.time()
         while (np.linalg.norm(tip_pose - goal_pose, 2) >= error) and (time.time()-start < 10.0):
             vel = goal_pose - tip_pose
@@ -181,3 +182,19 @@ class Stick_Simulation:
         for action in action_list:
             for j in range(3):
                 self.move_rel_tip(self.tip_position(), action[j+1])
+
+    def move_near_to_target(self, error=0.1, target = "object_0"):
+        """Return true if gripper is near to the target in simulation"""
+        position = self.model_state(target, "world").pose.position
+        position = [position.x, position.y]
+        position_closer = [position[0]- 1.2*self.RADIUS_OBS, position[1] + self.y_shift]
+
+        print(self.tip_position(), position_closer)
+
+
+        self.move_rel_tip(self.tip_position(), position_closer)
+
+
+        distance = np.linalg.norm( np.array(self.tip_position()) - np.array(position))
+
+        return  distance < error

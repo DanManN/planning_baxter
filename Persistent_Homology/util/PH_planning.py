@@ -19,6 +19,7 @@ import numpy as np
 from ripser import ripser, Rips
 
 
+
 class PH_planning:
 
     def __init__(self, ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
