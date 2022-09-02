@@ -18,7 +18,7 @@ class Node(object):
         self.PH = PH
         self.Stick = Stick
 
-        self.isfeasible = True
+        # self.isfeasible = True
 
         self.number_CC = PH.number_CC  # "Number of Connected Components of the current Path Region"
 

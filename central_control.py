@@ -1,20 +1,35 @@
+from baxter_interface import CHECK_VERSION
+import baxter_interface
+from moveit_commander.conversions import *
+from geometry_msgs.msg import PoseStamped
+import moveit_commander
+import std_msgs
+import pybullet as p
+from math import pi, tau, dist
+import copy
+from baxter_planit import BaxterPlanner
+from planit.msg import PercievedObject
+from planit.utils import *
+from Persistent_Homology.PHIA import main as PHIA
+from Persistent_Homology.PHIM import main as PHIM
+from src.real_baxter_planit.scripts.grasp_simple import grasp_simple as grasp_simple
+from src.real_baxter_planit.scripts.demo_read_plan import straight_movement as straight_movement
+from src.real_baxter_planit.scripts.demo_read_plan import demo_real_plan as real_execute
+from src.real_baxter_planit.scripts.get_arm_position import get_arm_position as real_get_arm_position
+from src.real_baxter_planit.scripts.position_the_arm import position_the_arm as real_position_the_arm
+from Perception.pose_estimation_v1_for_letters.get_tags import Perception
+from geometry_msgs.msg import Quaternion, Pose, Point
+from gazebo_msgs.msg import ModelState, ModelStates
+from gazebo_msgs.srv import DeleteModel, SpawnModel, SetModelState, GetModelState, GetWorldProperties
+import rospy
 import os
 import time
 import numpy as np
 import sys
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src', 'baxter_planit', 'scripts'))
-import rospy
-from gazebo_msgs.srv import DeleteModel, SpawnModel, SetModelState, GetModelState, GetWorldProperties
-from gazebo_msgs.msg import ModelState, ModelStates
-from geometry_msgs.msg import Quaternion, Pose, Point
+sys.path.insert(0, os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), 'src', 'baxter_planit', 'scripts'))
 
 """perception and real moviments"""
-from Perception.pose_estimation_v1_for_letters.get_tags import Perception
-from src.real_baxter_planit.scripts.position_the_arm import position_the_arm as real_position_the_arm
-from src.real_baxter_planit.scripts.get_arm_position import get_arm_position as real_get_arm_position
-from src.real_baxter_planit.scripts.demo_read_plan import demo_real_plan as real_execute
-from src.real_baxter_planit.scripts.demo_read_plan import straight_movement as straight_movement
-from src.real_baxter_planit.scripts.grasp_simple import grasp_simple as grasp_simple
 # from src.baxter_planit.scripts.position_the_arm import position_the_arm as sim_position_the_arm
 
 """Persistent_Homology actions"""
@@ -23,37 +38,15 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Per
 print(os.path.abspath(__file__))
 # from src.baxter_planit.scripts.PHIA_1st import PHIA_pipeline as sim_get_plan
 
-from Persistent_Homology.PHIM import main as PHIM
-from Persistent_Homology.PHIA import main as PHIA
 # from src.baxter_planit.scripts.stick import spawning
 # from src.baxter_planit.scripts.spawn_objects import main as spawning_object
 
 """ Graps functions """
 
 # from grasp import grasp_cylinder
-from planit.utils import *
-from planit.msg import PercievedObject
-from baxter_planit import BaxterPlanner
 
-import sys
-import time
-import copy
-from math import pi, tau, dist
-
-import numpy as np
-import pybullet as p
-
-import rospy
-import std_msgs
-import moveit_commander
-from geometry_msgs.msg import PoseStamped
-from moveit_commander.conversions import *
-import baxter_interface
-from baxter_interface import CHECK_VERSION
 
 """ functions that require all imported modules"""
-
-
 
 
 def grasp_cylinder(
@@ -83,7 +76,7 @@ def grasp_cylinder(
     hres = (res // 2) + 1
 
     right = baxter_interface.Gripper('right', CHECK_VERSION)
-    #right.calibrate()
+    # right.calibrate()
     right.close()
 
     # grasp orientations
@@ -158,7 +151,6 @@ def grasp_cylinder(
         return error_code
     else:
         print("Planned pick for cylinder in", planning_time, "seconds.")
-
 
     # retime and execute trajectory
     plan = move_group.retime_trajectory(
@@ -263,23 +255,23 @@ def run_grasp(target):
     offset_x = 0
     offset_y = 0.56
 
-
     rospy.init_node("baxter_planit", anonymous=False)
     planner = BaxterPlanner(is_sim=False)
 
-    planner.scene.add_box('table_base', list_to_pose_stamped([0.9525 + offset_x, -0.23 + offset_y, 0.3825, 0, 0, 0], 'world'), (0.81, 1.2, 0.765))
-    planner.scene.add_box('table', list_to_pose_stamped([0.98 + offset_x, -0.23 + offset_y, 0.9, 0, 0, 0], 'world'), (0.6, 1.2, 0.205))
+    planner.scene.add_box('table_base', list_to_pose_stamped(
+        [0.9525 + offset_x, -0.23 + offset_y, 0.3825, 0, 0, 0], 'world'), (0.81, 1.2, 0.765))
+    planner.scene.add_box('table', list_to_pose_stamped(
+        [0.98 + offset_x, -0.23 + offset_y, 0.9, 0, 0, 0], 'world'), (0.6, 1.2, 0.205))
     # planner.scene.add_box('shelf_top', list_to_pose_stamped([0.98 + offset_x, -0.23 + offset_y, 0.5+0.8275, 0, 0, 0], 'world'), (0.6, 1.2, 0.205))
-    planner.scene.add_box('boundaryW', list_to_pose_stamped([1.225 + offset_x, -0.265 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.09, 0.58, 0.175))
-    planner.scene.add_box('boundaryS', list_to_pose_stamped([0.975 + offset_x, 0.07 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.65, 0.1, 0.275))
-    planner.scene.add_box('boundaryN', list_to_pose_stamped([0.975 + offset_x, -0.60 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.65, 0.1, 0.275))
+    planner.scene.add_box('boundaryW', list_to_pose_stamped(
+        [1.225 + offset_x, -0.265 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.09, 0.58, 0.175))
+    planner.scene.add_box('boundaryS', list_to_pose_stamped(
+        [0.975 + offset_x, 0.07 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.65, 0.1, 0.275))
+    planner.scene.add_box('boundaryN', list_to_pose_stamped(
+        [0.975 + offset_x, -0.60 + offset_y, 1.0575, 0, 0, 0], 'world'), (0.65, 0.1, 0.275))
     # perception_sub = rospy.Subscriber(
     #     '/perception', PercievedObject, planner.scene.updatePerception
     # )
-
-
-
-
 
     time.sleep(2)
 
@@ -287,7 +279,6 @@ def run_grasp(target):
     chirality = target[4] if len(target) > 4 else 'right'
     height = float(target[5]) if len(target) > 5 else 0.235
     radius = float(target[6]) if len(target) > 6 else 0.025
-    
 
     straight_movement(direction=[-1, 0, 0], length=0.02)  # retrieve a bit before grasping
 
@@ -301,6 +292,7 @@ def run_grasp(target):
         group_name=chirality + "_arm",
     )
     rospy.spin()
+
 
 def sim_spawn_objects():
     '''
@@ -317,7 +309,6 @@ def sim_spawn_objects():
     rospy.wait_for_service('/gazebo/spawn_sdf_model')
     spawn_model = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
     orient = Quaternion(0, 0, 0, 1)
-
 
     path_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -338,7 +329,6 @@ def sim_spawn_objects():
 
     # bw_y = 0.3  # y coodinate of the center of the workspace
 
-
     position_file_address = os.path.join(path_dir, 'config.txt')
     position_file = open(position_file_address, 'r')
     obj_index = 0
@@ -358,7 +348,7 @@ def sim_spawn_objects():
             x = float(pos[0])
             y = float(pos[1])
             z = ws_z+0.2
-            print('xyz', x,y,z)
+            print('xyz', x, y, z)
             spawn_model('small_obstacle_'+str(obs_index), obs_sdff, "",
                         Pose(Point(x=x, y=y, z=z), orient), "world")
             obs_index += 1
@@ -394,12 +384,14 @@ def sim_delete_models():
             print('deleting', name)
 
 
-def real_perception(P:Perception):
+def real_perception(P: Perception):
     # cmd = 'python ./Perception/pose_estimation_v1_for_letters/get_tags.py'
     P.update_locations()
 
+
 def real_calibration():
     return Perception()
+
 
 def check_success(actions):
     plan_file = os.path.join(
@@ -407,23 +399,27 @@ def check_success(actions):
         'plan.txt'
     )
     with open(plan_file, 'r') as f:
-        # each actions counts as 4 lines 
-        if len(list(f.readlines())) <= 4*actions:
+        # each actions counts as 4 lines
+        # if len(list(f.readlines())) <= 4*actions:
+        if len(list(f.readlines())) > 3:
             return True
         else:
             return False
 
 ############################# Utils ##############################
+
+
 def get_workspace_center():
     rospy.wait_for_service('/gazebo/get_model_state')
 
     model_coordinates = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
     pose = model_coordinates('boundaryS', 'world')
-    x,z = pose.pose.position.x, pose.pose.position.z
+    x, z = pose.pose.position.x, pose.pose.position.z
     pose = model_coordinates('boundaryW', 'world')
     y = pose.pose.position.y
-    print("x,y,z", x,y,z)
-    return x,y,z
+    print("x,y,z", x, y, z)
+    return x, y, z
+
 
 def pipeline(type_of_plan):
     actions = 0
@@ -434,13 +430,13 @@ def pipeline(type_of_plan):
     time_motion_planning = 0
     start = time.time()
     real_position_the_arm()
-    print('real_withdraw time' , time.time()-start)
+    print('real_withdraw time', time.time()-start)
     res = input('Enter')
     if res != "":
         print(res)
         print('stopped')
         return
-    need_cali  = True
+    need_cali = True
     while 1:
         start = time.time()
         if need_cali:
@@ -448,7 +444,7 @@ def pipeline(type_of_plan):
         real_perception(P)
         need_cali = False
         print('perception')
-        print('perception time' , time.time()-start)
+        print('perception time', time.time()-start)
         time_perception = time.time()-start
         # start = time.time()
         # sim_spawn_objects()
@@ -471,7 +467,7 @@ def pipeline(type_of_plan):
             print('task planning ', time_task_planning)
             print('END')
             break
-        print('simulation plan and execute time' , time.time()-start)
+        print('simulation plan and execute time', time.time()-start)
         real_execute()
         actions += 1
         time_motion_planning = time.time()-start
@@ -488,10 +484,6 @@ def pipeline(type_of_plan):
             return
 
 
-
-
-
-
 if __name__ == '__main__':
 
     P = real_calibration()
@@ -504,10 +496,8 @@ if __name__ == '__main__':
 
     # real_position_the_arm()
 
-
     # type_of_plan = PHIA
     # pipeline(type_of_plan)
-
 
     print(P.update_locations())
     target = P.update_locations()[106]
@@ -518,16 +508,7 @@ if __name__ == '__main__':
 
     grasp_simple(real_get_arm_position())
 
-
     # run_grasp(target)
-
-
-
-
-
-
-
-
 
     # real_execute()
     # sim_get_plan()
