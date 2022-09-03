@@ -18,9 +18,8 @@ class Tree(object):
 
         # outputs
         self.action_list = []
-        self.isfeasible = False
 
-        Max_iter = 50#1e6
+        Max_iter = 50  # 1e6
         num_iter = 0
 
         if path_region:
@@ -31,12 +30,13 @@ class Tree(object):
         while (num_iter < Max_iter):
             num_iter += 1
             current_node = self.selection()
-            if not current_node:  # break if it selects parent of root (happens when all nodes are completed)
+            # break if it selects parent of root (happens when all nodes are completed)
+            if not current_node:
                 print("\033[93m all nodes explored and expanded\033[0m")
                 break
-            action, new_config, new_path_region, new_radii, radius = current_node.expansion()
+            action, new_config, new_path_region, new_radii, d_radius = current_node.expansion()
 
-            print(f"\033[96m node {current_node.nodeID}: visited_radii = {radius} \033[0m")
+            print(f"\033[96m node {current_node.nodeID}: visited_d_radius = {d_radius} \033[0m")
 
             if new_config == current_node.current_config:
                 print("same config")
@@ -44,12 +44,13 @@ class Tree(object):
             new_node = Node(num_iter, new_config, new_path_region,
                             new_radii, current_node, current_node.depth + 1, self.PH, self.Stick)
 
-            print(f"\033[95m node {current_node.nodeID} -> node {new_node.nodeID} \033[0m by visited_radii = {radius}")
+            print(
+                f"\033[95m node {current_node.nodeID} -> node {new_node.nodeID} \033[0m by visited_d_radius = {d_radius}")
 
-            new_node.radius_from_parent = radius
+            new_node.d_radius_from_parent = d_radius
             new_node.action_from_parent = action
 
-            current_node.children[radius] = new_node
+            current_node.children[d_radius] = new_node
 
             # reward = self.reward_detection(new_node)
             # self.back_propagation(new_node, reward)
@@ -68,8 +69,7 @@ class Tree(object):
 
         print(num_iter)
 
-        if best_node:  # fix
-            self.isfeasible = True
+        if best_node:
             self.construct_plan(best_node)
         else:
             print(f"no solution found after {num_iter} iterations")
@@ -87,12 +87,12 @@ class Tree(object):
 
     def selection(self):
         current_node = self.root
-        while len(current_node.unvisited_radii) == 0:
+        while len(current_node.unvisited_d_radii) == 0:
             current_node = current_node.select_child()
             if not current_node:  # will return None if there is no more options
                 break
         if current_node:
-            print(f"node {current_node.nodeID}: unvisited_radii = {current_node.unvisited_radii} / length {len(current_node.unvisited_radii)}")
+            print(f"node {current_node.nodeID}: unvisited_d_radii = {current_node.unvisited_d_radii} / length {len(current_node.unvisited_d_radii)}")
         return current_node
 
     # def reward_detection(self, node):
@@ -101,8 +101,8 @@ class Tree(object):
     #     of connected components"""
     #     weight = 0
     #     dif_obstacles = node.parent.number_obstacles() - node.number_obstacles()
-    #     dif_CC = 1 + node.number_CC(node.radius_from_parent) - \
-    #         node.parent.number_CC(node.radius_from_parent)
+    #     dif_CC = 1 + node.number_CC(node.d_radii_from_parent) - \
+    #         node.parent.number_CC(node.d_radii_from_parent)
     #     if dif_CC == 0:
     #         dif_CC = -1
     #     return dif_obstacles + weight * dif_CC

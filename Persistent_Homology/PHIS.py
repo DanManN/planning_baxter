@@ -31,6 +31,9 @@ def main(arm_length=0.2,
     Stick = Stick_Simulation.Stick_Simulation(arm_length, radius_obs, width_arm, boundary_N,
                                               boundary_S, table, nu, h)
 
+    # input("Enter")
+    # print(Stick.is_feasible())
+    # return
     PH = PH_planning.PH_planning(arm_length, radius_obs, width_arm, boundary_N,
                                  boundary_S, table, nu, h, world=Stick.world())
 

@@ -90,6 +90,7 @@ def main(arm_length=0.2,
             PH.push_planning(square)
 
             if not Stick.is_feasible():
+                print("Failure of actions")
                 success = False
                 break
 

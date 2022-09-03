@@ -34,9 +34,9 @@ class MCTS(object):
             if not current_node:
                 print("\033[93m all nodes explored and expanded\033[0m")
                 break
-            action, new_config, new_path_region, new_radii, radius = current_node.expansion()
+            action, new_config, new_path_region, new_radii, d_radius = current_node.expansion()
 
-            print(f"\033[96m node {current_node.nodeID}: visited_radii = {radius} \033[0m")
+            print(f"\033[96m node {current_node.nodeID}: visited_d_radius = {d_radius} \033[0m")
 
             if new_config == current_node.current_config:
                 print("same config")
@@ -45,12 +45,12 @@ class MCTS(object):
                             new_radii, current_node, current_node.depth + 1, self.PH, self.Stick)
 
             print(
-                f"\033[95m node {current_node.nodeID} -> node {new_node.nodeID} \033[0m by visited_radii = {radius}")
+                f"\033[95m node {current_node.nodeID} -> node {new_node.nodeID} \033[0m by visited_d_radius = {d_radius}")
 
-            new_node.radius_from_parent = radius
+            new_node.d_radius_from_parent = d_radius
             new_node.action_from_parent = action
 
-            current_node.children[radius] = new_node
+            current_node.children[d_radius] = new_node
             reward = self.reward_detection(new_node)
             self.back_propagation(new_node, reward)
 
@@ -86,26 +86,29 @@ class MCTS(object):
 
     def selection(self):
         current_node = self.root
-        while len(current_node.unvisited_radii) == 0:
+        while len(current_node.unvisited_d_radii) == 0:
             current_node = current_node.UCB()
             if not current_node:  # will return None if there is no more options
                 break
         if current_node:
             print(
-                f"node {current_node.nodeID}: unvisited_radii = {current_node.unvisited_radii} / length {len(current_node.unvisited_radii)}")
+                f"node {current_node.nodeID}: unvisited_d_radii = {current_node.unvisited_d_radii} | length {len(current_node.unvisited_d_radii)}")
         return current_node
 
     def reward_detection(self, node):
         """reward removal of obstacles and creation of more Connected Components.
         Weight gives more relevance to either removal of obstacles or creation
         of connected components"""
-        weight = 0
+
+        if len(node.path_region) != 0 and len(node.radii) == 0:
+            return = 0
+
+        weight = 1
         dif_obstacles = node.parent.number_obstacles() - node.number_obstacles()
-        dif_CC = 1 + node.number_CC(node.radius_from_parent) - \
-            node.parent.number_CC(node.radius_from_parent)
-        if dif_CC == 0:
-            dif_CC = -1
-        return dif_obstacles + weight * dif_CC
+        dif_CC = node.number_CC(node.d_radius_from_parent) - \
+            node.parent.number_CC(node.d_radius_from_parent)
+
+        return dif_obstacles + min(weight * dif_CC, 0)
 
     def back_propagation(self, node, reward):
         current_node = node

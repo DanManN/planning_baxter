@@ -19,7 +19,6 @@ import numpy as np
 from ripser import ripser, Rips
 
 
-
 class PH_planning:
 
     def __init__(self, ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
@@ -408,7 +407,7 @@ class PH_planning:
 
         return [a, b, c, d]
 
-    def push_planning(self, square):
+    def push_planning_(self, square):
         # # reach needed to go beyond (self.RADIUS_OBS) the center point of the obstacles
 
         pose_obj = self.model_pos('object_0')
@@ -472,6 +471,61 @@ class PH_planning:
         for j in range(3):
             self.action_performed[j+1] = [self.action_performed[j+1]
                                           [0], self.action_performed[j+1][1] + self.y_shift]
+
+        return self.action_performed
+
+    def push_planning(self, square, direction_y=False):
+        # # reach needed to go beyond (self.RADIUS_OBS) the center point of the obstacles
+
+        pose_obj = self.model_pos('object_0')
+        tip = self.tip_position()[0]
+
+        ### Defining constants ###
+        """ arm_region is the region where the arm can push the Connected Component away from the path region"""
+        arm_region_minus, arm_region_plus = pose_obj[1] - \
+            self.WIDTH_ARM / 2, pose_obj[1] + self.WIDTH_ARM / 2
+
+        """Cannot cross the boundaries and push more than self.BOUNDARY_N - self.RADIUS_OBS (for North case, same for South)"""
+        arm_region_minus = max(arm_region_minus, self.BOUNDARY_S +
+                               2*self.RADIUS_OBS + self.WIDTH_ARM / 2)
+        arm_region_plus = min(arm_region_plus, self.BOUNDARY_N - 2 *
+                              self.RADIUS_OBS - self.WIDTH_ARM / 2)
+
+        """square[0][0] might be bigger than the ARM_LENGHT, so select the min"""
+        if square[1][0] - square[0][0] < self.ARM_LENGTH:
+            max_reach = square[1][0] + self.RADIUS_OBS
+            """ + self.RADIUS_OBS, because it needs to go beyond  the center point of the last obstacle"""
+        else:
+            # print(f"\033[99m XXX square[0][0] + self.ARM_LENGTH = {square[0][0]} + {self.ARM_LENGTH}   < square[1][0] = {square[1][0]} \033[0m")
+            max_reach = square[0][0] + self.ARM_LENGTH
+
+        # add self.paralell to be able to push obstacles close to the target
+        max_reach = min(pose_obj[0] - self.paralell * self.RADIUS_OBS, max_reach)
+        ### Defining constants End###
+
+        if max_reach - tip < 0.001:
+            return print("Failed")
+
+        # choose one direction_y not pre-selected
+        if not direction_y:
+            if square[0][1] - arm_region_minus < arm_region_plus - square[1][1]:
+                direction_y = "top2bottom"
+
+        aa, bb = (0, 0)
+        if direction_y == 1:  # "top2bottom":
+            print("\033[34m Pushing from top to bottom \033[0m")
+            aa = np.minimum(square[1][1], arm_region_plus) + self.WIDTH_ARM / 2
+            bb = arm_region_minus
+        else:  # direction_y == -1 implies bottom2top
+            print("\033[34m Pushing from bottom to top \033[0m")
+            aa = max(square[0][1], arm_region_minus) - self.WIDTH_ARM / 2
+            bb = arm_region_plus
+
+        self.action_performed = self.action(self.tip_position(), [tip, aa], [max_reach, aa],
+                                            [max_reach, bb])
+
+        for j in range(3):  # correct the displacement
+            self.action_performed[j+1][1] += self.y_shift
 
         return self.action_performed
 

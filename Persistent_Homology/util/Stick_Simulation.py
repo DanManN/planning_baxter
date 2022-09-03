@@ -2,6 +2,7 @@
 # MIT LICENSE 2022 Ewerton R. Vieira
 
 import sys
+import os
 from math import pi
 
 
@@ -13,7 +14,6 @@ from gazebo_msgs.msg import ModelState, ModelStates
 from geometry_msgs.msg import Quaternion, Twist, Vector3, Point, Pose
 # from geometry_msgs.msg import *
 import time
-import os
 import random
 import rospkg
 # from Connected_Comp import *
@@ -80,6 +80,8 @@ class Stick_Simulation:
                 np.sin(phi) * lengh_gripper2elbow]
 
     def world(self):
+        self.read_initial_position()  # update inital positions
+
         world_positions = dict()
 
         for i in self.world_properties().model_names:
@@ -98,7 +100,7 @@ class Stick_Simulation:
                                         "world"))
         pause_physics_client()
         for i in self.world_properties().model_names:
-            if not any([i[0:6] == "object", i[0:8] == "obstacle", i[:5] == 'sitck']):
+            if not any([i[0:6] == "object", i[0:8] == "obstacle", i[:5] == 'sitck', i[0:8] == "boundary"]):
                 continue
 
             self.set_model_state(ModelState(i, config[i],
@@ -113,6 +115,8 @@ class Stick_Simulation:
     def read_config(self):
         config = dict()
         pause_physics_client()
+        self.read_initial_position()  # update inital positions
+
         for i in self.world_properties().model_names:
             # position = self.model_state(i, "world").pose.position
             # config[i] = [position.x, position.y, position.z]
@@ -177,9 +181,11 @@ class Stick_Simulation:
         direction = (pt_end - pt_inital) / length
         return str([direction[0], direction[1], 0])+", " + str(length)
 
-    def write_plan(self, action_list, number_of_acts=3):
+    def write_plan(self, action_list, number_of_acts=3, time_to_plan="unknown"):
 
         f = open("plan.txt", "w")
+        f.write(
+            f"plan: {os.path.splitext(os.path.basename(__file__))[0]}, time_to_plan: {time_to_plan}\n")
         for action in action_list:
             f.write("actions\n")
             for j in range(number_of_acts):
@@ -191,21 +197,23 @@ class Stick_Simulation:
             for j in range(3):
                 self.move_rel_tip(self.tip_position(), action[j+1])
 
-    def is_feasible(self, error_objects=0.05, error_boundary=0.1):
+    def is_feasible(self, error_objects=0.1, error_boundary=0.01):
         """return true if no object is being toppled
         and walls are not being displaced"""
 
         for i in self.world_properties().model_names:
             if i[0:2] == "ob":
                 z = self.model_state(i, "world").pose.position.z
-                if np.alglin.norm(self.initial_position[i].z - z) < error_objects:
+                if np.linalg.norm(self.initial_position[i].z - z) > error_objects:
+                    print(f"objects {np.linalg.norm(self.initial_position[i].z - z)}")
                     return False
             elif i[0:8] == "boundary":
                 p = self.initial_position[i]
                 p = np.array([p.x, p.y, p.z])
                 q = self.model_state(i, "world").pose.position
                 q = np.array([q.x, q.y, q.z])
-                if np.alglin.norm(q-p) < error_boundary = 0.1:
+                if np.linalg.norm(q-p) > error_boundary:
+                    print(f"boundary {np.linalg.norm(q-p)}")
                     return False
         return True
 
