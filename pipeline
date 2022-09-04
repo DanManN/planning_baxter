@@ -14,4 +14,6 @@ export ROS_IP=$IP
 # export ROS_HOSTNAME=$IP
 export ROS_MASTER_URI=http://$MASTER:11311
 
+# python central_control.py
+
 python central_control.py $1 $2 $3
