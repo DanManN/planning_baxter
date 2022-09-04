@@ -109,7 +109,7 @@ def main(name_plan="PHIA", arm_length=0.2,
             count_act += 1
 
     if success:
-        Stick.write_plan(planner.action_list, name_plan=name_plan, time_to_plan=planner_time)
+        Stick.write_plan(action_list, name_plan=name_plan, time_to_plan=planner_time)
         print("Number of actions = ", count_act, "\n", planner_time, "\n")
 
     else:

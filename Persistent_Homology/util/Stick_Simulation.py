@@ -185,7 +185,7 @@ class Stick_Simulation:
 
         f = open("plan.txt", "w")
         f.write(
-            f"plan: {}, time_to_plan: {time_to_plan}\n")
+            f"plan: {name_plan}, time_to_plan: {time_to_plan}\n")
         for action in action_list:
             f.write("actions\n")
             for j in range(number_of_acts):
