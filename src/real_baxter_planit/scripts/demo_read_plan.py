@@ -13,7 +13,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 
-def straight_movement(direction=[1, 0, 0], length=0.4):
+def straight_movement(direction=[1, 0, 0], length=0.4, pause=False):
 
     planner = BaxterPlanner(False)
     chirality = "right"
@@ -24,16 +24,17 @@ def straight_movement(direction=[1, 0, 0], length=0.4):
         direction, length, group_name=chirality + "_arm", jump_threshold=5.0)
     print("planning time", time.time()-start)
 
-    res = input('Enter')
-    if res != "":
-        print(res)
-        print('stopped')
-        return
+    if pause:
+        res = input('Enter')
+        if res != "":
+            print(res)
+            print('stopped')
+            return
     planner.execute(plan, group_name=chirality + "_arm", v_scale=0.1)
     print("all", time.time()-start)
 
 
-def demo_real_plan():
+def demo_real_plan(pause=False):
 
     offset_x = 0
     offset_y = 0.56
@@ -124,7 +125,7 @@ def demo_real_plan():
                     redundant_vector = np.array([0, 0, 0])
                     print('execute')
                     # input("stop")
-                    straight_movement(direction=direction, length=length)
+                    straight_movement(direction=direction, length=length, pause=pause)
 
     print("execution time:", time.time()-start)
     # plan = planner.withdraw(group_name=chirality + "_arm")

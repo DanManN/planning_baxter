@@ -12,7 +12,7 @@ from moveit_commander.conversions import *
 import baxter_interface
 from baxter_interface import CHECK_VERSION
 
-def grasp_simple(position_tip):
+def grasp_simple(position_tip, position_target, pause=False):
     right = baxter_interface.Gripper('right', CHECK_VERSION)
     # right.calibrate()
     offset_x = 0
@@ -48,16 +48,17 @@ def grasp_simple(position_tip):
     chirality = 'right'
     
 
-    def straight_movement(direction=[1, 0, 0], length=0.4):
+    def straight_movement(direction=[1, 0, 0], length=0.4, pause=False):
         planner.do_end_effector('close', group_name=chirality + '_hand')
         # print("\033[34m straight move: direction length \033[0m", direction, length)
         plan, planning_time = planner.plan_line_traj(direction, length, group_name=chirality + "_arm")
 
-        res = input('Execute? Enter')
-        if res != "":
-            print(res)
-            print('stopped')
-            return
+        if pause:
+            res = input('Execute? Enter')
+            if res != "":
+                print(res)
+                print('stopped')
+                return
 
         planner.execute(plan, group_name=chirality + "_arm")
 
@@ -109,16 +110,39 @@ def grasp_simple(position_tip):
 
 
     position_tip[1] += offset_y
-    # rotate wrist
+
+    
+
+    # aim to target
+
+    y_aim = position_target[1] - position_tip[1]
+
+    y_aim_length = abs(y_aim)
+
+    y_aim_sign = y_aim/y_aim_length
+    correction = 0.02#0.012
+
+    y_aim_length -= y_aim_sign * correction
+
+    straight_movement(direction=[0, y_aim_sign, 0], length=y_aim_length, pause=pause)
+
+
+
+    # rotate wrist fixing target position.y
+
+    position_tip[1] = position_target[1]
+
     success, plan, planning_time, error_code = planner.plan_ee_pose(
         list_to_pose(position_tip + orientation), group_name=chirality + '_arm'
     )
 
-    res = input('Execute? Enter')
-    if res != "":
-        print(res)
-        print('stopped')
-        return
+
+    if pause:
+        res = input('Execute? Enter')
+        if res != "":
+            print(res)
+            print('stopped')
+            return
 
     planner.execute(plan, group_name=chirality + "_arm")
 
@@ -128,17 +152,27 @@ def grasp_simple(position_tip):
     #right.calibrate()
     right.open()
 
-    res = input('Execute? Enter')
-    if res != "":
-        print(res)
-        print('stopped')
-        return
+    if pause:
+        res = input('Execute? Enter')
+        if res != "":
+            print(res)
+            print('stopped')
+            return
 
-    straight_movement(direction=[1, 0, 0], length=0.065)
+    correction_x = 0.022
+
+    x_approach_length = position_target[0] - position_tip[0] + correction_x
+    
+
+    straight_movement(direction=[1, 0, 0], length=x_approach_length, pause=pause)
 
     right.close()
 
-    straight_movement(direction=[0, 0, 1], length=0.065)
+    straight_movement(direction=[0, 0, 1], length=0.065, pause=pause)
+
+    straight_movement(direction=[-1, 0, 0], length=0.35, pause=pause)
+
+
 
 
 

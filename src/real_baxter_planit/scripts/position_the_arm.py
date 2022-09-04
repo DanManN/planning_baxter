@@ -10,7 +10,7 @@ from real_baxter_planit import BaxterPlanner
 import moveit_commander
 from moveit_commander.conversions import *
 
-def position_the_arm():
+def position_the_arm(pause=False):
     offset_x = 0
     offset_y = 0.56
     avoid_x = -0.1 # avoid gripper hitting table
@@ -45,7 +45,7 @@ def position_the_arm():
     chirality = 'right'
     
 
-    def straight_movement(direction=[1, 0, 0], length=0.4):
+    def straight_movement(direction=[1, 0, 0], length=0.4, pause=False):
         planner.do_end_effector('close', group_name=chirality + '_hand')
         # print("\033[34m straight move: direction length \033[0m", direction, length)
         plan, planning_time = planner.plan_line_traj(direction, length, group_name=chirality + "_arm")
@@ -104,11 +104,12 @@ def position_the_arm():
         list_to_pose([tip_x, tip_y+offset_y, tip_z] + orientation), group_name=chirality + '_arm'
     )
 
-    res = input('Execute? Enter')
-    if res != "":
-        print(res)
-        print('stopped')
-        return
+    if pause:
+        res = input('Execute? Enter')
+        if res != "":
+            print(res)
+            print('stopped')
+            return
 
     planner.execute(plan, group_name=chirality + "_arm")
 
