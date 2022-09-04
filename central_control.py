@@ -1,57 +1,42 @@
-import moveit_commander
-import std_msgs
-# import pybullet as p
-import rospy
 import os
 import time
 import sys
 import numpy as np
-from moveit_commander.conversions import *
-from geometry_msgs.msg import PoseStamped
-
-from math import pi, tau, dist
-
-
-
 sys.path.insert(0, os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'src', 'baxter_planit', 'scripts'))
+import rospy
+from gazebo_msgs.srv import DeleteModel, SpawnModel, SetModelState, GetModelState, GetWorldProperties
+from gazebo_msgs.msg import ModelState, ModelStates
+from geometry_msgs.msg import Quaternion, Pose, Point
+
+"""perception and real moviments"""
+
 from Perception.pose_estimation_v1_for_letters.get_tags import Perception
-# from src.real_baxter_planit.scripts.demo_read_plan import straight_movement as straight_movement
 from src.real_baxter_planit.scripts.demo_read_plan import demo_real_plan as real_execute
 from src.real_baxter_planit.scripts.get_arm_position import get_arm_position as real_get_arm_position
 from src.real_baxter_planit.scripts.position_the_arm import position_the_arm as real_position_the_arm
-
-from geometry_msgs.msg import Quaternion, Pose, Point
-from gazebo_msgs.msg import ModelState, ModelStates
-from gazebo_msgs.srv import DeleteModel, SpawnModel, SetModelState, GetModelState, GetWorldProperties
-
-
-
-"""perception and real moviments"""
 # from src.baxter_planit.scripts.position_the_arm import position_the_arm as sim_position_the_arm
+# from src.real_baxter_planit.scripts.demo_read_plan import straight_movement as straight_movement
 
 """Persistent_Homology actions"""
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Persistent_Homology'))
 
-# print(os.path.abspath(__file__))
+print(os.path.abspath(__file__))
 # from src.baxter_planit.scripts.PHIA_1st import PHIA_pipeline as sim_get_plan
 
 # from src.baxter_planit.scripts.stick import spawning
 # from src.baxter_planit.scripts.spawn_objects import main as spawning_object
 
 """ Graps functions """
+from grasp import grasp_cylinder
 from planit.utils import *
 from planit.msg import PercievedObject
 from baxter_planit import BaxterPlanner
 
-import sys
 import time
-import copy
 from math import pi, tau, dist
 
-import numpy as np
 
-import rospy
 import std_msgs
 import moveit_commander
 from geometry_msgs.msg import PoseStamped
