@@ -14,9 +14,9 @@ from geometry_msgs.msg import Quaternion, Pose, Point
 import os
 import copy
 
-rospy.wait_for_service('/gazebo/get_world_properties')
-rospy.wait_for_service('/gazebo/get_model_state')
-rospy.wait_for_service('/gazebo/set_model_state')
+# rospy.wait_for_service('/gazebo/get_world_properties')
+# rospy.wait_for_service('/gazebo/get_model_state')
+# rospy.wait_for_service('/gazebo/set_model_state')
 
 get_world_properties = rospy.ServiceProxy('/gazebo/get_world_properties', GetWorldProperties)
 model_coordinates = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)

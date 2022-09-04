@@ -82,19 +82,19 @@ def read_plan():
         line = f.readline().split()
     return line[1], line[-1]
 
-
-def check_success(actions):
+def number_actions():
     plan_file = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         'plan.txt'
     )
+    count = 0
     with open(plan_file, 'r') as f:
-        # each actions counts as 4 lines
-        # if len(list(f.readlines())) <= 4*actions:
-        if len(list(f.readlines())) > 3:
-            return True
-        else:
-            return False
+        for i in f.readlines():
+            if i[0:6] == "action":
+                count += 1
+
+    return count
+
 
 ############################# Utils ##############################
 
@@ -119,6 +119,8 @@ def pipeline(type_of_plan, time_to_plan="unknown"):
     time_success = 0
     time_motion_planning = 0
     start = time.time()
+
+    total_number_actions = number_actions()
     # real_position_the_arm()
     print('real_withdraw time', time.time()-start)
     res = input('Enter')
@@ -151,14 +153,15 @@ def pipeline(type_of_plan, time_to_plan="unknown"):
         print('task planning ', time_task_planning)
         # input('Plan ready')
         start = time.time()
-        if check_success(actions):
+        # print(f" actions = {actions} total = {total_number_actions}")
+        if actions >= total_number_actions:
             print('perception: ', time_perception)
             print('check arm: ', time_get_arm_current_position)
             print('task planning ', time_task_planning)
             print('END')
             break
         print('simulation plan and execute time', time.time()-start)
-        real_execute()
+        # real_execute()
         actions += 1
         time_motion_planning += time.time()-start
         print('finish executing')
@@ -178,15 +181,15 @@ def pipeline(type_of_plan, time_to_plan="unknown"):
 
 if __name__ == '__main__':
 
-    P = real_calibration()
-    real_perception(P)
-    real_get_arm_position()
+    # P = real_calibration()
+    # real_perception(P)
+    # real_get_arm_position()
 
     # right = baxter_interface.Gripper('right', CHECK_VERSION)
     # right.calibrate()
     # right.close()
 
-    print(sys.argv)
+    # print(sys.argv)
 
     if len(sys.argv)>1:
         if int(sys.argv[1]):  # position the arm
