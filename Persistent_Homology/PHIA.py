@@ -11,7 +11,7 @@ import util.Stick_Simulation as Stick_Simulation
 import numpy as np
 
 
-def main(arm_length=0.2,
+def main(name_plan="PHIA", arm_length=0.2,
          radius_obs=0.039,
          width_arm=0.16,
          boundary_N=0.58,
@@ -109,7 +109,7 @@ def main(arm_length=0.2,
             count_act += 1
 
     if success:
-        Stick.write_plan(action_list)
+        Stick.write_plan(planner.action_list, name_plan=name_plan, time_to_plan=planner_time)
         print("Number of actions = ", count_act, "\n", planner_time, "\n")
 
     else:
@@ -157,7 +157,7 @@ def first_action(arm_length=0.2,
 
     action_list = [PH.action_performed]
 
-    Stick.write_plan(action_list)
+    Stick.write_plan(action_list, name_plan=name_plan, time_to_plan=planner_time)
 
     print("how close is to the goal", PH.tip_position()[0] -
           PH.model_pos('object_0')[0], "Obs set ", len(PH.path_region), "planning time", planner_time)
@@ -181,4 +181,5 @@ if __name__ == '__main__':
     H = 0.08
 
     # first_action()
+    name_plan = os.path.splitext(os.path.basename(__file__))[0]
     main()

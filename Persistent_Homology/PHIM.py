@@ -19,7 +19,7 @@ import util.MCTS as MCTS
 import numpy as np
 
 
-def main(arm_length=0.2,
+def main(name="PHIM", arm_length=0.2,
          radius_obs=0.039,
          width_arm=0.16,
          boundary_N=0.58,
@@ -89,9 +89,9 @@ def main(arm_length=0.2,
 
         print(planner.action_list)
 
-        Stick.write_plan(planner.action_list)
-
         planner_time = time.time() - t0
+
+        Stick.write_plan(planner.action_list, name_plan=name_plan, time_to_plan=planner_time)
 
         print("how close is to the goal", PH.tip_position()[0] -
               PH.model_pos('object_0')[0], "Obs set ", len(PH.path_region), "planning time", planner_time)

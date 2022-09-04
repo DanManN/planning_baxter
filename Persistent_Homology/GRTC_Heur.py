@@ -23,7 +23,8 @@ def points_out_PR(PH):
     tip, arm_reach, arm_region_minus, arm_region_plus = PH.path_region_boundary()
 
     x = np.linspace(PH.TABLE + 2*PH.RADIUS_OBS, x_g, int((x_g - (PH.TABLE + PH.RADIUS_OBS))/0.03))
-    y = np.linspace(2.5*PH.RADIUS_OBS + 2.5*PH.WIDTH_ARM + PH.BOUNDARY_S, PH.BOUNDARY_N - 2*PH.WIDTH_ARM- 2*PH.RADIUS_OBS, int((0.58 - 4*PH.RADIUS_OBS)/0.03))
+    y = np.linspace(2.5*PH.RADIUS_OBS + 2.5*PH.WIDTH_ARM + PH.BOUNDARY_S, PH.BOUNDARY_N -
+                    2*PH.WIDTH_ARM - 2*PH.RADIUS_OBS, int((0.58 - 4*PH.RADIUS_OBS)/0.03))
     # print("x", x)
     # print("y", y)
 
@@ -78,20 +79,20 @@ def action(PH, Stick, point):
     success, act1 = move_relative_tip(Stick, [tip[0], y_o + sign * 2.1 * PH.RADIUS_OBS])
     if not success:
         return False
-    tip= Stick.tip_position()
+    tip = Stick.tip_position()
     # print(f"tip_y = {tip[1]} ")
     tip_y = tip[1] + Stick.y_shift
-    success, act2= move_relative_tip(Stick, [x_o, 1.1*tip_y])
+    success, act2 = move_relative_tip(Stick, [x_o, 1.1*tip_y])
     if not success:
         return False
-    tip= Stick.tip_position()
+    tip = Stick.tip_position()
     tip_y = tip[1] + Stick.y_shift
-    
-    success, act3= move_relative_tip(Stick, point)
+
+    success, act3 = move_relative_tip(Stick, point)
     if not success:
         return False
 
-    success, act4= move_relative_tip(Stick, [x_o, y_o])
+    success, act4 = move_relative_tip(Stick, [x_o, y_o])
     if not success:
         return False
     return act1+act2+act3+act4
@@ -101,13 +102,13 @@ def try_actions(PH, Stick):
 
     List = points_out_PR(PH)
 
-    config_temp= Stick.read_config()
+    config_temp = Stick.read_config()
 
     while len(List) != 0:
         point = List[0]
         point[1] -= Stick.y_shift
         print(f"point selected = {point}")
-        read_action= action(PH, Stick, point)
+        read_action = action(PH, Stick, point)
         # return True  # delete
         if read_action:
             break
@@ -123,9 +124,7 @@ def try_actions(PH, Stick):
     return False
 
 
-
-
-def main(arm_length=0.2,
+def main(name="GRTC-Heur", arm_length=0.2,
          radius_obs=0.039,
          width_arm=0.16,
          boundary_N=0.58,
@@ -161,14 +160,13 @@ def main(arm_length=0.2,
     while len(PH.path_region) != 0 and time_sim < 300:
         planner_timeF = time.time()
 
-        read_action= try_actions(PH, Stick)
+        read_action = try_actions(PH, Stick)
         # break  # delete
         if not read_action:
             print("Plan Failure")
             break
 
         action_list.append(read_action)
-
 
         PH.world = Stick.world()
         PH.update()
@@ -182,12 +180,12 @@ def main(arm_length=0.2,
 
         count_act += 1
 
-    Stick.write_plan(action_list, number_of_acts=4)
+    Stick.write_plan(action_list, number_of_acts=4, name_plan=name_plan, time_to_plan=planner_time)
+
     print("Number of actions = ", count_act, "\n", planner_time, "\n")
 
     time.sleep(1)
 
-    
     success = False
     if Stick.move_near_to_target():
         print("SUCCESS")
@@ -196,13 +194,9 @@ def main(arm_length=0.2,
     else:
         print("PLAN FAILED")
 
-
     Stick.set_config(source_config)
 
     return success
-
-
-
 
 
 if __name__ == '__main__':

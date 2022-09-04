@@ -14,7 +14,8 @@ from PHIA import main as main
 
 if __name__ == '__main__':
 
-    main(nu=0, h=-0.1)
+    name_plan = os.path.splitext(os.path.basename(__file__))[0]
+    main(name_plan, nu=0, h=-0.1)
     """ The choice of parameteres (nu=0 and h=-0.1) are equivalent to compute
     the distance of all obstacles to the gripper and select
     the closest obstacle to be pushed"""

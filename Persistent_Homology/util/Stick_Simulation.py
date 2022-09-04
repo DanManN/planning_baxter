@@ -181,11 +181,11 @@ class Stick_Simulation:
         direction = (pt_end - pt_inital) / length
         return str([direction[0], direction[1], 0])+", " + str(length)
 
-    def write_plan(self, action_list, number_of_acts=3, time_to_plan="unknown"):
+    def write_plan(self, action_list, number_of_acts=3, name_plan="unknown", time_to_plan="unknown"):
 
         f = open("plan.txt", "w")
         f.write(
-            f"plan: {os.path.splitext(os.path.basename(__file__))[0]}, time_to_plan: {time_to_plan}\n")
+            f"plan: {}, time_to_plan: {time_to_plan}\n")
         for action in action_list:
             f.write("actions\n")
             for j in range(number_of_acts):
