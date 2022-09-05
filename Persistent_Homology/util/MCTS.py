@@ -19,7 +19,7 @@ class MCTS(object):
         # outputs
         self.action_list = []
 
-        Max_iter = 50  # 1e6
+        Max_iter = 5  # 1e6
         num_iter = 0
 
         if path_region:
@@ -101,7 +101,7 @@ class MCTS(object):
         of connected components"""
 
         if len(node.path_region) != 0 and len(node.radii) == 0:
-            return = 0
+            return 0
 
         weight = 1
         dif_obstacles = node.parent.number_obstacles() - node.number_obstacles()

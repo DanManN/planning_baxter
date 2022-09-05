@@ -19,7 +19,7 @@ import util.MCTS as MCTS
 import numpy as np
 
 
-def main(name="PHIM", arm_length=0.2,
+def main(name_plan="PHIM", arm_length=0.2,
          radius_obs=0.039,
          width_arm=0.16,
          boundary_N=0.58,

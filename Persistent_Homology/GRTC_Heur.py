@@ -77,23 +77,24 @@ def action(PH, Stick, point):
     sign = np.sign(-(point[1]-y_o))
 
     success, act1 = move_relative_tip(Stick, [tip[0], y_o + sign * 2.1 * PH.RADIUS_OBS])
-    if not success:
+    if not success and not Stick.is_feasible():
         return False
     tip = Stick.tip_position()
     # print(f"tip_y = {tip[1]} ")
     tip_y = tip[1] + Stick.y_shift
     success, act2 = move_relative_tip(Stick, [x_o, 1.1*tip_y])
-    if not success:
+    print(f"is feasible {Stick.is_feasible()}")
+    if not success or not Stick.is_feasible():
         return False
     tip = Stick.tip_position()
     tip_y = tip[1] + Stick.y_shift
 
     success, act3 = move_relative_tip(Stick, point)
-    if not success:
+    if not success or not Stick.is_feasible():
         return False
 
     success, act4 = move_relative_tip(Stick, [x_o, y_o])
-    if not success:
+    if not success or not Stick.is_feasible():
         return False
     return act1+act2+act3+act4
 
@@ -102,15 +103,20 @@ def try_actions(PH, Stick):
 
     List = points_out_PR(PH)
 
-    config_temp = Stick.read_config()
+    # config_temp = Stick.read_config()
 
     while len(List) != 0:
         point = List[0]
         point[1] -= Stick.y_shift
         print(f"point selected = {point}")
+        config_temp = Stick.read_config()
+        Stick.read_initial_position()  # update config
         read_action = action(PH, Stick, point)
         # return True  # delete
+
+        print(read_action)
         if read_action:
+            # return
             break
         List.pop(0)
 
@@ -124,7 +130,7 @@ def try_actions(PH, Stick):
     return False
 
 
-def main(name="GRTC-Heur", arm_length=0.2,
+def main(name_plan="GRTC-Heur", arm_length=0.2,
          radius_obs=0.039,
          width_arm=0.16,
          boundary_N=0.58,
@@ -147,7 +153,7 @@ def main(name="GRTC-Heur", arm_length=0.2,
     source_config = Stick.read_config()
 
     time_sim_0 = time.time()  # start timer
-    time_sim = time.time() - time_sim_0  # simulation time
+    time_sim = 0
 
     count_act = 0  # number of actions made by the arm
 
@@ -158,7 +164,6 @@ def main(name="GRTC-Heur", arm_length=0.2,
     action_list = []
 
     while len(PH.path_region) != 0 and time_sim < 300:
-        planner_timeF = time.time()
 
         read_action = try_actions(PH, Stick)
         # break  # delete
@@ -171,14 +176,13 @@ def main(name="GRTC-Heur", arm_length=0.2,
         PH.world = Stick.world()
         PH.update()
 
-        planner_time += planner_timeF - planner_time0
-
-        planner_time0 = time.time()
-
         print("how close is to the goal", PH.tip_position()[0] -
               PH.model_pos('object_0')[0], "Obs set ", len(PH.path_region))
 
         count_act += 1
+        time_sim = time.time() - time_sim_0  # simulation time
+
+    planner_time = time.time() - planner_time0
 
     Stick.write_plan(action_list, number_of_acts=4, name_plan=name_plan, time_to_plan=planner_time)
 
