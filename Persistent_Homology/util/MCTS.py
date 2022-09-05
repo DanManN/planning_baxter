@@ -19,7 +19,7 @@ class MCTS(object):
         # outputs
         self.action_list = []
 
-        Max_iter = 5  # 1e6
+        Max_iter = 9  # 1e6
         num_iter = 0
 
         if path_region:
