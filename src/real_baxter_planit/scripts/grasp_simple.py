@@ -127,7 +127,6 @@ def grasp_simple(position_tip, position_target, pause=False):
     straight_movement(direction=[0, y_aim_sign, 0], length=y_aim_length, pause=pause)
 
 
-
     # rotate wrist fixing target position.y
 
     position_tip[1] = position_target[1]
@@ -159,7 +158,7 @@ def grasp_simple(position_tip, position_target, pause=False):
             print('stopped')
             return
 
-    correction_x = 0.017
+    correction_x = 0
 
     x_approach_length = position_target[0] - position_tip[0] + correction_x
     
@@ -167,7 +166,7 @@ def grasp_simple(position_tip, position_target, pause=False):
     straight_movement(direction=[1, 0, 0], length=x_approach_length, pause=pause)
 
     right.close()
-
+    
     straight_movement(direction=[0, 0, 1], length=0.065, pause=pause)
 
     straight_movement(direction=[-1, 0, 0], length=0.35, pause=pause)

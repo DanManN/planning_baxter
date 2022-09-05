@@ -183,21 +183,23 @@ def pipeline(type_of_plan, time_to_plan="unknown", scene="unknown", pause=False)
 
 if __name__ == '__main__':
 
-    scene = "s1" 
+    scene = "s2" 
     pause = True
-
+    
     P = real_calibration()
     real_perception(P)
     real_get_arm_position()
-
+    
     right = baxter_interface.Gripper('right', CHECK_VERSION)
-    right.calibrate()
-    right.close()
+
 
     # print(sys.argv)
-
+    
     if len(sys.argv)>1:
         if int(sys.argv[1]):  # position the arm
+            
+            right.calibrate()
+            right.close()
             real_position_the_arm(pause)
 
     if len(sys.argv)>2:
