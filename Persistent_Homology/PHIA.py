@@ -18,7 +18,7 @@ def main(name_plan="PHIA", arm_length=0.2,
          boundary_S=0.0,
          table=0.68,
          nu=0.015,
-         h=0.08):
+         h=0.04):
 
     Stick = Stick_Simulation.Stick_Simulation(arm_length, radius_obs, width_arm, boundary_N,
                                               boundary_S, table, nu, h)
