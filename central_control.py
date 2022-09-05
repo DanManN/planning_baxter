@@ -162,7 +162,7 @@ def pipeline(type_of_plan, time_to_plan="unknown", scene="unknown", pause=False)
             break
         print('simulation plan and execute time', time.time()-start)
         real_execute(pause)
-        actions += 1
+        actions += total_number_actions
         time_motion_planning += time.time()-start
         print('finish executing')
         print('perception: ', time_perception)
@@ -184,7 +184,7 @@ def pipeline(type_of_plan, time_to_plan="unknown", scene="unknown", pause=False)
 if __name__ == '__main__':
 
     scene = "s1" 
-    pause = False
+    pause = True
 
     P = real_calibration()
     real_perception(P)
