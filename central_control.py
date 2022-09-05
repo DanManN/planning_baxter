@@ -120,7 +120,7 @@ def pipeline(type_of_plan, time_to_plan="unknown", scene="unknown", pause=False)
     start = time.time()
 
     total_number_actions = number_actions()
-    # real_position_the_arm()
+    real_position_the_arm()
     print('real_withdraw time', time.time()-start)
     if pause:
         res = input('Execute? Enter')

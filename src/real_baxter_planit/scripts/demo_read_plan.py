@@ -115,6 +115,10 @@ def demo_real_plan(pause=False):
                 direction = direction_str.split(sep=',')
                 direction = [float(s) for s in direction]
                 length = float(words[1])
+
+                # if np.linalg.norm(direction[0] - 1) < 0.1:  # add correction
+                #     length -= 0.04
+                
                 direction, length = combine_actions(direction, length, redundant_vector)
                 print('direction', direction)
                 print('length', length)

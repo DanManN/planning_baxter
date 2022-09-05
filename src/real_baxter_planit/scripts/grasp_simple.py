@@ -120,7 +120,7 @@ def grasp_simple(position_tip, position_target, pause=False):
     y_aim_length = abs(y_aim)
 
     y_aim_sign = y_aim/y_aim_length
-    correction = 0.02#0.012
+    correction = 0.02
 
     y_aim_length -= y_aim_sign * correction
 
@@ -159,7 +159,7 @@ def grasp_simple(position_tip, position_target, pause=False):
             print('stopped')
             return
 
-    correction_x = 0.022
+    correction_x = 0.017
 
     x_approach_length = position_target[0] - position_tip[0] + correction_x
     
