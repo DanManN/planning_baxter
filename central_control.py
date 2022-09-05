@@ -183,7 +183,7 @@ def pipeline(type_of_plan, time_to_plan="unknown", scene="unknown", pause=False)
 
 if __name__ == '__main__':
 
-    scene = "s2" 
+    scene = "s4" 
     pause = True
     
     P = real_calibration()
