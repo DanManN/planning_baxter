@@ -32,10 +32,12 @@ def main(name_plan="PHIA", arm_length=0.2,
 
     source_config = Stick.read_config()
 
-    time_sim_0 = time.time()  # start timer
-    time_sim = time.time() - time_sim_0  # simulation time
+
+
 
     count_act = 0  # number of actions made by the arm
+
+    time_sim = 0
 
     planner_time = 0
 
@@ -82,7 +84,9 @@ def main(name_plan="PHIA", arm_length=0.2,
     else:
 
         while len(PH.path_region) != 0 and time_sim < 300:
-            planner_timeF = time.time()
+
+            time_sim_0 = time.time()  # start timer
+
 
             square = PH.squared_CC(PH.path_region, PH.closest_pt, PH.min_radius_CC())
             print("square ", square, "closest_pt ", PH.closest_pt)
@@ -99,14 +103,15 @@ def main(name_plan="PHIA", arm_length=0.2,
             PH.world = Stick.world()
             PH.update()
 
-            planner_time += planner_timeF - planner_time0
-
-            planner_time0 = time.time()
-
             print("how close is to the goal", PH.tip_position()[0] -
                   PH.model_pos('object_0')[0], "Obs set ", len(PH.path_region))
 
             count_act += 1
+
+            time_sim += time.time() - time_sim_0  # simulation time
+
+    planner_time = time.time() - planner_time0
+
 
     if success:
         Stick.write_plan(action_list, name_plan=name_plan, time_to_plan=planner_time)
