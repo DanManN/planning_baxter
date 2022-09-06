@@ -158,7 +158,7 @@ def grasp_simple(position_tip, position_target, pause=False):
             print('stopped')
             return
 
-    correction_x = 0
+    correction_x = 0.005
 
     x_approach_length = position_target[0] - position_tip[0] + correction_x
     
