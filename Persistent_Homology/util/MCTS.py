@@ -96,19 +96,16 @@ class MCTS(object):
         return current_node
 
     def reward_detection(self, node):
-        """reward removal of obstacles and creation of more Connected Components.
-        Weight gives more relevance to either removal of obstacles or creation
-        of connected components"""
+        """reward removal of obstacles and creation of more Connected Components."""
 
         if len(node.path_region) != 0 and len(node.radii) == 0:
             return 0
 
-        weight = 0
         dif_obstacles = node.parent.number_obstacles() - node.number_obstacles()
-        dif_CC = node.number_CC(node.d_radius_from_parent) - \
-            node.parent.number_CC(node.d_radius_from_parent)
+        dif_CC = max(node.number_CC(node.d_radius_from_parent) - node.parent.number_CC(node.d_radius_from_parent), 0)
+        t = 1 if dif_obstacles >= 0 else 0
 
-        return dif_obstacles + min(weight * dif_CC, 0)
+        return dif_obstacles + t * dif_CC
 
     def back_propagation(self, node, reward):
         current_node = node
