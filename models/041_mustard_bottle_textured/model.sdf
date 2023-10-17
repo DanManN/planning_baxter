@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="006_mustard_bottle_textured">
+    <pose>0 0 0  0 0 3.14</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose>0 0 0 0 0 0</pose>
+        <inertia>
+          <ixx>0.0007014092721457655</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.0023772974006212805</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.0027281266896929538</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://006_mustard_bottle_textured/textured.dae</uri>
+          </mesh>
+        </geometry>
+        <pose>-0.07484429837772107 -0.005002967007784245 -0.02766453523030315 -1.5633073492400062 0.3999830453240471 -1.56606276659488</pose>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://006_mustard_bottle_textured/textured.col.dae</uri>
+          </mesh>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>-0.07484429837772107 -0.005002967007784245 -0.02766453523030315 -1.5633073492400062 0.3999830453240471 -1.56606276659488</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>
