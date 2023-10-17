@@ -47,22 +47,19 @@ def delete_model():
             print('deleting', name)
 
 
-def spawn_config(position_file_address, all_items):
+def spawn_config(position_file_address):
     # rospy.init_node('spawn_objects')
     rospy.wait_for_service('/gazebo/spawn_sdf_model')
     spawn_model = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
-    orient = Quaternion(0, 0.7071068, 0, 0.7071068)
+    orient = Quaternion(0, 0, 0, 1)
 
     path_dir = os.path.dirname(__file__)
 
     path_models = os.path.join(path_dir, '../models')
 
+    f = open(os.path.join(path_models, 'cylinder_object/model.sdf'))
 
-    f_all_items = dict()
-
-    for k, name_obstacle in enumerate(all_items):
-
-        f_all_items[k]=open(os.path.join(path_models, f'{name_obstacle}/model.sdf'))
+    obs_f = open(os.path.join(path_models, 'cylinder_obstacle/model.sdf'))
 
     stick_f = open(os.path.join(path_models, 'stick/model.sdf'))
 
@@ -76,9 +73,12 @@ def spawn_config(position_file_address, all_items):
         if (line == "object\n"):
             name = line[0:-1]
             index = 0
+            temp_sdff = f.read()
 
         elif (line == "obstacle\n"):
             name = line[0:-1]
+            index = 0
+            temp_sdff = obs_f.read()
 
         elif (line == "tip_gripper\n"):
             # name = line[0:-1]
@@ -93,10 +93,6 @@ def spawn_config(position_file_address, all_items):
             z = 1.077
 
             if name != 'stick':
-                if index < len(all_items):
-                    # temp_sdff = f_all_items[1].read()
-                # else:
-                    temp_sdff = f_all_items[index].read()
                 temp_name = name+"_"+str(index)
             else:
                 lengh_gripper2elbow = 0.3575
@@ -104,15 +100,56 @@ def spawn_config(position_file_address, all_items):
                 temp_name = name
                 z = ws_z
 
+
             spawn_model(temp_name, temp_sdff, "",
                         Pose(Point(x=x, y=y, z=z), orient), "world")
             index += 1
 
-    for k, name_obstacle in enumerate(all_items):
-        f_all_items[k].close()
-
+    f.close()
+    obs_f.close()
     stick_f.close()
     positions_file.close()
+
+    # unpause_physics_client()
+
+
+    #
+    #
+    # for line in position_file.readlines():
+    #     print(line)
+    #     if (line == "object\n"):
+    #         continue
+    #     elif (line == "obstacle\n"):
+    #         Isobstacle = True
+    #         continue
+    #     elif Isobstacle:
+    #         pos = line.split()
+    #         print("throwing obstacles %d" % (obs_index))
+    #         x = float(pos[0])
+    #         y = float(pos[1])
+    #         z = ws_z+0.2
+    #         spawn_model('obstacle_'+str(obs_index), obs_sdff, "",
+    #                     Pose(Point(x=x, y=y, z=z), orient), "world")
+    #         obs_index += 1
+    #     else:
+    #         pos = line.split()
+    #         print("throwing obj %d" % (obj_index))
+    #         x = float(pos[0])
+    #         y = float(pos[1])
+    #         z = ws_z+0.2
+    #         spawn_model('object_'+str(obj_index), sdff, "",
+    #                     Pose(Point(x=x, y=y, z=z), orient), "world")
+    #         obj_index += 1
+    # # rospy.signal_shutdown("Fininshed Throwing")
+    # f.close()
+    # obs_f.close()
+    # position_file.close()
+    # # offset_x = 0
+    # # # rospy.wait_for_service('/gazebo/get_model_state')
+    # # # model_coordinates = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
+    # # pose = model_coordinates('boundaryN', 'world')
+    # # offset_y = - pose.pose.position.y
+    # # shift_models((offset_x, offset_y))
 
 
 def shift_models(offset):
@@ -134,22 +171,6 @@ def shift_models(offset):
 
 def main():
 
-    all_items = ['cylinder_object',
-    '002_master_chef_can_textured', 
-    '003_cracker_box_textured', 
-    '004_sugar_box_textured', 
-    '005_tomato_soup_can_textured', 
-    '041_mustard_bottle_textured',  
-    '008_pudding_box_textured',
-    '009_gelatin_box_textured',
-    '010_potted_meat_can_textured',
-    '021_bleach_cleanser_textured',
-    ]# include objects and obstacles
-
-    # all_items = ['cylinder_object',
-    # 'cylinder_obstacle',
-    # ]# include objects and obstacles
-
     position_file_address = os.path.join(
         os.path.dirname(os.path.dirname((os.path.abspath(__file__)))),
         "config.txt"
@@ -162,7 +183,7 @@ def main():
     # name_file="config.txt"
 
     delete_model()
-    spawn_config(position_file_address, all_items)
+    spawn_config(position_file_address)
 
 
 if __name__ == '__main__':
