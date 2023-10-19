@@ -7,7 +7,7 @@
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
   <arg name="debug" default="false" />
-  <arg name="world" default="shelf" />
+  <arg name="world" default="shelf_movable" />
 
 
   <!-- We resume the logic in empty_world.launch, changing the name of the world to be launched -->

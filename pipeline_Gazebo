@@ -3,4 +3,21 @@ source ./devel/setup.sh
 export MESH_WORKSPACE_PATH=$(pwd)/models
 export GAZEBO_MODEL_PATH=$(pwd)/models
 
-python Gazebo_central_control.py
+case $1 in
+    'e')
+    echo "EXECUTE"
+    python Gazebo_central_control.py --e
+    python Gazebo_central_control.py --p
+    python ./Persistent_Homology/spawn_config.py
+        ;;
+    'p')
+    echo "POSITION"
+    python Gazebo_central_control.py --p
+        ;;
+    's')
+    echo "SPAWN"
+    python ./Persistent_Homology/spawn_config.py
+        ;;
+esac
+
+

@@ -2,16 +2,30 @@
 
 gnome-terminal --tab -- roscore
 
-sleep 4s
+sleep 10s
 
 gnome-terminal --tab --command="bash -c 'source $(pwd)/devel/setup.sh;
 export MESH_WORKSPACE_PATH=$(pwd)/models;
 export GAZEBO_MODEL_PATH=$(pwd)/models;
-roslaunch $(pwd)/src/baxter_moveit/baxter_moveit/launch/execution_stick.launch; $SHELL'"
+source ./simulation_commands/1_open_gazebo; $SHELL'"
 
-sleep 4s
+sleep 50s
 
 gnome-terminal --tab --command="bash -c 'source $(pwd)/devel/setup.sh
 export MESH_WORKSPACE_PATH=$(pwd)/models
 export GAZEBO_MODEL_PATH=$(pwd)/models
-python $(pwd)/Persistent_Homology/spawn_config.py; $SHELL'"
+source ./simulation_commands/2_enable_robot; $SHELL'"
+
+sleep 10s
+
+gnome-terminal --tab --command="bash -c 'source $(pwd)/devel/setup.sh
+export MESH_WORKSPACE_PATH=$(pwd)/models
+export GAZEBO_MODEL_PATH=$(pwd)/models
+source ./simulation_commands/3_open_moveit; $SHELL'"
+
+# sleep 10s
+
+# gnome-terminal --tab --command="bash -c 'source $(pwd)/devel/setup.sh
+# export MESH_WORKSPACE_PATH=$(pwd)/models
+# export GAZEBO_MODEL_PATH=$(pwd)/models
+# source ./simulation_commands/4_perception; $SHELL'"

@@ -9,6 +9,7 @@ import rospy
 from gazebo_msgs.srv import DeleteModel, SpawnModel, SetModelState, GetModelState, GetWorldProperties
 from gazebo_msgs.msg import ModelState, ModelStates
 from geometry_msgs.msg import Quaternion, Pose, Point
+import argparse
 
 
 """Persistent_Homology actions"""
@@ -202,33 +203,32 @@ def pipeline(type_of_plan, time_to_plan="unknown", scene="unknown"):
 
 if __name__ == '__main__':
 
-    scene = "s2" 
+    scene = "m9" 
     
 
     # print(sys.argv)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--s',help='Spawn objects', action='store_true')
+    parser.add_argument('--e',help='Execute plan', action='store_true')
+    parser.add_argument('--p',help='Position arm',action='store_true')
+    args = parser.parse_args()
     
-    if len(sys.argv)>1:
-        if int(sys.argv[1]):  # position the arm
-            
-            success, plan, planning_time, error_code = planner.plan_ee_pose(
-                        [0.72, -0.3, 1.05, -pi / 2, 0, -pi / 2], group_name="right_arm")
-            # print(success, planning_time, error_code)
-            planner.execute(plan, v_scale=1, group_name="right_arm")
+    if args.p:
+        # position the arm
+        success, plan, planning_time, error_code = planner.plan_ee_pose(
+                    [0.72, -0.3, 1.05, -pi / 2, 0, -pi / 2], group_name="right_arm")
+        # print(success, planning_time, error_code)
+        planner.execute(plan, v_scale=1, group_name="right_arm")
 
-    if len(sys.argv)>2:
-        if int(sys.argv[2]):  # run plan
-            print("spwan objects")
-            spawn_config()
+    if args.s:
+        # spawn
+        print("spwan objects")
+        spawn_config()
 
-    if len(sys.argv)>3:
-        if int(sys.argv[3]):  # run plan
-            print("RUN PLAN")
-            type_of_plan, time_to_plan = read_plan()
-            pipeline(type_of_plan, time_to_plan, scene)
-
-    # success, plan, planning_time, error_code = planner.plan_ee_pose(
-    #             [0.72, -0.3, 1.05, -pi / 2, 0, -pi / 2], group_name="right_arm")
-    # # print(success, planning_time, error_code)
-
-    # planner.execute(plan, v_scale=1, group_name="right_arm")
+    if args.e:
+        # Execute plan
+        print("Execute plan")
+        type_of_plan, time_to_plan = read_plan()
+        pipeline(type_of_plan, time_to_plan, scene)
 
