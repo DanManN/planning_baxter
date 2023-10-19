@@ -51,7 +51,7 @@ def spawn_config(position_file_address):
     # rospy.init_node('spawn_objects')
     rospy.wait_for_service('/gazebo/spawn_sdf_model')
     spawn_model = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
-    orient = Quaternion(0, 0, 0, 1)
+    orient = Quaternion(0, 0.7071068, 0, 0.7071068)
 
     path_dir = os.path.dirname(__file__)
 

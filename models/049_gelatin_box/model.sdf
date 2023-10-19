@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="003_cracker_box_textured">
+    <pose>0 0 0  0 0 1.57</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose>0 0 0 0 0 0</pose>
+        <inertia>
+          <ixx>0.002431375930440449</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.004092980997122475</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.005828855552037074</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.11172171712267805 0.16384180899567624 0.07354082245590955</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>1 0 1 1</ambient>
+          <diffuse>0 1 0.1 1</diffuse>
+          <specular>0.3 0.1 0.1 1</specular>
+          <emissive>0 0 0 0</emissive>
+        </material>
+        <pose>0 0 0 0 -0 0</pose>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.07172171712267805 0.16384180899567624 0.11354082245590955</size>
+          </box>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>-0.0012636936270781912 4.5430952155490686e-05 0.0010563217359938586 1.6797075159648651 1.5676480999080171 1.6710404849557459</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>

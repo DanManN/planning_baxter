@@ -1,11 +1,11 @@
 <?xml version='1.0'?>
 <sdf version='1.7'>
-  <model name='small_obstacle'>
+  <model name='cylinder_object'>
     <link name='link'>
-      <pose>0 0 0 0 -0 0</pose>
+      <pose>0 0 0 0 1.57 0</pose>
       <inertial>
         <pose>0 0 -0.025 0 -0 0</pose>
-        <mass>355</mass>
+        <mass>0.3</mass>
         <inertia>
           <ixx>0</ixx>
           <ixy>0</ixy>
@@ -21,19 +21,10 @@
       <visual name='visual'>
         <geometry>
           <cylinder>
-            <radius>0.025</radius>
+            <radius>0.039</radius>
             <length>0.235</length>
           </cylinder>
         </geometry>
-        <material>
-          <ambient>1 0 0 1</ambient>
-          <diffuse>1 0 0 1</diffuse>
-          <specular>0.1 0.1 0.1 1</specular>
-          <emissive>0 0 0 0</emissive>
-        </material>
-        <pose>0 0 0 0 -0 0</pose>
-        <transparency>0</transparency>
-        <cast_shadows>1</cast_shadows>
       </visual>
       <collision name='collision'>
         <laser_retro>0</laser_retro>
@@ -41,7 +32,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <cylinder>
-            <radius>0.025</radius>
+            <radius>0.039</radius>
             <length>0.235</length>
           </cylinder>
         </geometry>

@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="008_pudding_box_textured">
+    <pose>0 0 0  0 1.57 0</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose>0 0 0 0 0 0</pose>
+        <inertia>
+          <ixx>0.0007333720334837207</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.001089069154385225</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.0016135039209310541</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.038273762219472755 0.08971093390318564 0.11274066490351027</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.5 1 0 1</ambient>
+          <diffuse>1 0.1 0.1 1</diffuse>
+          <specular>0.1 0.1 0.5 1</specular>
+          <emissive>0 0 0 0</emissive>
+        </material>
+        <pose>0 0 0 0 -0 0</pose>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.038273762219472755 0.08971093390318564 0.11274066490351027</size>
+          </box>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>-0.000709209480601573 0.00047203399763297293 -0.0002621887643826058 -0.795402948785547 1.5611107897137697 2.3403513042416995</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>

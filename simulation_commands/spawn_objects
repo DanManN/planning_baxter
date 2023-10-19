@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
 source ./devel/setup.sh
-python ./src/baxter_planit/scripts/spawn_objects.py
+python ./Persistent_Homology/spawn_config.py
+# python ./src/baxter_planit/scripts/spawn_objects.py

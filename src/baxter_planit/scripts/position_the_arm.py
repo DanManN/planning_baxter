@@ -12,13 +12,9 @@ from moveit_commander.conversions import *
 from setup_moveit_obstacles import setup_moveit_obstacles
 
 
-app_dist = 0.1
-WIDTH_ARM = 0.12  # diameter of the cylinder for the wrist
 
 
 def position_the_arm():
-    bw_y = PH.model_pos('boundaryW')[1]
-    setup_moveit_obstacles()
     planner = BaxterPlanner(False)
     # planner.scene.add_box('table1', list_to_pose_stamped([0.0, 0.65, -0.43, 0, 0, 0], 'world'), (1.15, 0.5, 0.5))
     # plan, planning_time = planner.plan_line_traj([-1,0,1], 0.7)
@@ -32,11 +28,7 @@ def position_the_arm():
     #     return False
     # planner.execute(plan, v_scale = 1)
 
-    y = PH.model_pos('object_0')[1]
-    BOUNDARY_N = bw_y+0.3
-    phi = 0
-    WIDTH_ARM = 0.12
-    z = PH.link_pos()[2]
+
 
     success, plan, planning_time, error_code = planner.plan_ee_pose(
                     [0.72, -0.3, 1.05, -pi / 2, 0, -pi / 2], group_name="right_arm")
@@ -82,23 +74,10 @@ def position_the_arm():
     # link = "l_gripper_l_finger"
     # print(link_state(link, model).link_state.pose.orientation)
     # print(e_from_q(link_state(link, model).link_state.pose.orientation))
-    print(PH.angle_phi())
+
 
 
 if __name__ == '__main__':
     rospy.init_node("baxter_planit", anonymous=False)
 
-    ARM_LENGTH = 0.2
-    RADIUS_OBS = 0.03
-    # RADIUS_CC = 0.1  # 0.07  # 0.315
-    WIDTH_ARM = 0.12  # 0.1
-    BOUNDARY_N = 0.6
-    BOUNDARY_S = 0
-
-    TABLE = 0.7
-    nu = 0.015
-    h = 0.08
-
-    PH = PH_planning.PH_planning(ARM_LENGTH, RADIUS_OBS, WIDTH_ARM, BOUNDARY_N,
-                                 BOUNDARY_S, TABLE, nu, h)
     position_the_arm()

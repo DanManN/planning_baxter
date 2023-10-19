@@ -69,6 +69,7 @@ def spawn_config(position_file_address, all_items):
     ws_x, ws_y, ws_z = get_workspace_center()
     ws_z = 1.077  # for obstacles and objects
     y_shift = 0
+    flag = False
 
     positions_file = open(position_file_address, 'r')
     for line in positions_file.readlines():
@@ -103,6 +104,7 @@ def spawn_config(position_file_address, all_items):
                 x= x - lengh_gripper2elbow
                 temp_name = name
                 z = ws_z
+                flag = True
 
             spawn_model(temp_name, temp_sdff, "",
                         Pose(Point(x=x, y=y, z=z), orient), "world")
@@ -111,7 +113,8 @@ def spawn_config(position_file_address, all_items):
     for k, name_obstacle in enumerate(all_items):
         f_all_items[k].close()
 
-    stick_f.close()
+    if flag:
+        stick_f.close()
     positions_file.close()
 
 
@@ -135,19 +138,20 @@ def shift_models(offset):
 def main():
 
     all_items = ['cylinder_object',
-    '002_master_chef_can_textured', 
-    '003_cracker_box_textured', 
-    '004_sugar_box_textured', 
-    '005_tomato_soup_can_textured', 
+    '042_can', 
+    '043_cracker_box', 
+    # '004_sugar_box_textured', 
+    '045_soup_can', 
     '041_mustard_bottle_textured',  
-    '008_pudding_box_textured',
-    '009_gelatin_box_textured',
-    '010_potted_meat_can_textured',
-    '021_bleach_cleanser_textured',
+    '048_pudding_box',
+    '049_gelatin_box',
+    '050_potted_meat_can',
+    # '021_bleach_cleanser_textured',
+    'cylinder',
     ]# include objects and obstacles
 
     # all_items = ['cylinder_object',
-    # 'cylinder_obstacle',
+    # 'cylinder',
     # ]# include objects and obstacles
 
     position_file_address = os.path.join(

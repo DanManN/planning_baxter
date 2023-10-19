@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="010_potted_meat_can_textured">
+    <pose>0 0 0  0 0 0</pose>
+    <link name="body">
+      <inertial>
+        <mass> 1.0 </mass>
+        <pose>0 0 0 0 0 0</pose>
+        <inertia>
+          <ixx>0.0007038460154719242</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.0009115515703070388</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.0012106718563610365</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://010_potted_meat_can_textured/textured.dae</uri>
+          </mesh>
+        </geometry>
+        <pose>0.03398767658111899 0.03831865901066023 0.02409654799999792 1.5600212071936324 0.055071607436923804 0.006042161391117278</pose>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://010_potted_meat_can_textured/textured.col.dae</uri>
+          </mesh>
+        </geometry>
+        <max_contacts>10</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.8</mu2>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1000000.0</kp>
+              <kd>1.0</kd>
+              <max_vel>0.0</max_vel>
+            </ode>
+          </contact>
+        </surface>
+        <pose>0.03398767658111899 0.03831865901066023 0.02409654799999792 1.5600212071936324 0.055071607436923804 0.006042161391117278</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>
